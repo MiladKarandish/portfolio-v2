@@ -1,0 +1,9 @@
+.theme-light {
+  --background: 205, 209, 196;
+  --text: 0, 0, 0;
+}
+
+.theme-dark {
+  --background: 48, 50, 61;
+  --text: 255, 255, 255;
+}

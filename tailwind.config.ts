@@ -1,5 +1,9 @@
 import type { Config } from "tailwindcss";
 
+const dynamic = (key: string) => {
+  return { [key]: `rgba(var(--${key}))` };
+};
+
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,8 +13,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        ...dynamic("backgorund"),
+        ...dynamic("text"),
       },
     },
   },

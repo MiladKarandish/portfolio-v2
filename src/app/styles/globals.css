@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("./themes.css");
+
+body {
+  width: 100dvw;
+  height: 100dvh;
+  background: rgba(var(--background));
+  color: rgba(var(--text));
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
