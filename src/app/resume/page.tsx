@@ -1,5 +1,5 @@
 const Resume = () => {
-  return <div>New Fucking Component</div>;
+  return <div>Resume</div>;
 };
 
 export default Resume;

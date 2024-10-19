@@ -3,6 +3,10 @@
 @tailwind utilities;
 @import url("./themes.css");
 
+html {
+  overflow: auto;
+}
+
 body {
   width: 100dvw;
   height: 100dvh;
@@ -23,6 +27,5 @@ body {
 .page-transition {
   opacity: 0;
   background: black;
-  transform: translateY(40px);
   filter: blur(12px);
 }
