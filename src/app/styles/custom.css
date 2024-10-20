@@ -1,0 +1,130 @@
+.input {
+  position: relative;
+  width: 100%;
+  padding: 0 !important;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  background-color: rgba(var(--background));
+
+  &:focus-within {
+    border-color: #999;
+    border-width: 2px;
+  }
+
+  & input,
+  & textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    border-radius: inherit;
+    padding: 0.7rem 0.5rem;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  & textarea {
+    margin-top: 0.7rem;
+    padding-block: 0;
+    padding-top: 0.1rem;
+  }
+
+  &.thousands-separate input {
+    color: transparent;
+  }
+
+  &.thousands-separate input + textarea {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    translate: 0 -50%;
+    width: 100%;
+    height: fit-content;
+    border: none;
+    outline: none;
+    border-radius: inherit;
+    padding: 0.7rem 0.5rem;
+    background: transparent;
+    color: inherit;
+    border-color: transparent;
+    resize: none;
+  }
+
+  & label {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    background-color: transparent;
+    translate: 0 -50%;
+    transition: all 0.1s ease;
+    pointer-events: none;
+    color: #80868b;
+    line-height: 1rem;
+  }
+
+  & textarea + label {
+    top: 1.5rem;
+  }
+
+  & input:not(:placeholder-shown) + label,
+  & textarea:not(:placeholder-shown) + label {
+    padding-inline: 0.5rem;
+    top: 0;
+    translate: 0 -50%;
+    color: #80868b;
+    font-size: 0.9rem;
+    scroll-padding-top: 5rem;
+  }
+
+  &:focus-within label {
+    padding-inline: 0.5rem;
+    top: 0;
+    translate: 0 -50%;
+    color: #80868b;
+    font-size: 0.9rem;
+  }
+
+  &:focus-within label::before,
+  & input:not(:placeholder-shown) + label::before,
+  & textarea:not(:placeholder-shown) + label::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: rgba(var(--background));
+    translate: 0 -75%;
+    z-index: -1;
+  }
+
+  & input:disabled,
+  & textarea:disabled {
+    color: #80868b;
+  }
+
+  &.input-loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50%;
+    aspect-ratio: 1/1;
+    margin: auto;
+    border: 3px solid transparent;
+    border-top-color: #ccc;
+    border-radius: 50%;
+    translate: 50% 50%;
+    background-color: inherit;
+    animation: button-loading-spinner 1s ease infinite;
+  }
+
+  &:hover {
+    border-color: theme("colors.green.500");
+  }
+
+  &:hover label {
+    color: theme("colors.green.400") !important;
+  }
+}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./styles/globals.css";
-import { TransitionLink } from "./utils/transitionLink";
+// import { TransitionLink } from "./utils/transitionLink";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`theme-dark ${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <header>
+        {/* <header>
           <nav>
             <ul>
               <li>
@@ -38,7 +38,7 @@ export default function RootLayout({
               </li>
             </ul>
           </nav>
-        </header>
+        </header> */}
         {children}
       </body>
     </html>

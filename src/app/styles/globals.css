@@ -1,7 +1,9 @@
+@import url("./themes.css");
+@import url("./custom.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("./themes.css");
 
 html {
   overflow: auto;
