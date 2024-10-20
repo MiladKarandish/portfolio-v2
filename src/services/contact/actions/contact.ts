@@ -1,7 +1,7 @@
 "use server";
 
 export const onSubmitEmail = async (prevState: unknown, formData: FormData) => {
-  const { name, email, message } = Object.fromEntries(formData) as {
+  const { name } = Object.fromEntries(formData) as {
     name: string;
     email: string;
     message: string;

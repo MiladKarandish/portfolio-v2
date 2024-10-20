@@ -48,6 +48,15 @@
     color: inherit;
     border-color: transparent;
     resize: none;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: auto;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  &.thousands-separate input + textarea::-webkit-scrollbar {
+    display: none;
   }
 
   & label {

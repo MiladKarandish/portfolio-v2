@@ -60,7 +60,7 @@ const Input = ({
             onChange={onChange}
             rows={4}
             className=""
-          ></textarea>
+          />
         ) : (
           <>
             <input
@@ -72,11 +72,7 @@ const Input = ({
               onChange={onChange}
             />
 
-            {separator && (
-              <textarea onChange={onChange} value={formattedValue}>
-                {formattedValue}
-              </textarea>
-            )}
+            {separator && <textarea onChange={onChange} value={formattedValue} />}
           </>
         )}
         {label && <label htmlFor={rest.name}>{label}</label>}
