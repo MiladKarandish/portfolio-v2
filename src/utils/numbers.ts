@@ -17,10 +17,10 @@ export const convertToEnglishNumbers = (input: string): string =>
 
 export const onInputNumberChange = (
   event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  options: { allowFloat?: boolean; decimalPlaces?: number } = {}
+  options: { decimalPlaces?: number } = {}
 ): string | undefined => {
   const { value } = event.target;
-  const { allowFloat, decimalPlaces } = options;
+  const { decimalPlaces } = options;
 
   const val = convertToEnglishNumbers(value).replace(/٫/g, ".");
 
@@ -31,12 +31,12 @@ export const onInputNumberChange = (
   const parts = newValue.split(".");
   if (parts.length > 2) return;
 
-  if (allowFloat && decimalPlaces !== undefined && parts[1]?.length > decimalPlaces) {
+  if (decimalPlaces !== undefined && parts[1]?.length > decimalPlaces) {
     parts[1] = parts[1].slice(0, decimalPlaces);
     newValue = parts.join(".");
   }
 
-  const floatRegex = allowFloat ? /^\d*\.?\d*$/ : /^\d*$/;
+  const floatRegex = decimalPlaces !== undefined ? /^\d*\.?\d*$/ : /^\d*$/;
 
   if (!floatRegex.test(newValue)) return;
 

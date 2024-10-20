@@ -6,16 +6,12 @@ export type TextareaProps = DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAre
 
 export type Props = (InputProps | TextareaProps) & {
   inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement>;
-  isTextArea?: boolean;
-  loading?: boolean;
-  separator?: boolean;
-  datatype?: "string" | "number";
   label?: string;
   type?: string;
-  errorMessage?: string;
-  hasError?: boolean;
-  allowFloat?: boolean;
+  isTextArea?: boolean;
+  loading?: boolean;
   decimalPlaces?: number;
-  onInputChange: (value: string) => void;
+  thousandsSeparator?: boolean;
   errors?: { [key: string]: string };
+  onInputChange: (value: string) => void;
 };

@@ -13,9 +13,9 @@ const Input = ({
   label,
   type,
   isTextArea,
-  allowFloat,
   decimalPlaces,
-  separator,
+  thousandsSeparator: separator,
+  loading,
   onInputChange,
   ...rest
 }: Props) => {
@@ -23,7 +23,7 @@ const Input = ({
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (type === "number") {
-      const newValue = onInputNumberChange(e, { allowFloat, decimalPlaces });
+      const newValue = onInputNumberChange(e, { decimalPlaces });
       if (newValue || newValue === "") {
         onInputChange(newValue);
       }
@@ -47,7 +47,10 @@ const Input = ({
     <div className={`animate-fadeIn w-full`}>
       <div
         className={cn(
-          `input ${type === "number" && separator ? "thousands-separate" : ""} ${type === "number" ? "ltr" : "rtl"}`
+          `input ${type === "number" && separator ? "thousands-separate" : ""} ${type === "number" ? "ltr" : "rtl"}`,
+          {
+            "input-loading": loading,
+          }
         )}
         data-value={formattedValue === "0" ? "" : formattedValue}
       >

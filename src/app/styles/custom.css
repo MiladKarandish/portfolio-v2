@@ -126,7 +126,7 @@
     border-radius: 50%;
     translate: 50% 50%;
     background-color: inherit;
-    animation: button-loading-spinner 1s ease infinite;
+    animation: loading-spinner 1s ease infinite;
   }
 
   &:hover {
@@ -135,5 +135,15 @@
 
   &:hover label {
     color: theme("colors.green.400") !important;
+  }
+}
+
+@keyframes loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
   }
 }

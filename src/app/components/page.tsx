@@ -13,8 +13,6 @@ const ComponentsPage = () => {
     },
   });
 
-  console.count("Render");
-
   return (
     <div className={`w-dvw h-dvh flex flex-col items-center justify-center text-lg`}>
       <form onSubmit={(e) => e.preventDefault()}>
@@ -27,7 +25,7 @@ const ComponentsPage = () => {
           onInputChange={(value) => {
             setName(value);
           }}
-          separator
+          thousandsSeparator
         />
 
         <input type="text" className={`text-black`} value={name} onChange={(e) => setName(e.target.value)} />
