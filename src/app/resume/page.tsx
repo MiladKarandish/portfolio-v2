@@ -237,7 +237,7 @@ const Resume = () => {
 
       {/* Skills */}
       <section>
-        <h2 className={`border-b-2 border-black`}>Skills</h2>
+        <h2>Skills</h2>
         <ul className={`flex flex-wrap justify-start items-center gap-2`}>
           {skills.map((skill, i) => (
             <li key={skill} className={`flex gap-2`}>

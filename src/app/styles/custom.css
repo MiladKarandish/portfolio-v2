@@ -149,17 +149,15 @@
 }
 
 /* Resume */
-.resume-container {
-  h2 {
-    margin-bottom: 1rem;
-    border-bottom: 4px solid black;
-    color: rgb(54, 54, 54);
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
+.resume-container h2 {
+  margin-bottom: 1rem;
+  border-bottom: 4px solid black;
+  color: rgb(54, 54, 54);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
 
-  h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
+.resume-container h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
 }
