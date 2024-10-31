@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 type ErrorType = { [key: string]: string };
 
 interface InputValidation {
-  ref: React.RefObject<HTMLInputElement>;
+  ref: React.RefObject<HTMLInputElement | null>;
   errors: ErrorType;
   isChanged: boolean;
 }

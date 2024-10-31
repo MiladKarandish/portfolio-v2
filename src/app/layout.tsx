@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./styles/globals.css";
+import { Nunito } from "next/font/google";
 // import { TransitionLink } from "./utils/transitionLink";
 
+const nunito = Nunito({
+  subsets: ["latin"],
+  display: "swap",
+});
+
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "../assets/fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+  src: "../assets/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -25,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={nunito.className}>
       <body className={`theme-dark ${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* <header>
           <nav>

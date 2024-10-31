@@ -1,10 +1,10 @@
+import { useActionState } from "react";
 "use client";
 
 import { onSubmitEmail } from "@/services/contact/actions/contact";
-import { useFormState } from "react-dom";
 
 const Contact = () => {
-  const [state, formAction] = useFormState(onSubmitEmail, undefined);
+  const [state, formAction] = useActionState(onSubmitEmail, undefined);
   console.log(state);
 
   return (

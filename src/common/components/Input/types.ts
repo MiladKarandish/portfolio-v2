@@ -5,7 +5,7 @@ export type InputProps = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>
 export type TextareaProps = DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
 
 export type Props = (InputProps | TextareaProps) & {
-  inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement>;
+  inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>;
   label?: string;
   type?: string;
   isTextArea?: boolean;
