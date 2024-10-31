@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={nunito.className}>
-      <body className={`theme-dark ${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`theme-light ${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* <header>
           <nav>
             <ul>
