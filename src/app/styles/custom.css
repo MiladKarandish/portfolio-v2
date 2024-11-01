@@ -164,6 +164,7 @@
 
 .highlights ul {
   list-style: disc;
+  list-style-type: disc;
   margin-top: 7px;
   padding-inline-start: 2rem;
   font-size: 0.8rem;
@@ -172,5 +173,6 @@
 
 .highlights li {
   list-style: disc;
-  margin-bottom: 5px;
+  list-style-type: disc;
+  /* margin-bottom: 5px; */
 }

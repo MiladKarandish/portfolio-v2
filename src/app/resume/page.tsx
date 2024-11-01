@@ -277,7 +277,8 @@ const Resume = () => {
                 {hilights.map((hilight) => (
                   <li key={hilight.title}>
                     {/* <h3>{hilight.title}:</h3> */}
-                    <p>{hilight.description}</p>
+                    {/* <p>{hilight.title}</p> */}
+                    {hilight.title}
                     {/* {hilight.hilights && (
                       <ul className={`highlights`}>
                         {hilight.hilights.map((h, i) => (
