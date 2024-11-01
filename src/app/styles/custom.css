@@ -161,3 +161,16 @@
   font-size: 1.1rem;
   font-weight: 700;
 }
+
+.highlights ul {
+  list-style: disc;
+  margin-top: 7px;
+  padding-inline-start: 2rem;
+  font-size: 0.8rem;
+  text-align: justify;
+}
+
+.highlights li {
+  list-style: disc;
+  margin-bottom: 5px;
+}
