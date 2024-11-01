@@ -229,9 +229,12 @@ const Resume = () => {
       {/* Summary */}
       <section>
         <p>
-          A Talented Flutter developer with over 7 years of experience in developing high-quality mobile
-          applications,including 3 years in native Android development using Java and 4 years in Flutter, in a broad
-          range of industries,including E-Commerce, CRM, and Social Networking.
+          With over 3 years of front-end development experience, I specialize in turning complex problems into
+          intuitive, user-friendly web applications. My toolkit includes React, TypeScript, and SCSS, but what really
+          drives me is the challenge of optimizing performance and enhancing user experience. Whether I’m breathing new
+          life into legacy systems or creating dynamic, real-time features, I’m all about delivering solutions that are
+          both innovative and practical. I thrive on collaboration and continuous learning, always looking for ways to
+          push the boundaries of what’s possible in web development.
         </p>
       </section>
 
