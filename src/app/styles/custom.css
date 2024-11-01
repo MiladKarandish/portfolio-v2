@@ -149,30 +149,20 @@
 }
 
 /* Resume */
+.resume-container h1 {
+  font-size: 2.1rem;
+  color: #383737;
+}
+
 .resume-container h2 {
   margin-bottom: 1rem;
   border-bottom: 4px solid black;
   color: rgb(54, 54, 54);
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
 .resume-container h3 {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 700;
-}
-
-.highlights ul {
-  list-style: disc;
-  list-style-type: disc;
-  margin-top: 7px;
-  padding-inline-start: 2rem;
-  font-size: 0.8rem;
-  text-align: justify;
-}
-
-.highlights li {
-  list-style: disc;
-  list-style-type: disc;
-  /* margin-bottom: 5px; */
 }

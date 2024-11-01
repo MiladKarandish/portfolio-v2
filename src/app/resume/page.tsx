@@ -252,67 +252,25 @@ const Resume = () => {
       <section>
         <h2>Work Experience</h2>
 
-        <div>
-          {experiences.map(({ title, at, date, hilights }) => (
-            <div key={at.title}>
-              <div className="flex flex-col">
-                <h3>{title}</h3>
-
-                <div className={`space-x-1`}>
-                  <a href={at.href} target="_blank">
-                    {at.name}
-                  </a>
-                  <span>-</span>
-                  <span className="">
-                    {at.title} ({at.type})
-                  </span>
-                </div>
-              </div>
-
-              <span>{date}</span>
-
-              <p dangerouslySetInnerHTML={{ __html: at.description }}></p>
-
-              <ul className={`highlights ps-10`}>
-                {hilights.map((hilight) => (
-                  <li key={hilight.title}>
-                    {/* <h3>{hilight.title}:</h3> */}
-                    {/* <p>{hilight.title}</p> */}
-                    {hilight.title}
-                    {/* {hilight.hilights && (
-                      <ul className={`highlights`}>
-                        {hilight.hilights.map((h, i) => (
-                          <li key={i}>
-                            <h3 className={`font-semibold`}>{h.title}:</h3>
-                            <p>{h.description}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    )} */}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* <ul>
+        <ul className={`space-y-4`}>
           {experiences.map((experience) => (
             <li key={experience.at.title}>
               <div className={`flex justify-between items-center`}>
                 <h3>{experience.title}</h3>
-                <p>{experience.date}</p>
+                <p className={`text-xl`}>{experience.date}</p>
               </div>
-              <p>{experience.at.name}</p>
+              <p className={`text-xl font-medium`}>{experience.at.name}</p>
 
-              <ul className={`list-disc list-inside`}>
+              <ul className={`text-xl list-disc list-inside`}>
                 {experience.hilights.map((hilight) => (
-                  <li key={hilight.title}>{hilight.title}</li>
+                  <li key={hilight.title} className={`mb-[2px] font-medium`}>
+                    {hilight.title}
+                  </li>
                 ))}
               </ul>
             </li>
           ))}
-        </ul> */}
+        </ul>
       </section>
     </div>
   );
