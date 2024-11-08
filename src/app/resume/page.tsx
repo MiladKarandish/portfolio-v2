@@ -46,6 +46,7 @@ const skills = [
   "Nuxt.js",
   "RESTful API",
   "Tailwind CSS",
+  "Axios",
   "Sass",
   "Websocket",
   "Git",
