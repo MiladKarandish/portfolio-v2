@@ -56,16 +56,16 @@ interface IExperiences {
   title: string;
   at: {
     name: string;
-    title: string;
     type: string;
+    title?: string;
     description: string;
     href: string;
   };
   date: string;
   hilights: {
-    title: string;
-    description?: string;
-    hilights?: { title: string; description: string }[];
+    what: string;
+    how: string;
+    why: string;
   }[];
 }
 const experiences: IExperiences[] = [
@@ -82,50 +82,34 @@ const experiences: IExperiences[] = [
     date: "Dec 2023, Present",
     hilights: [
       {
-        title: "Legacy Application Maintenance and Issue Resolution",
-        description:
-          "Provided ongoing maintenance and addressed critical issues in the legacy application built with Vue.js and Nuxt.js, ensuring continuous functionality.",
+        what: "Maintained and fixed issues",
+        how: "in a Vue.js/Nuxt.js legacy application",
+        why: "to ensure functionality for 10,000+ active users, resolving critical issues impacting performance.",
       },
       {
-        title: "Developed New Application Version with Enhanced Performance Using Next.js and TypeScript",
-        description:
-          "Initiated and structured a new version of the application using Next.js and TypeScript, significantly improving efficiency and performance.",
+        what: "Migrated to a new application version",
+        how: "with Next.js, TypeScript, and Tailwind CSS,",
+        why: "replacing an outdated Nuxt.js codebase to improve performance, scalability, and maintainability for over 10,000 active users.",
       },
       {
-        title: "Introduced and Applied Modern Web Development Practices",
-        description:
-          "Introduced modern web development practices and collaborated closely with the backend team to ensure API suitability for web applications.",
+        what: "Optimized data loading speeds",
+        how: "by implementing pagination, leveraging React’s lazy loading and state management,",
+        why: "reducing startup delays on large datasets.",
       },
+      // {
+      //   what: "Improved DOM rendering performance",
+      //   how: "by integrating virtualization with React",
+      //   why: "for handling long data lists, eliminating lag and enhancing smoothness.",
+      // },
+      // {
+      //   what: "Optimized server requests",
+      //   how: "with debouncing and aborting techniques via JavaScript and Axios,",
+      //   why: "reducing unnecessary traffic and improving response times.",
+      // },
       {
-        title: "Comprehensive Performance Optimization and Issue Resolution",
-        description:
-          "Identified and addressed key issues in the old application, leading to a more robust and efficient new version.",
-        hilights: [
-          {
-            title: "Pagination Implementation",
-            description: "Solved slow startup issues by implementing pagination, leading to faster load times.",
-          },
-          {
-            title: "Virtualization Technique",
-            description:
-              "Addressed laggy DOM rendering caused by long data lists by using virtualization, resulting in smoother performance.",
-          },
-          {
-            title: "Backend Processing",
-            description:
-              "Moved search, filter, and sort functionalities to the backend to enhance performance and compatibility with pagination.",
-          },
-          {
-            title: "Request Optimization",
-            description:
-              "Employed debouncing and aborting techniques to optimize server requests, reducing load and improving response times.",
-          },
-        ],
-      },
-      {
-        title: "Enhanced Web Usability and Aesthetics Through Design Improvements",
-        description:
-          "Redesigned several aspects of the application to be more suitable for web use, enhancing overall usability and aesthetics.",
+        what: "Enhanced app performance and reduced server load",
+        how: "by implementing request optimization techniques like debouncing, and improving rendering efficiency using React virtualization",
+        why: "to eliminate lag, reduce unnecessary traffic, and ensure smooth handling of large data sets.",
       },
     ],
   },
@@ -142,34 +126,29 @@ const experiences: IExperiences[] = [
     date: "Oct 2022, Nov 2023 . 1 yr 2 mos",
     hilights: [
       {
-        title: "Collaborative Development in a Cross-Functional Team",
-        description:
-          "Worked closely with a team of 4 front-end developers, as well as backend developers, DevOps, and QA testers, using React, TypeScript, and SCSS (Sass) to deliver a robust logistics and fleet management application. Provided guidance to junior developers while learning from senior team members to improve overall code quality and project efficiency.",
+        what: "Built and maintained real-time, map-based logistics applications",
+        how: "using React.js, TypeScript, React-Leaflet, and WebSocket integration",
+        why: "to deliver accurate real-time data visualization and enhance user experience for diverse user groups.",
       },
       {
-        title: "Front-End Development for a Real-Time Map-Based Application",
-        description:
-          "Developed and maintained a web application similar to Uber, primarily using React.js, TypeScript, and React-Leaflet for map integration. Implemented WebSocket communication for live vehicle location updates, ensuring seamless and accurate real-time data display for users.",
+        what: "Improved application responsiveness",
+        how: "by designing with SCSS and employing responsive design principles for compatibility across various devices, including specialized ticketing systems",
+        why: "to ensure consistent performance and user-friendly experiences on different display sizes.",
       },
       {
-        title: "Responsive Design for Uncommon Display Sizes",
-        description:
-          "Ensured the application was fully responsive across a wide range of devices, including specialized ticketing systems with uncommon display sizes. Utilized SCSS for efficient and scalable styling, providing a consistent and user-friendly experience across all devices.",
+        what: "Enhanced API interactions and minimized re-renders",
+        how: "through collaboration with backend teams, optimizing REST API structures, and leveraging React.js optimization techniques",
+        why: "to boost app efficiency and ensure seamless user interaction during heavy data processing.",
       },
       {
-        title: "Optimization and Performance Improvements",
-        description:
-          "Worked closely with backend developers to optimize API structures and data handling, enhancing overall application performance and responsiveness. Implemented performance improvements in React.js and TypeScript, focusing on minimizing re-renders and improving user experience during heavy data operations.",
+        what: "Modernized legacy applications",
+        how: "by maintaining and upgrading older web apps built with HTML, CSS, and jQuery, incorporating React.js and SCSS for better maintainability and performance",
+        why: "to keep the applications functional and up-to-date with modern web standards.",
       },
       {
-        title: "Maintenance of Legacy Applications",
-        description:
-          "Contributed to the maintenance and enhancement of legacy web applications built with HTML, CSS, and jQuery, ensuring continued functionality and user satisfaction. Applied modern web development techniques using React and SCSS to improve the performance and maintainability of these older applications.",
-      },
-      {
-        title: "Expansion of Service",
-        description:
-          "Played a key role in evolving the application from an airport-specific service to a public-facing platform, similar to Uber, with features like trip reservations, dedicated vehicle types, and specialized options for different user groups, leveraging React, TypeScript, and SCSS for front-end development.",
+        what: "Expanded a logistics service into a public-facing application",
+        how: "by developing features such as trip reservations, vehicle type selection, and custom user options with React, TypeScript, and SCSS",
+        why: "to extend service reach and provide specialized options for different user groups, similar to ride-sharing platforms.",
       },
     ],
   },
@@ -177,7 +156,6 @@ const experiences: IExperiences[] = [
     title: "Front End Developer",
     at: {
       name: "Fortune Web Works",
-      title: "Freelance Partnership",
       type: "Freelance Partnership",
       description:
         "Fortune Web Works was a freelance partnership where I began my journey in web development. Working closely with a partner who handled project acquisition and management, I gained hands-on experience and foundational knowledge in various web technologies.",
@@ -186,19 +164,19 @@ const experiences: IExperiences[] = [
     date: "May 2020, Oct 2022 . 2 yr 6 mos",
     hilights: [
       {
-        title: "Foundational Web Development Experience",
-        description:
-          "Gained initial experience in web development, learning and applying core technologies such as HTML, CSS, JavaScript, and basic front-end frameworks. Developed a strong understanding of web design principles and responsive design.",
+        what: "Built foundational web development skills",
+        how: "by working with HTML, CSS, JavaScript, and basic frameworks",
+        why: "to establish a strong base in front-end development.",
       },
       {
-        title: "Collaborative Project Work",
-        description:
-          "Worked closely with a partner who managed project acquisition and client interactions. Collaborated on various freelance projects, focusing on front-end development and applying best practices in code quality and project management.",
+        what: "Collaborated on diverse projects",
+        how: "in a freelance partnership focused on best practices",
+        why: "to gain hands-on experience and adapt to varied client needs.",
       },
       {
-        title: "Skill Development and Learning",
-        description:
-          "Acquired a broad range of skills in web development through practical, hands-on work. Gained proficiency in essential front-end technologies and learned to adapt to different project requirements and client needs.",
+        what: "Expanded knowledge and skills",
+        how: "through continuous learning and practical application",
+        why: "to become proficient in modern web technologies.",
       },
     ],
   },
@@ -229,12 +207,12 @@ const Resume = () => {
       {/* Summary */}
       <section>
         <p>
-          With over 3 years of front-end development experience, I specialize in turning complex problems into
-          intuitive, user-friendly web applications. My toolkit includes React, TypeScript, and SCSS, but what really
-          drives me is the challenge of optimizing performance and enhancing user experience. Whether I’m breathing new
-          life into legacy systems or creating dynamic, real-time features, I’m all about delivering solutions that are
-          both innovative and practical. I thrive on collaboration and continuous learning, always looking for ways to
-          push the boundaries of what’s possible in web development.
+          Front-End Developer with over 3 years of experience crafting user-centric, performant web applications.
+          Proficient in React, TypeScript, SCSS, and modern web technologies, with expertise in optimizing app
+          performance and enhancing user experiences. Proven track record in maintaining legacy systems, implementing
+          scalable solutions with Next.js, and developing real-time features using WebSocket. Skilled in collaboration
+          with cross-functional teams, applying responsive design, and modernizing outdated codebases. Adept at
+          balancing innovation with practicality to deliver high-quality results.
         </p>
       </section>
 
@@ -262,12 +240,15 @@ const Resume = () => {
                 <h3>{experience.title}</h3>
                 <p className={`text-xl`}>{experience.date}</p>
               </div>
-              <p className={`text-xl font-medium`}>{experience.at.name}</p>
+              <p className={`text-xl font-medium`}>
+                <span className={`font-bold`}>{experience.at.name}</span>({experience.at.type}):{" "}
+                {experience.at.title ? experience.at.title : ""}
+              </p>
 
               <ul className={`text-xl list-disc list-inside`}>
                 {experience.hilights.map((hilight) => (
-                  <li key={hilight.title} className={`mb-[2px] font-medium`}>
-                    {hilight.title}
+                  <li key={hilight.what} className={`mb-[2px] font-medium`}>
+                    <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
                   </li>
                 ))}
               </ul>
