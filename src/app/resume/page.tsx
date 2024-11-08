@@ -207,11 +207,9 @@ const Resume = () => {
       {/* Summary */}
       <section>
         <p>
-          Experienced Front-End Developer with a strong background in building responsive, high-performance web
-          applications. Proficient in React, JavaScript (ES6+), HTML5, and CSS3, with a focus on optimizing user
-          experiences. Skilled in Agile environments, collaboration with cross-functional teams, and delivering
-          solutions that drive business success. Passionate about modern web technologies and continuously improving
-          user interfaces to achieve measurable results.
+          Front-End Developer with 3+ years of experience specializing in React, TypeScript, and performance
+          optimization. Skilled in building scalable web applications and improving user experiences. Focused on
+          delivering high-quality, user-centric solutions.
         </p>
       </section>
 
