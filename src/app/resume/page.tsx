@@ -183,6 +183,27 @@ const experiences: IExperiences[] = [
   },
 ];
 
+interface IProjects {
+  title: string;
+  techs: string[];
+  github: string;
+  demo: string;
+  hilights: string[];
+}
+const projects: IProjects = [
+  {
+    title: "Image Cutter",
+    techs: ["JavaScript (OOP)", "HTML", "CSS", "HTML Canvas"],
+    github: "",
+    demo: "",
+    hilights: [
+      "Developed a lightweight image cropping tool, similar to cropper.js, using pure object-oriented JavaScript, HTML, and CSS, with a focus on the HTML Canvas API.",
+      "Built the entire application from scratch, including the image manipulation logic and the cropping selector using HTML Canvas.",
+      "This project served as an opportunity to explore new challenges outside of daily work, greatly enhancing technical and problem-solving skills.",
+    ],
+  },
+];
+
 const Resume = () => {
   return (
     <div
