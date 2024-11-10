@@ -109,8 +109,8 @@ const experiences: IExperiences[] = [
       // },
       {
         what: "Enhanced app performance and reduced server load",
-        how: "by implementing request optimization techniques like debouncing, and improving rendering efficiency using React virtualization",
-        why: "to eliminate lag, reduce unnecessary traffic, and ensure smooth handling of large data sets.",
+        how: "By implementing request optimization techniques like debouncing and aborting, and improving rendering efficiency using React virtualization",
+        why: "To eliminate lag, reduce unnecessary traffic, and ensure smooth handling of large data sets.",
       },
     ],
   },
