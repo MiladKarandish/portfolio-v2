@@ -77,7 +77,7 @@ const experiences: IExperiences[] = [
       title: "Accounting Application",
       type: "Startup",
       description:
-        "Ragham is a startup specializing in accounting software for Android and Web. The app helps small businesses manage debts, credits, and financial records efficiently, serving over 10,000 active users.",
+        "Ragham is a startup specializing in accounting software for Android and Web. The app helps small businesses manage debts, credits, and financial records efficiently, serving over 1000 active users.",
       href: "https://www.linkedin.com/company/ragham",
     },
     date: "Dec 2023, Present",
@@ -85,12 +85,12 @@ const experiences: IExperiences[] = [
       {
         what: "Maintained and fixed issues",
         how: "in a Vue.js/Nuxt.js legacy application",
-        why: "to ensure functionality for 10,000+ active users, resolving critical issues impacting performance.",
+        why: "to ensure functionality for 1000 active users, resolving critical issues impacting performance.",
       },
       {
         what: "Migrated to a new application version",
         how: "with Next.js, TypeScript, and Tailwind CSS,",
-        why: "replacing an outdated Nuxt.js codebase to improve performance, scalability, and maintainability for over 10,000 active users.",
+        why: "replacing an outdated Nuxt.js codebase to improve performance, scalability, and maintainability for over 1000 active users.",
       },
       {
         what: "Optimized data loading speeds",
@@ -256,12 +256,14 @@ const Resume = () => {
           {experiences.map((experience) => (
             <li key={experience.at.href}>
               <div className={`flex justify-between items-center`}>
-                <a className={`text-[1.3rem] font-bold`}>{experience.title}</a>
+                <h3>{experience.title}</h3>
                 <p className={`text-xl`}>{experience.date}</p>
               </div>
               <p className={`text-xl font-medium`}>
-                <span className={`font-bold`}>{experience.at.name}</span>({experience.at.type}):{" "}
-                {experience.at.title ? experience.at.title : ""}
+                <a href={experience.at.href} className={`font-bold underline underline-offset-4`}>
+                  {experience.at.name}
+                </a>
+                ({experience.at.type}){experience.at.title ? ": " + experience.at.title : ""}
               </p>
 
               <ul className={`text-xl list-disc list-inside`}>

@@ -63,7 +63,7 @@ export const upload = async (server: string, task: string) => {
     },
     body: JSON.stringify({
       task: task,
-      cloud_file: "https://portfolio-v2-xi-tan.vercel.app/resume",
+      cloud_file: "https://miladkarandish.vercel.app/resume",
     }),
   });
   const data = await res.json();
