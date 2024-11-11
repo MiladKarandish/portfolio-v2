@@ -252,7 +252,7 @@ const Resume = () => {
       <section>
         <h2>Work Experience</h2>
 
-        <ul className={`space-y-8`}>
+        <ul className={`space-y-4`}>
           {experiences.map((experience) => (
             <li key={experience.at.href}>
               <div className={`flex justify-between items-center`}>
@@ -282,7 +282,7 @@ const Resume = () => {
       <section>
         <h2>Projects</h2>
 
-        <ul className={`space-y-8`}>
+        <ul className={`space-y-4`}>
           {projects.map((project) => (
             <li key={project.demo}>
               <div className={`flex justify-between items-center`}>
