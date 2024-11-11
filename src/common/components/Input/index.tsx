@@ -57,7 +57,7 @@ const Input = ({
         {isTextArea ? (
           <textarea
             {...(rest as TextareaProps)}
-            ref={inputRef as React.RefObject<HTMLTextAreaElement | null>}
+            ref={inputRef as React.LegacyRef<HTMLTextAreaElement> | undefined}
             placeholder=""
             value={value || ""}
             onChange={onChange}
@@ -68,7 +68,7 @@ const Input = ({
           <>
             <input
               {...(rest as InputProps)}
-              ref={inputRef as React.RefObject<HTMLInputElement | null>}
+              ref={inputRef as React.LegacyRef<HTMLInputElement> | undefined}
               placeholder=""
               inputMode={type === "number" ? "numeric" : "text"}
               value={value}
