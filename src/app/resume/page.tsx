@@ -194,7 +194,7 @@ const projects: IProjects[] = [
   {
     title: "Image Cutter",
     techs: ["JavaScript (OOP)", "HTML", "CSS", "HTML Canvas"],
-    github: "",
+    github: "https://github.com/MiladKarandish/image-cutter",
     demo: "https://mil-image-cutter.vercel.app",
     hilights: [
       "Developed a lightweight image cropping tool, similar to cropper.js, using pure object-oriented JavaScript, HTML, and CSS, with a focus on the HTML Canvas API.",
