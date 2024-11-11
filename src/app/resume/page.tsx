@@ -252,14 +252,14 @@ const Resume = () => {
       <section>
         <h2>Work Experience</h2>
 
-        <ul className={`space-y-4`}>
+        <ul className={`space-y-8`}>
           {experiences.map((experience) => (
             <li key={experience.at.href}>
               <div className={`flex justify-between items-center`}>
                 <h3>{experience.title}</h3>
                 <p className={`text-xl`}>{experience.date}</p>
               </div>
-              <p className={`text-xl font-medium`}>
+              <p className={`mb-1 text-xl font-medium`}>
                 <a href={experience.at.href} className={`font-bold underline underline-offset-4`}>
                   {experience.at.name}
                 </a>
@@ -282,7 +282,7 @@ const Resume = () => {
       <section>
         <h2>Projects</h2>
 
-        <ul className={`space-y-4`}>
+        <ul className={`space-y-8`}>
           {projects.map((project) => (
             <li key={project.demo}>
               <div className={`flex justify-between items-center`}>
