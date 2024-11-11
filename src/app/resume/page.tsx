@@ -190,12 +190,12 @@ interface IProjects {
   demo: string;
   hilights: string[];
 }
-const projects: IProjects = [
+const projects: IProjects[] = [
   {
     title: "Image Cutter",
     techs: ["JavaScript (OOP)", "HTML", "CSS", "HTML Canvas"],
     github: "",
-    demo: "",
+    demo: "https://mil-image-cutter.vercel.app",
     hilights: [
       "Developed a lightweight image cropping tool, similar to cropper.js, using pure object-oriented JavaScript, HTML, and CSS, with a focus on the HTML Canvas API.",
       "Built the entire application from scratch, including the image manipulation logic and the cropping selector using HTML Canvas.",
@@ -254,9 +254,9 @@ const Resume = () => {
 
         <ul className={`space-y-4`}>
           {experiences.map((experience) => (
-            <li key={experience.at.title}>
+            <li key={experience.at.href}>
               <div className={`flex justify-between items-center`}>
-                <h3>{experience.title}</h3>
+                <a className={`text-[1.3rem] font-bold`}>{experience.title}</a>
                 <p className={`text-xl`}>{experience.date}</p>
               </div>
               <p className={`text-xl font-medium`}>
@@ -268,6 +268,44 @@ const Resume = () => {
                 {experience.hilights.map((hilight) => (
                   <li key={hilight.what} className={`mb-[2px] font-medium`}>
                     <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Experience */}
+      <section>
+        <h2>Projects</h2>
+
+        <ul className={`space-y-4`}>
+          {projects.map((project) => (
+            <li key={project.demo}>
+              <div className={`flex justify-between items-center`}>
+                <h3>{project.title}</h3>
+                <a href={project.github} target="_blank" className={`ms-auto text-xl underline underline-offset-4`}>
+                  Github
+                </a>
+                <a href={project.demo} target="_blank" className={`ms-4 text-xl underline underline-offset-4`}>
+                  Demo
+                </a>
+              </div>
+
+              <ul className={`flex flex-wrap justify-start items-center gap-2 text-xl font-medium`}>
+                {project.techs.map((skill, i) => (
+                  <li key={i * 2} className={`flex gap-2`}>
+                    <span>{skill}</span>
+                    {i !== project.techs.length - 1 && <span>|</span>}
+                  </li>
+                ))}
+              </ul>
+
+              <ul className={`text-xl list-disc list-inside`}>
+                {project.hilights.map((hilight, i) => (
+                  <li key={i} className={`mb-[2px] font-medium`}>
+                    {hilight}
                   </li>
                 ))}
               </ul>

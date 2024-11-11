@@ -1,5 +1,6 @@
 {
-  "name": "portfolio-v2",
+  "name": "mil-portfolio",
+  "author": "Milad Karandish <miladkaarandish@gmail.com> ()",
   "version": "0.1.0",
   "private": true,
   "scripts": {
