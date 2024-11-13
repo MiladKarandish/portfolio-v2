@@ -229,9 +229,11 @@ const Resume = () => {
       {/* Summary */}
       <section>
         <p>
-          Front-End Developer with 3+ years of experience specializing in React, TypeScript, and performance
-          optimization. Skilled in building scalable web applications and improving user experiences. Focused on
-          delivering high-quality, user-centric solutions.
+          Front-End Developer with over 3 years of experience in React, TypeScript, and performance optimization,
+          focused on building high-performance, scalable web applications that improve user engagement and meet business
+          objectives. Skilled in responsive design, real-time data visualization, and cross-functional collaboration,
+          with a strong track record of enhancing application speed, accessibility, and user satisfaction through
+          efficient, user-centered solutions.
         </p>
       </section>
 
