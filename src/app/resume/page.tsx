@@ -132,7 +132,7 @@ const experiences: IExperiences[] = [
         why: "to deliver accurate real-time data visualization and enhance user experience for diverse user groups.",
       },
       {
-        what: "Improved application responsiveness",
+        what: "Refined application responsiveness",
         how: "by designing with SCSS and employing responsive design principles for compatibility across various devices, including specialized ticketing systems",
         why: "to ensure consistent performance and user-friendly experiences on different display sizes.",
       },
@@ -147,7 +147,7 @@ const experiences: IExperiences[] = [
         why: "to keep the applications functional and up-to-date with modern web standards.",
       },
       {
-        what: "Expanded a logistics service into a public-facing application",
+        what: "Broadened a logistics service into a public-facing application",
         how: "by developing features such as trip reservations, vehicle type selection, and custom user options with React, TypeScript, and SCSS",
         why: "to extend service reach and provide specialized options for different user groups, similar to ride-sharing platforms.",
       },
@@ -197,8 +197,8 @@ const projects: IProjects[] = [
     github: "https://github.com/MiladKarandish/image-cutter",
     demo: "https://mil-image-cutter.vercel.app",
     hilights: [
-      "Developed a lightweight image cropping tool, similar to cropper.js, using pure object-oriented JavaScript, HTML, and CSS, with a focus on the HTML Canvas API.",
-      "Built the entire application from scratch, including the image manipulation logic and the cropping selector using HTML Canvas.",
+      "Created a lightweight image cropping tool, similar to cropper.js, using pure object-oriented JavaScript, HTML, and CSS, with a focus on the HTML Canvas API.",
+      "Engineered the entire application from scratch, including the image manipulation logic and the cropping selector using HTML Canvas.",
       "This project served as an opportunity to explore new challenges outside of daily work, greatly enhancing technical and problem-solving skills.",
     ],
   },
