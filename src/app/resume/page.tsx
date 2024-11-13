@@ -127,7 +127,7 @@ const experiences: IExperiences[] = [
     date: "Oct 2022, Nov 2023 . 1 yr 2 mos",
     hilights: [
       {
-        what: "Built and maintained real-time, map-based logistics applications",
+        what: "Developed and maintained real-time, map-based logistics applications",
         how: "using React.js, TypeScript, React-Leaflet, and WebSocket integration",
         why: "to deliver accurate real-time data visualization and enhance user experience for diverse user groups.",
       },
@@ -165,7 +165,7 @@ const experiences: IExperiences[] = [
     date: "May 2020, Oct 2022 . 2 yr 6 mos",
     hilights: [
       {
-        what: "Built foundational web development skills",
+        what: "Established foundational web development skills",
         how: "by working with HTML, CSS, JavaScript, and basic frameworks",
         why: "to establish a strong base in front-end development.",
       },
