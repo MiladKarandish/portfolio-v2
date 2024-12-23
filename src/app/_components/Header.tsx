@@ -1,12 +1,21 @@
+import Link from "next/link";
 import Theme from "../_themes/Theme";
 import Navbar from "./Navbar";
 
 const Header = () => {
   return (
-    <header className={`flex justify-between items-center `}>
-      <Theme />
+    <header className={`header w-full`}>
+      <Link href="/" className={`min-w-fit mx-auto`} style={{ gridArea: "logo" }}>
+        M K
+      </Link>
 
-      <Navbar />
+      <div className={`w-full max-w-[25rem] mx-auto`} style={{ gridArea: "navbar" }}>
+        <Navbar />
+      </div>
+
+      <div className={`w-fit mx-auto`} style={{ gridArea: "theme" }}>
+        <Theme />
+      </div>
     </header>
   );
 };

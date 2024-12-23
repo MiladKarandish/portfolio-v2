@@ -22,8 +22,8 @@ const routes = [
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center px-2 py-3 rounded-full bg-800">
-      <ul className="flex gap-4">
+    <nav className="w-full flex justify-between items-center px-2 py-3 rounded-full bg-800">
+      <ul className="w-full flex justify-between">
         <AnimatePresence>
           {routes.map((route) => (
             <NavItem key={route.path} route={route} />

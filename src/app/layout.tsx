@@ -36,7 +36,7 @@ export default function RootLayout({
       <body
         className={`theme-light ${geistSans.variable} ${geistMono.variable} antialiased flex justify-center items-center`}
       >
-        <div className={cn("w-[90dvw] max-w-6xl h-[95dvh] p-10 rounded-3xl bg-700")}>
+        <div className={cn("w-[90dvw] max-w-6xl h-[95dvh] px-2 py-5 xs:p-10 rounded-3xl bg-700")}>
           <Header />
 
           {children}

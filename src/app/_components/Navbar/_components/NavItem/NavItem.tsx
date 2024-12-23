@@ -36,7 +36,7 @@ const NavItem = ({ route: { name, path } }: Props) => {
       style={{ x, y, transition: "all 1s var(--elastic-out)" }}
     >
       <MotionLink
-        className={cn("font-medium relative rounded-md text-sm py-2 px-4 transition-all duration-500 ease-out ")}
+        className={cn("relative rounded-md py-2 px-1 xs:px-4 transition-all duration-500 ease-out")}
         href={path}
       >
         <motion.span

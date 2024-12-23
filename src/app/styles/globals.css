@@ -18,9 +18,7 @@ body {
   height: 100dvh;
   background: var(--bg-950);
   color: var(--text-100);
-  transition-property: opacity, transform, filter, background;
-  transition-timing-function: ease-in-out;
-  transition-duration: 500ms;
+  font-size: calc(0.7rem + 0.5vw);
 }
 
 @layer utilities {
@@ -33,4 +31,18 @@ body {
   opacity: 0;
   background: black;
   filter: blur(12px);
+}
+
+.header {
+  display: grid;
+  grid-template-areas:
+    "logo theme"
+    "navbar navbar";
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+
+  @media (min-width: 625px) {
+    grid-template-areas: "logo navbar theme";
+  }
 }

@@ -8,6 +8,9 @@ const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      screens: {
+        xs: "625px",
+      },
       colors: {
         "100": `var(--bg-100)`,
         "200": `var(--bg-200)`,

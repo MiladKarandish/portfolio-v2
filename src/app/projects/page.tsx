@@ -1,5 +1,5 @@
 const Projects = () => {
-  return <div>New Fucking Component</div>;
+  return <main>New Fucking Component</main>;
 };
 
 export default Projects;
