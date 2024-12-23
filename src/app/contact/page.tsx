@@ -6,7 +6,6 @@ import { onSubmitEmail } from "@/services/contact/actions/contact";
 
 const Contact = () => {
   const [state, formAction] = useActionState(onSubmitEmail, undefined);
-  console.log(state);
 
   return (
     <form action={formAction} className={`text-black`}>
