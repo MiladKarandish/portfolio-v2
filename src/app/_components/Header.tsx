@@ -5,8 +5,8 @@ import Navbar from "./Navbar";
 const Header = () => {
   return (
     <header className={`header w-full`}>
-      <Link href="/" className={`min-w-fit mx-auto`} style={{ gridArea: "logo" }}>
-        M K
+      <Link href="/" className={`min-w-fit mx-auto `} style={{ gridArea: "logo" }}>
+        Resume
       </Link>
 
       <div className={`w-full max-w-[25rem] mx-auto`} style={{ gridArea: "navbar" }}>
