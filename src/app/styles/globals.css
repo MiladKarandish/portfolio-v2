@@ -18,7 +18,7 @@ body {
   height: 100dvh;
   background: var(--bg-950);
   color: var(--text-100);
-  font-size: calc(0.7rem + 0.5vw);
+  font-size: calc(0.7rem + 0.5vw, 1.5rem);
 }
 
 @layer utilities {
