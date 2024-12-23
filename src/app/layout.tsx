@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./styles/globals.css";
 import { Nunito } from "next/font/google";
-// import { TransitionLink } from "./utils/transitionLink";
+import { cn } from "./utils/className";
+import Header from "./_components/Header";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -32,20 +33,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={nunito.className}>
-      <body className={`theme-light ${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* <header>
-          <nav>
-            <ul>
-              <li>
-                <TransitionLink href="/">Home</TransitionLink>
-              </li>
-              <li>
-                <TransitionLink href="/resume">Resume</TransitionLink>
-              </li>
-            </ul>
-          </nav>
-        </header> */}
-        {children}
+      <body
+        className={`theme-light ${geistSans.variable} ${geistMono.variable} antialiased flex justify-center items-center`}
+      >
+        <div className={cn("w-[90dvw] max-w-6xl h-[95dvh] p-10 rounded-3xl bg-700")}>
+          <Header />
+
+          {children}
+        </div>
       </body>
     </html>
   );

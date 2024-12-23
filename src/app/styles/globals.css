@@ -16,10 +16,8 @@ html {
 body {
   width: 100dvw;
   height: 100dvh;
-  /* background: rgba(var(--background)); */
-  background: white;
-  /* color: rgba(var(--text)); */
-  color: black;
+  background: var(--bg-950);
+  color: var(--text-100);
   transition-property: opacity, transform, filter, background;
   transition-timing-function: ease-in-out;
   transition-duration: 500ms;

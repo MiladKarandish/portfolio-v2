@@ -1,0 +1,37 @@
+import { AnimatePresence } from "framer-motion";
+import NavItem from "./Navbar/_components/NavItem/NavItem";
+
+const routes = [
+  {
+    path: "/",
+    name: "Home",
+  },
+  {
+    path: "/contact",
+    name: "Contact",
+  },
+  {
+    path: "/experience",
+    name: "Experience",
+  },
+  {
+    path: "/projects",
+    name: "Projects",
+  },
+];
+
+const Navbar = () => {
+  return (
+    <nav className="flex justify-between items-center px-2 py-3 rounded-full bg-800">
+      <ul className="flex gap-4">
+        <AnimatePresence>
+          {routes.map((route) => (
+            <NavItem key={route.path} route={route} />
+          ))}
+        </AnimatePresence>
+      </ul>
+    </nav>
+  );
+};
+
+export default Navbar;
