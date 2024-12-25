@@ -79,7 +79,7 @@ const Resume = () => {
         </ul>
       </section>
 
-      {/* Experience */}
+      {/* Projects */}
       <section>
         <h2>Projects</h2>
 

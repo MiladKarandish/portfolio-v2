@@ -31,11 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={nunito.className}>
-      <body
-        className={`theme-light ${geistSans.variable} ${geistMono.variable} antialiased flex justify-center items-center`}
-      >
-        {children}
-      </body>
+      <body className={`theme-light ${geistSans.variable} ${geistMono.variable}`}>{children}</body>
     </html>
   );
 }
