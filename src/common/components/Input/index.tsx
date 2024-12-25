@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { cn } from "@/app/utils/className";
+import { cn } from "@/utils/className";
 import { InputProps, Props, TextareaProps } from "./types";
 import { isObjectEmpty } from "@/utils/objects";
 import { onInputNumberChange } from "@/utils/numbers";

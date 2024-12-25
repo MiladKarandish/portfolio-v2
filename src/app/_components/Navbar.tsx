@@ -7,16 +7,16 @@ const routes = [
     name: "Home",
   },
   {
-    path: "/contact",
-    name: "Contact",
-  },
-  {
     path: "/experience",
     name: "Experience",
   },
   {
     path: "/projects",
     name: "Projects",
+  },
+  {
+    path: "/contact",
+    name: "Contact",
   },
 ];
 

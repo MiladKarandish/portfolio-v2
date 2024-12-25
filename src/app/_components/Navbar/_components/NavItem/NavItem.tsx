@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/app/utils/className";
+import { cn } from "@/utils/className";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
