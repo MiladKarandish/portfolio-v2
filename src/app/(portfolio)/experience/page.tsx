@@ -10,16 +10,16 @@ const Experience = () => {
           <li key={experience.at.href} className={`bg-800 rounded-lg p-4`}>
             <div className={`flex justify-between items-center mb-2`}>
               <h3>{experience.title}</h3>
-              <p className={`text-xl`}>{experience.date}</p>
+              <p className={`text-base`}>{experience.date}</p>
             </div>
-            <p className={`mb-2 text-xl font-medium`}>
+            <p className={`mb-2 text-base font-medium`}>
               <a href={experience.at.href} className={`font-bold underline underline-offset-4`}>
                 {experience.at.name}
               </a>
               ({experience.at.type}){experience.at.title ? ": " + experience.at.title : ""}
             </p>
 
-            <ul className={`text-xl list-disc list-inside`}>
+            <ul className={`text-base list-disc list-inside`}>
               {experience.hilights.map((hilight) => (
                 <li key={hilight.what} className={`mb-1 font-medium`}>
                   <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
