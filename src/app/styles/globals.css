@@ -42,11 +42,11 @@ body {
   justify-content: center;
   align-items: start;
   padding-block: 1rem;
-  padding-left: calc((100vw - 100%)+ 1rem);
+  padding-left: calc((100vw - 100%) + 1rem);
   padding-right: 1rem;
   background: var(--bg-950);
   color: var(--text-100);
-  font-size: calc(0.7rem + 0.5vw, 1.5rem);
+  font-size: clamp(0.7rem + 0.5vw, 1.5rem);
 }
 
 @layer utilities {
