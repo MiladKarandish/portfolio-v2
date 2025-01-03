@@ -1,13 +1,11 @@
-import Link from "next/link";
 import Theme from "../_themes/Theme";
 import Navbar from "./Navbar";
+import DownloadResume from "./DownloadResume";
 
 const Header = () => {
   return (
     <header className={`header w-full`}>
-      <Link href="/" className={`min-w-fit mx-auto `} style={{ gridArea: "logo" }}>
-        Resume
-      </Link>
+      <DownloadResume />
 
       <div className={`w-full max-w-[25rem] mx-auto`} style={{ gridArea: "navbar" }}>
         <Navbar />
