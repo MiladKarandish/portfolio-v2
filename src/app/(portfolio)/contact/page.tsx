@@ -1,26 +1,20 @@
-"use client";
+import { contactLinks } from "@/data/contacts";
 
-import { useActionState } from "react";
-
-import { onSubmitEmail } from "@/services/contact/actions/contact";
-
-const Contact = () => {
-  const [state, formAction] = useActionState(onSubmitEmail, undefined);
-
+const ContactPage = () => {
   return (
-    <form action={formAction} className={`text-black`}>
-      <label htmlFor="name">Name</label>
-      <input type="text" name="name" placeholder="Enter your name" required />
-
-      <label htmlFor="email">Email</label>
-      <input type="email" name="email" placeholder="Enter your email" required />
-
-      <label htmlFor="message">Message</label>
-      <textarea name="message" placeholder="Enter your message" required></textarea>
-
-      <button type="submit">Send it away</button>
-    </form>
+    <main>
+      {/* Contact addresses */}
+      <>
+        <ul className={`bg-800 rounded-md divide-y`}>
+          {contactLinks.map((contactLink) => (
+            <li key={contactLink.title} className={`p-2`}>
+              {contactLink.name}
+            </li>
+          ))}
+        </ul>
+      </>
+    </main>
   );
 };
 
-export default Contact;
+export default ContactPage;

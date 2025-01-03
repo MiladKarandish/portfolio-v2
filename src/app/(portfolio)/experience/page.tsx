@@ -1,6 +1,6 @@
 import { experiences } from "@/data/experiences";
 
-const Experience = () => {
+const ExperiencePage = () => {
   return (
     <main className={``}>
       <h1 className={`mb-4 text-4xl`}>Experiecnes</h1>
@@ -33,4 +33,4 @@ const Experience = () => {
   );
 };
 
-export default Experience;
+export default ExperiencePage;

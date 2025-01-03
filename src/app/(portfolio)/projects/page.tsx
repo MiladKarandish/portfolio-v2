@@ -1,6 +1,6 @@
 import { projects } from "@/data/projects";
 
-const Projects = () => {
+const ProjectsPage = () => {
   return (
     <main>
       <ul className={`space-y-4`}>
@@ -39,4 +39,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default ProjectsPage;
