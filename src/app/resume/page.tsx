@@ -66,6 +66,7 @@ const Resume = () => {
                 </a>
                 ({experience.at.type}){experience.at.title ? ": " + experience.at.title : ""}
               </p>
+              <p className={`text-base`}>{experience.at?.description}</p>
 
               <ul className={`text-xl list-disc list-inside`}>
                 {experience.hilights.map((hilight) => (
