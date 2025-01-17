@@ -28,7 +28,7 @@ const Resume = () => {
       {/* Summary */}
       <section className={`summary`}>
         <p>
-          Front-End Developer with over 3 years of experience in React, TypeScript, and performance optimization,
+          Front-End Developer with over 4 years of experience in React, TypeScript, and performance optimization,
           focused on building high-performance, scalable web applications that improve user engagement and meet business
           objectives. Skilled in responsive design, real-time data visualization, and cross-functional collaboration,
           with a strong track record of enhancing application speed, accessibility, and user satisfaction through
