@@ -6,12 +6,12 @@ import { skills } from "@/data/skills";
 const Resume = () => {
   return (
     <div
-      className={`resume-container max-w-full max-h-full flex flex-col gap-7 p-2 bg-white text-black text-3xl overflow-auto font-medium`}
+      className={`resume-container max-w-full max-h-full flex flex-col gap-7 p-2 bg-white text-black overflow-auto font-medium`}
     >
       {/* Header */}
       <header className={`w-full flex flex-col justify-center items-start gap-2`}>
-        <h1 className={`text-3xl font-bold`}>Milad Karandish</h1>
-        <p className={`text-2xl font-medium text-gray-700`}>Front-End Developer</p>
+        <h1 className={`text-4xl font-bold`}>Milad Karandish</h1>
+        <p className={`text-2xl text-gray-700`}>Front-End Developer</p>
 
         {/* Contact Information */}
         <ul className={`flex flex-wrap gap-x-4 text-2xl`}>
@@ -57,20 +57,20 @@ const Resume = () => {
           {experiences.map((experience) => (
             <li key={experience.at.href}>
               <div className={`flex justify-between items-center`}>
-                <h3>{experience.title}</h3>
-                <p className={`text-xl`}>{experience.date}</p>
+                <h3 className={`mb-1`}>{experience.title}</h3>
+                <p className={``}>{experience.date}</p>
               </div>
-              <p className={`mb-1 text-xl font-medium`}>
-                <a href={experience.at.href} className={`font-bold underline underline-offset-4`}>
+              <p className={`at-title mb-1`}>
+                <a href={experience.at.href} className={`underline underline-offset-4`}>
                   {experience.at.name}
                 </a>
                 ({experience.at.type}){experience.at.title ? ": " + experience.at.title : ""}
               </p>
-              <p className={`text-lg font-medium`}>{experience.at?.description}</p>
+              <p className={`at-description`}>{experience.at?.description}</p>
 
-              <ul className={`text-xl list-disc list-inside`}>
+              <ul className={` list-disc list-inside`}>
                 {experience.hilights.map((hilight) => (
-                  <li key={hilight.what} className={`mb-[2px] font-medium`}>
+                  <li key={hilight.what} className={`mb-[2px]`}>
                     <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
                   </li>
                 ))}
@@ -81,34 +81,34 @@ const Resume = () => {
       </section>
 
       {/* Projects */}
-      <section>
+      <section className={`projects`}>
         <h2>Projects</h2>
 
         <ul className={`space-y-4`}>
           {projects.map((project) => (
             <li key={project.demo}>
               <div className={`flex justify-between items-center`}>
-                <h3>{project.title}</h3>
-                <a href={project.github} target="_blank" className={`ms-auto text-xl underline underline-offset-4`}>
+                <h3 className={`mb-1`}>{project.title}</h3>
+                <a href={project.github} target="_blank" className={`ms-auto underline underline-offset-4`}>
                   Github
                 </a>
-                <a href={project.demo} target="_blank" className={`ms-4 text-xl underline underline-offset-4`}>
+                <a href={project.demo} target="_blank" className={`ms-4  underline underline-offset-4`}>
                   Demo
                 </a>
               </div>
 
-              <ul className={`flex flex-wrap justify-start items-center gap-2 text-xl font-medium`}>
+              <ul className={`flex flex-wrap justify-start items-center gap-2 `}>
                 {project.techs.map((skill, i) => (
                   <li key={i * 2} className={`flex gap-2`}>
-                    <span>{skill}</span>
+                    <span className={`font-semibold`}>{skill}</span>
                     {i !== project.techs.length - 1 && <span>|</span>}
                   </li>
                 ))}
               </ul>
 
-              <ul className={`text-xl list-disc list-inside`}>
+              <ul className={` list-disc list-inside`}>
                 {project.hilights.map((hilight, i) => (
-                  <li key={i} className={`mb-[2px] font-medium`}>
+                  <li key={i} className={`mb-[2px]`}>
                     {hilight}
                   </li>
                 ))}
