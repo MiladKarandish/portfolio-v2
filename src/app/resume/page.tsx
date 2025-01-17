@@ -6,7 +6,7 @@ import { skills } from "@/data/skills";
 const Resume = () => {
   return (
     <div
-      className={`resume-container max-w-full max-h-full flex flex-col gap-8 p-8 bg-white text-black text-2xl overflow-auto`}
+      className={`resume-container max-w-full max-h-full flex flex-col gap-8 p-8 bg-white text-black text-3xl overflow-auto`}
     >
       {/* Header */}
       <header className={`w-full flex flex-col justify-center items-start gap-2`}>
@@ -66,7 +66,7 @@ const Resume = () => {
                 </a>
                 ({experience.at.type}){experience.at.title ? ": " + experience.at.title : ""}
               </p>
-              <p className={`text-base`}>{experience.at?.description}</p>
+              <p className={`text-lg font-medium`}>{experience.at?.description}</p>
 
               <ul className={`text-xl list-disc list-inside`}>
                 {experience.hilights.map((hilight) => (
