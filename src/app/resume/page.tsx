@@ -6,7 +6,7 @@ import { skills } from "@/data/skills";
 const Resume = () => {
   return (
     <div
-      className={`resume-container max-w-full max-h-full flex flex-col gap-7 p-2 bg-white text-black text-3xl overflow-auto`}
+      className={`resume-container max-w-full max-h-full flex flex-col gap-7 p-2 bg-white text-black text-3xl overflow-auto font-medium`}
     >
       {/* Header */}
       <header className={`w-full flex flex-col justify-center items-start gap-2`}>
@@ -14,7 +14,7 @@ const Resume = () => {
         <p className={`text-2xl font-medium text-gray-700`}>Front-End Developer</p>
 
         {/* Contact Information */}
-        <ul className={`flex flex-wrap gap-x-4`}>
+        <ul className={`flex flex-wrap gap-x-4 text-2xl`}>
           {contactLinks.map((contact) => (
             <li key={contact.title}>
               <a href={contact.href} className={`flex justify-start items-center gap-2`}>
@@ -26,7 +26,7 @@ const Resume = () => {
       </header>
 
       {/* Summary */}
-      <section>
+      <section className={`summary`}>
         <p>
           Front-End Developer with over 3 years of experience in React, TypeScript, and performance optimization,
           focused on building high-performance, scalable web applications that improve user engagement and meet business
@@ -37,7 +37,7 @@ const Resume = () => {
       </section>
 
       {/* Skills */}
-      <section>
+      <section className={`skills`}>
         <h2>Skills</h2>
         <ul className={`flex flex-wrap justify-start items-center gap-2`}>
           {skills.map((skill, i) => (
@@ -50,7 +50,7 @@ const Resume = () => {
       </section>
 
       {/* Experience */}
-      <section>
+      <section className={`experience`}>
         <h2>Work Experience</h2>
 
         <ul className={`space-y-4`}>
