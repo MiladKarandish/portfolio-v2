@@ -6,7 +6,7 @@ import { skills } from "@/data/skills";
 const Resume = () => {
   return (
     <div
-      className={`resume-container max-w-full max-h-full flex flex-col gap-8 p-6 bg-white text-black text-3xl overflow-auto`}
+      className={`resume-container max-w-full max-h-full flex flex-col gap-8 p-4 bg-white text-black text-3xl overflow-auto`}
     >
       {/* Header */}
       <header className={`w-full flex flex-col justify-center items-start gap-2`}>
