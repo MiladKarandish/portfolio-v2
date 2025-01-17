@@ -8,7 +8,8 @@ const ContactPage = () => {
         <ul className={`bg-800 rounded-md divide-y`}>
           {contactLinks.map((contactLink) => (
             <li key={contactLink.title} className={`p-2`}>
-              {contactLink.name}
+              <p>{contactLink.name}</p>
+              <button>{}</button>
             </li>
           ))}
         </ul>
