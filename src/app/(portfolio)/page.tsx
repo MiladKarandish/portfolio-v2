@@ -1,3 +1,8 @@
+import Particles from "@/common/components/Particles";
 export default function HomePage() {
-  return <main></main>;
+  return (
+    <main>
+      <Particles />
+    </main>
+  );
 }
