@@ -23,7 +23,7 @@ export const experiences: IExperiences[] = [
       title: "Accounting Application",
       type: "Startup",
       description:
-        "Ragham is a startup specializing in accounting software for Android and Web. The app helps small businesses manage debts, credits, and financial records efficiently, serving over 10,000 active users.",
+        "Ragham is a startup specializing in accounting software for Android and Web. The app helps small businesses manage debts, credits, and financial records efficiently, serving over 10,000 daily active users.",
       href: "https://www.linkedin.com/company/ragham",
     },
     date: "Dec 2023, Present",
@@ -31,12 +31,12 @@ export const experiences: IExperiences[] = [
       {
         what: "Maintained and fixed issues",
         how: "in a Vue.js/Nuxt.js legacy application",
-        why: "to ensure functionality for 10,000 active users, resolving critical issues impacting performance.",
+        why: "to ensure functionality for 10,000 daily active users, resolving critical issues impacting performance.",
       },
       {
         what: "Migrated to a new application version",
         how: "with Next.js, TypeScript, and Tailwind CSS,",
-        why: "replacing an outdated Nuxt.js codebase to improve performance, scalability, and maintainability for over 10,000 active users.",
+        why: "replacing an outdated Nuxt.js codebase to improve performance, scalability, and maintainability.",
       },
       {
         what: "Optimized data loading speeds",
@@ -92,11 +92,11 @@ export const experiences: IExperiences[] = [
         how: "by maintaining and upgrading older web apps built with HTML, CSS, and jQuery, incorporating React.js and SCSS for better maintainability and performance",
         why: "to keep the applications functional and up-to-date with modern web standards.",
       },
-      {
-        what: "Broadened a logistics service into a public-facing application",
-        how: "by developing features such as trip reservations, vehicle type selection, and custom user options with React, TypeScript, and SCSS",
-        why: "to extend service reach and provide specialized options for different user groups, similar to ride-sharing platforms.",
-      },
+      // {
+      //   what: "Broadened a logistics service into a public-facing application",
+      //   how: "by developing features such as trip reservations, vehicle type selection, and custom user options with React, TypeScript, and SCSS",
+      //   why: "to extend service reach and provide specialized options for different user groups, similar to ride-sharing platforms.",
+      // },
     ],
   },
   {
