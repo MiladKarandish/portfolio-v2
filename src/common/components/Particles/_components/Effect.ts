@@ -1,6 +1,16 @@
 import Particle from "./Particle";
 
+interface ParticleEffectOptions {
+  canvas: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+  width: number;
+  height: number;
+  fontSize?: number;
+  gap?: number;
+}
+
 class Effect {
+  canvas: HTMLCanvasElement;
   c: CanvasRenderingContext2D;
   width: number;
   height: number;
@@ -9,8 +19,7 @@ class Effect {
   textY: number;
   fontSize: number;
   lineHeight: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  particles: any[];
+  particles: Particle[];
   gap: number;
   mouse: {
     radius: number;
@@ -18,26 +27,43 @@ class Effect {
     y: undefined | number;
   };
 
-  constructor(c: CanvasRenderingContext2D, width: number, height: number) {
-    this.c = c;
+  constructor({ canvas, context, width, height, fontSize = 50, gap = 1 }: ParticleEffectOptions) {
+    this.canvas = canvas;
+    this.c = context;
     this.width = width;
     this.height = height;
     this.wordMaxWidth = this.width * 0.8;
     this.textX = this.width / 2;
     this.textY = this.height / 2;
-    this.fontSize = 100;
+    this.fontSize = fontSize;
     this.lineHeight = this.fontSize * 1;
     this.particles = [];
-    this.gap = 1;
+    this.gap = gap;
     this.mouse = {
-      radius: 50,
+      radius: 100,
       x: undefined,
       y: undefined,
     };
-    document.addEventListener("mousemove", (e) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      (this.mouse.x = e.x), (this.mouse.y = e.y);
-    });
+    this.initEventListeners();
+  }
+
+  private initEventListeners() {
+    const handlePointerMove = (e: PointerEvent) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.x = e.clientX - rect.left;
+      this.mouse.y = e.clientY - rect.top;
+      e.preventDefault();
+    };
+
+    const handlePointerUp = () => {
+      this.mouse.x = undefined;
+      this.mouse.y = undefined;
+    };
+
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerdown", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
+    document.addEventListener("pointerleave", handlePointerUp);
   }
 
   wrapText(text: string) {
@@ -46,9 +72,9 @@ class Effect {
     this.c.textAlign = "center";
     this.c.textBaseline = "middle";
     this.c.lineWidth = 10;
-    this.c.font = 'bold 100px "Caveat"';
-    // this.c.font = `${this.fontSize}px ${getComputedStyle(document.body).getPropertyValue("--font-caveat")}`;
-    // Break
+    this.c.font = `600 ${this.fontSize}px ${
+      getComputedStyle(document.body).getPropertyValue("--font-geist-sans").split(",")[0]
+    }`;
     const lines = [];
     let lineCount = 0;
     let line = "";
@@ -101,10 +127,10 @@ class Effect {
   }
 
   render() {
-    this.particles.forEach((particle) => {
-      particle.update();
-      particle.draw();
-    });
+    for (let i = 0; i < this.particles.length; i++) {
+      this.particles[i].update();
+      this.particles[i].draw();
+    }
   }
 }
 

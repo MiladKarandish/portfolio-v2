@@ -1,6 +1,7 @@
+import Effect from "./Effect";
+
 class Particle {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  effect: any;
+  effect: Effect;
   x: number;
   y: number;
   color: string;
@@ -13,14 +14,13 @@ class Particle {
   vy: number;
   force: number;
   angle: number;
-  distance: number;
   friction: number;
   ease: number;
+  repelDistance: number;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(effect: any, x: number, y: number, color: string) {
+  constructor(effect: Effect, x: number, y: number, color: string) {
     this.effect = effect;
-    this.x = Math.random() * effect.width; // Initial random position
+    this.x = Math.random() * effect.width;
     this.y = Math.random() * effect.height;
     this.color = color;
     this.originX = x;
@@ -30,11 +30,11 @@ class Particle {
     this.dy = 0;
     this.vx = 0;
     this.vy = 0;
-    this.force = 1000; // Increased repulsion force
+    this.force = 10;
     this.angle = 0;
-    this.distance = 0;
     this.friction = Math.random() * 0.6 + 0.15;
-    this.ease = Math.random() * 0.2 + 0.1; // Stronger return-to-origin ease
+    this.ease = Math.random() * 0.1 + 0.05;
+    this.repelDistance = 100;
   }
 
   draw() {
@@ -43,27 +43,40 @@ class Particle {
   }
 
   update() {
-    // Calculate distance between particle and mouse
-    this.dx = this.effect.mouse.x - this.x;
-    this.dy = this.effect.mouse.y - this.y;
-    this.distance = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-
-    // If within the force field
-    if (this.distance < this.force) {
-      // Calculate angle and apply repulsion
-      this.angle = Math.atan2(this.dy, this.dx);
-      const repulsion = (this.force - this.distance) / this.force; // Stronger effect
-      this.vx += Math.cos(this.angle) * repulsion * 10; // Boost velocity
-      this.vy += Math.sin(this.angle) * repulsion * 10;
+    if (this.effect.mouse.x !== undefined && this.effect.mouse.y !== undefined) {
+      this.handleMouseInteraction();
     }
 
-    // Apply velocity and friction
+    this.applyPhysics();
+
+    // Ease back to origin
+    this.applyEase();
+  }
+
+  private handleMouseInteraction() {
+    const dx = this.effect.mouse.x! - this.x;
+    const dy = this.effect.mouse.y! - this.y;
+    const distanceSquared = dx * dx + dy * dy;
+    const repelRadiusSquared = this.repelDistance ** 2;
+
+    if (distanceSquared < repelRadiusSquared) {
+      const distance = Math.sqrt(distanceSquared);
+      const angle = Math.atan2(dy, dx);
+      const force = ((this.repelDistance - distance) / this.repelDistance) * this.force;
+
+      this.vx += Math.cos(angle) * force;
+      this.vy += Math.sin(angle) * force;
+    }
+  }
+
+  private applyPhysics() {
     this.vx *= this.friction;
     this.vy *= this.friction;
     this.x += this.vx;
     this.y += this.vy;
+  }
 
-    // Ease the particle back to its origin
+  private applyEase() {
     this.x += (this.originX - this.x) * this.ease;
     this.y += (this.originY - this.y) * this.ease;
   }
