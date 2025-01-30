@@ -1,10 +1,15 @@
 "use client";
 
+import Dropdown from "@/common/components/Dropdown";
 import { useEffect, useState } from "react";
 
 const dynamicImport = (theme: string) => import(`@/app/_themes/${theme}.ts`);
 
-const themes = ["fox", "wolf"];
+const themes = [
+  { label: "fox 🦊", value: "fox" },
+  { label: "whale 🐋", value: "whale" },
+  { label: "Death", value: "death" },
+];
 
 const Theme = () => {
   const [theme, setTheme] = useState<string | null>(null);
@@ -19,7 +24,7 @@ const Theme = () => {
     if (theme) {
       localStorage.setItem("theme", theme);
 
-      dynamicImport(theme).then((theme) => {
+      dynamicImport(theme.split(" ")[0]).then((theme) => {
         const root = document.documentElement;
         for (const key in theme.default.bg) {
           root.style.setProperty(`--bg-${key}`, `rgba(${theme.default.bg[key]})`);
@@ -32,18 +37,8 @@ const Theme = () => {
   }, [theme]);
 
   return (
-    <div>
-      <select
-        value={theme || "fox"}
-        onChange={(e) => setTheme(e.target.value)}
-        className="px-4 py-2 bg-white bg-opacity-20 text-100 rounded-full"
-      >
-        {themes.map((theme) => (
-          <option key={theme} value={theme}>
-            {theme}
-          </option>
-        ))}
-      </select>
+    <div className={`w-28`}>
+      <Dropdown options={themes} value={theme} onSelect={(value) => setTheme(value)} placeholder="Select an option" />
     </div>
   );
 };

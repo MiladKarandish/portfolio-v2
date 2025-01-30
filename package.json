@@ -10,7 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@jikji/react": "^0.4.1",
     "@tsparticles/all": "^3.5.0",
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/react": "^3.0.0",

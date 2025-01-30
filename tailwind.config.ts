@@ -8,6 +8,7 @@ const config: Config = {
         xs: "625px",
       },
       colors: {
+        "50": `var(--bg-50)`,
         "100": `var(--bg-100)`,
         "200": `var(--bg-200)`,
         "300": `var(--bg-300)`,
