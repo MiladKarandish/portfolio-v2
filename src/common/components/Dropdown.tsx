@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronDown } from "react-icons/fi";
 import clsx from "clsx";
+import useClickOutside from "../hooks/useClickOutside";
 
 interface DropdownProps {
   options: { value: string; label: string }[];
@@ -13,19 +13,7 @@ interface DropdownProps {
 }
 
 const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }: DropdownProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const [ref, isOpen, setIsOpen] = useClickOutside();
 
   const handleSelect = (selectedValue: string) => {
     onSelect(selectedValue);
@@ -35,7 +23,7 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }
   const selectedLabel = options.find((opt) => opt.value === value)?.label || placeholder;
 
   return (
-    <div className="relative w-full" ref={dropdownRef}>
+    <div className="relative w-full">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={clsx(
@@ -68,6 +56,7 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
+                ref={ref}
               >
                 <button
                   onClick={() => handleSelect(option.value)}
