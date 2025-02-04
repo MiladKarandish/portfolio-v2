@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./styles/globals.css";
 import { Nunito } from "next/font/google";
 import Clarity from "@microsoft/clarity";
+import { Analytics } from "@vercel/analytics/react";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -34,7 +35,10 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={nunito.className}>
-      <body className={`theme-light ${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`theme-light ${geistSans.variable} ${geistMono.variable}`}>
+        <Analytics />
+        {children}
+      </body>
     </html>
   );
 }
