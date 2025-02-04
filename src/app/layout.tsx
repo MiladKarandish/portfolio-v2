@@ -4,6 +4,7 @@ import "./styles/globals.css";
 import { Nunito } from "next/font/google";
 import Clarity from "@microsoft/clarity";
 import { Analytics } from "@vercel/analytics/react";
+import MicrosoftClarity from "./_components/Analytics/Clarity";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -31,12 +32,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  Clarity.init("q4kcsgko00");
-  Clarity.identify("custom-id", "custom-session-id", "custom-page-id", "friendly-name");
-
   return (
     <html lang="en" className={nunito.className}>
       <body className={`theme-light ${geistSans.variable} ${geistMono.variable}`}>
+        <MicrosoftClarity />
         <Analytics />
         {children}
       </body>
