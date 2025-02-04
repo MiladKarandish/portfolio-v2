@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./styles/globals.css";
 import { Nunito } from "next/font/google";
+import Clarity from "@microsoft/clarity";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -29,6 +30,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  Clarity.init("q4kcsgko00");
+
   return (
     <html lang="en" className={nunito.className}>
       <body className={`theme-light ${geistSans.variable} ${geistMono.variable}`}>{children}</body>

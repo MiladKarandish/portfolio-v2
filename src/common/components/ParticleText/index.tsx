@@ -4,7 +4,7 @@
 import { useEffect, useRef } from "react";
 import Effect from "./_components/Effect";
 
-const Particles = () => {
+const ParticleText = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null!);
   const changeTime: number = 5;
   const effect = useRef<any>(null!);
@@ -85,4 +85,4 @@ const Particles = () => {
   );
 };
 
-export default Particles;
+export default ParticleText;

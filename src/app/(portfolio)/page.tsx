@@ -1,8 +1,8 @@
-import Particles from "@/common/components/Particles";
+import ParticleText from "@/common/components/ParticleText";
 export default function HomePage() {
   return (
     <main>
-      <Particles />
+      <ParticleText />
     </main>
   );
 }
