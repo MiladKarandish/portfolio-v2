@@ -32,6 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   Clarity.init("q4kcsgko00");
+  Clarity.identify("custom-id", "custom-session-id", "custom-page-id", "friendly-name");
 
   return (
     <html lang="en" className={nunito.className}>
