@@ -10,7 +10,7 @@ const MicrosoftClarity = () => {
     Calirty.identify("custom-id", "custom-session-id", "custom-page-id", "friendly-name");
   }, []);
 
-  return <div>New Fucking Component</div>;
+  return <></>;
 };
 
 export default MicrosoftClarity;
