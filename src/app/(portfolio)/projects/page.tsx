@@ -25,10 +25,10 @@ const ProjectsPage = () => {
               ))}
             </ul>
 
-            <ul className={`list-disc list-inside`}>
-              {project.hilights.map((hilight, i) => (
-                <li key={i} className={`mb-[2px] font-medium`}>
-                  {hilight}
+            <ul className={`text-base list-disc list-inside`}>
+              {project.hilights.map((hilight) => (
+                <li key={hilight.what} className={`mb-1 font-medium`}>
+                  <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
                 </li>
               ))}
             </ul>
