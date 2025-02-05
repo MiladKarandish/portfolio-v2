@@ -23,7 +23,7 @@ export const experiences: IExperiences[] = [
       title: "Accounting Application",
       type: "Startup",
       description:
-        "Ragham is a startup specializing in accounting software for Android and Web. The app helps small businesses manage debts, credits, and financial records efficiently, serving over 10,000 daily active users.",
+        "Ragham is a startup specializing in accounting software for Android and Web. The app helps small businesses manage debts, credits, and financial records efficiently, serving +10K daily active users.",
       href: "https://www.linkedin.com/company/ragham",
     },
     date: "Dec 2023, Present",
@@ -31,7 +31,7 @@ export const experiences: IExperiences[] = [
       {
         what: "Maintained and fixed issues",
         how: "in a Vue.js/Nuxt.js legacy application",
-        why: "to ensure functionality for 10,000 daily active users, resolving critical issues impacting performance.",
+        why: "to ensure functionality for 10K daily active users, resolving critical issues impacting performance.",
       },
       {
         what: "Migrated to a new application version",
@@ -41,18 +41,8 @@ export const experiences: IExperiences[] = [
       {
         what: "Optimized data loading speeds",
         how: "by implementing pagination, leveraging React’s lazy loading and state management,",
-        why: "reducing startup delays on large datasets.",
+        why: "reducing initial load time by 60% and improving rendering efficiency for large datasets.",
       },
-      // {
-      //   what: "Improved DOM rendering performance",
-      //   how: "by integrating virtualization with React",
-      //   why: "for handling long data lists, eliminating lag and enhancing smoothness.",
-      // },
-      // {
-      //   what: "Optimized server requests",
-      //   how: "with debouncing and aborting techniques via JavaScript and Axios,",
-      //   why: "reducing unnecessary traffic and improving response times.",
-      // },
       {
         what: "Enhanced app performance and reduced server load",
         how: "By implementing request optimization techniques like debouncing and aborting, and improving rendering efficiency using React virtualization",
@@ -92,11 +82,6 @@ export const experiences: IExperiences[] = [
         how: "by maintaining and upgrading older web apps built with HTML, CSS, and jQuery, incorporating React.js and SCSS for better maintainability and performance",
         why: "to keep the applications functional and up-to-date with modern web standards.",
       },
-      // {
-      //   what: "Broadened a logistics service into a public-facing application",
-      //   how: "by developing features such as trip reservations, vehicle type selection, and custom user options with React, TypeScript, and SCSS",
-      //   why: "to extend service reach and provide specialized options for different user groups, similar to ride-sharing platforms.",
-      // },
     ],
   },
   {

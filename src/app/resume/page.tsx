@@ -69,7 +69,7 @@ const Resume = () => {
               </p>
               <p className={`at-description`}>{experience.at?.description}</p>
 
-              <ul className={` list-disc list-inside`}>
+              <ul className={`list-disc list-inside`}>
                 {experience.hilights.map((hilight) => (
                   <li key={hilight.what} className={`mb-[2px]`}>
                     <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
@@ -88,9 +88,9 @@ const Resume = () => {
         <ul className={`space-y-4`}>
           {projects.map((project) => (
             <li key={project.demo}>
-              <div className={`flex justify-between items-center`}>
-                <h3 className={`mb-1`}>{project.title}</h3>
-                <a href={project.github} target="_blank" className={`ms-auto underline underline-offset-4`}>
+              <div className={`flex justify-start items-center`}>
+                <h3 className={`mb-1 me-8`}>{project.title}</h3>
+                <a href={project.github} target="_blank" className={`underline underline-offset-4`}>
                   Github
                 </a>
                 <a href={project.demo} target="_blank" className={`ms-4  underline underline-offset-4`}>
@@ -98,7 +98,7 @@ const Resume = () => {
                 </a>
               </div>
 
-              <ul className={`flex flex-wrap justify-start items-center gap-2 `}>
+              <ul className={`flex flex-wrap justify-start items-center gap-2`}>
                 {project.techs.map((skill, i) => (
                   <li key={i * 2} className={`flex gap-2`}>
                     <span className={`font-semibold`}>{skill}</span>
@@ -107,10 +107,10 @@ const Resume = () => {
                 ))}
               </ul>
 
-              <ul className={` list-disc list-inside`}>
-                {project.hilights.map((hilight, i) => (
-                  <li key={i} className={`mb-[2px]`}>
-                    {hilight}
+              <ul className={`list-disc list-inside`}>
+                {project.hilights.map((hilight) => (
+                  <li key={hilight.what} className={`mb-[2px]`}>
+                    <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
                   </li>
                 ))}
               </ul>

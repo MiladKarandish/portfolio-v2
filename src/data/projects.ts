@@ -3,7 +3,11 @@ export interface IProjects {
   techs: string[];
   github: string;
   demo: string;
-  hilights: string[];
+  hilights: {
+    what: string;
+    how: string;
+    why: string;
+  }[];
 }
 
 export const projects: IProjects[] = [
@@ -13,9 +17,16 @@ export const projects: IProjects[] = [
     github: "https://github.com/MiladKarandish/image-cutter",
     demo: "https://mil-image-cutter.vercel.app",
     hilights: [
-      "Created a lightweight image cropping tool, similar to cropper.js, using pure object-oriented JavaScript, HTML, and CSS, with a focus on the HTML Canvas API.",
-      "Engineered the entire application from scratch, including the image manipulation logic and the cropping selector using HTML Canvas.",
-      "Independently built an image cropper with object-oriented JavaScript, enhancing coding and debugging skills.",
+      {
+        what: "Created an image cropping tool",
+        how: "with vanilla JavaScript and HTML Canvas,",
+        why: "to enable precise image manipulation with draggable selectors and pixel-level adjustments.",
+      },
+      {
+        what: "Implemented image processing logic",
+        how: "by calculating pixel coordinates and scaling ratios,",
+        why: "to maintain image integrity during cropping and resizing.",
+      },
     ],
   },
 ];
