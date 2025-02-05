@@ -90,7 +90,7 @@ export const experiences: IExperiences[] = [
       name: "Fortune Web Works",
       type: "Freelance Partnership",
       description:
-        "Fortune Web Works was a freelance partnership where I began my journey in web development. Working closely with a partner who handled project acquisition and management, I gained hands-on experience and foundational knowledge in various web technologies.",
+        "Freelance partnership marking the entry point into web development, collaborating closely with a partner overseeing project acquisition and management. Gained foundational expertise in modern web technologies through hands-on client project work.",
       href: "https://fortune-new.vercel.app",
     },
     date: "May 2020, Oct 2022 . 2 yr 6 mos",
