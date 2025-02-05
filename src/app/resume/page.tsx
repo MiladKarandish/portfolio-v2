@@ -27,6 +27,7 @@ const Resume = () => {
 
       {/* Summary */}
       <section className={`summary`}>
+        <h2>Summary</h2>
         <p>
           Front-End Developer with over 4 years of experience in React, TypeScript, and performance optimization,
           focused on building high-performance, scalable web applications that improve user engagement and meet business

@@ -184,7 +184,7 @@
   font-size: 1.05rem;
   line-height: normal;
 
-  & :where(.experience, .projects, .skills) {
+  & :where(.experience, .projects, .skills, .summary) {
     h2 {
       margin-bottom: 0.8rem;
       border-bottom: 4px solid black;
@@ -199,7 +199,7 @@
     }
   }
 
-  .summary {
+  .summary p {
     font-size: 1.4em;
   }
 
