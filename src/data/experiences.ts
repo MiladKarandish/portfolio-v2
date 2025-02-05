@@ -45,8 +45,8 @@ export const experiences: IExperiences[] = [
       },
       {
         what: "Enhanced app performance and reduced server load",
-        how: "By implementing request optimization techniques like debouncing and aborting, and improving rendering efficiency using React virtualization",
-        why: "To eliminate lag, reduce unnecessary traffic, and ensure smooth handling of large data sets.",
+        how: "by implementing request optimization techniques (debouncing, aborting) and React virtualization,",
+        why: "eliminating UI lag, cutting unnecessary API traffic by 30%, and ensuring smooth scrolling for large datasets.",
       },
     ],
   },
