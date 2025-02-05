@@ -4,7 +4,7 @@
 import { useEffect, useRef } from "react";
 import Effect from "./_components/Effect";
 
-const ParticleText = () => {
+const ParticleText = ({ texts }: { texts: string[] }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null!);
   const changeTime: number = 5;
   const effect = useRef<any>(null!);
@@ -13,8 +13,6 @@ const ParticleText = () => {
 
   useEffect(() => {
     if (canvasRef.current) {
-      const text: string[] = ["Milad Karandish", "FrontEnd"];
-
       // The canvas context
       ctx.current = canvasRef.current.getContext("2d", {
         willReadFrequently: true,
@@ -28,6 +26,8 @@ const ParticleText = () => {
         context: ctx.current,
         width: canvasRef.current.width,
         height: canvasRef.current.height,
+        // fontSize: 90,
+        // fontWeight: 100,
       });
 
       // Animation and change the text every {changeTime} seconds
@@ -35,7 +35,7 @@ const ParticleText = () => {
       let counter: number = 0;
       const render = (now: number) => {
         animation.current = requestAnimationFrame(render);
-        if (counter >= text.length) {
+        if (counter >= texts.length) {
           counter = 0;
         }
 
@@ -44,10 +44,10 @@ const ParticleText = () => {
 
         if (!lastIntervalTimestamp || now - lastIntervalTimestamp >= changeTime * 1000) {
           lastIntervalTimestamp = now;
-          if (text[counter]) {
+          if (texts[counter]) {
             ctx.current?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
-            effect.current.wrapText(text[counter]);
+            effect.current.wrapText(texts[counter]);
           } else {
             // callback && callback();
           }

@@ -15,7 +15,7 @@ export const projects: IProjects[] = [
     hilights: [
       "Created a lightweight image cropping tool, similar to cropper.js, using pure object-oriented JavaScript, HTML, and CSS, with a focus on the HTML Canvas API.",
       "Engineered the entire application from scratch, including the image manipulation logic and the cropping selector using HTML Canvas.",
-      "This project served as an opportunity to explore new challenges outside of daily work, greatly enhancing technical and problem-solving skills.",
+      "Independently built an image cropper with object-oriented JavaScript, enhancing coding and debugging skills.",
     ],
   },
 ];

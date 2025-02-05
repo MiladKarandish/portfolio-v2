@@ -6,6 +6,7 @@ interface ParticleEffectOptions {
   width: number;
   height: number;
   fontSize?: number;
+  fontWeight?: number;
   gap?: number;
 }
 
@@ -18,6 +19,7 @@ class Effect {
   textX: number;
   textY: number;
   fontSize: number;
+  fontWeight: number;
   lineHeight: number;
   particles: Particle[];
   gap: number;
@@ -27,7 +29,7 @@ class Effect {
     y: undefined | number;
   };
 
-  constructor({ canvas, context, width, height, fontSize = 50, gap = 1 }: ParticleEffectOptions) {
+  constructor({ canvas, context, width, height, fontSize = 50, fontWeight = 700, gap = 1 }: ParticleEffectOptions) {
     this.canvas = canvas;
     this.c = context;
     this.width = width;
@@ -36,6 +38,7 @@ class Effect {
     this.textX = this.width / 2;
     this.textY = this.height / 2;
     this.fontSize = fontSize;
+    this.fontWeight = fontWeight;
     this.lineHeight = this.fontSize * 1;
     this.particles = [];
     this.gap = gap;
@@ -72,7 +75,7 @@ class Effect {
     this.c.textAlign = "center";
     this.c.textBaseline = "middle";
     this.c.lineWidth = 10;
-    this.c.font = `600 ${this.fontSize}px ${
+    this.c.font = `${this.fontWeight} ${this.fontSize}px ${
       getComputedStyle(document.body).getPropertyValue("--font-geist-sans").split(",")[0]
     }`;
     const lines = [];
