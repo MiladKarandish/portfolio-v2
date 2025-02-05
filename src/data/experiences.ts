@@ -31,7 +31,7 @@ export const experiences: IExperiences[] = [
       {
         what: "Maintained and fixed issues",
         how: "in a Vue.js/Nuxt.js legacy application",
-        why: "to ensure functionality for 10K daily active users, resolving critical issues impacting performance.",
+        why: "to ensure functionality for +10K daily active users, resolving critical issues impacting performance.",
       },
       {
         what: "Migrated to a new application version",
