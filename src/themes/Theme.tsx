@@ -22,6 +22,7 @@ const Theme = () => {
     if (theme) {
       localStorage.setItem("theme", theme);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const selectedTheme = (themes as any)[theme];
       if (selectedTheme) {
         const root = document.documentElement;

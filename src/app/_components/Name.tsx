@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { initParticlesEngine, Particles } from "@tsparticles/react";
 import { loadAll } from "@tsparticles/all";
-import { hoverShootTechs, mask, mask2, mouseMove, reveal, shootTechs, stars } from "./options";
 import { Container } from "@tsparticles/engine";
+import { initParticlesEngine, Particles } from "@tsparticles/react";
+import { useEffect, useState } from "react";
+import { shootTechs } from "./options";
 // import { loadFull } from "tsparticles";
 
 const Name = () => {
