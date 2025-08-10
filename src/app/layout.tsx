@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./styles/globals.css";
+import "@/styles/globals.css";
 import { Nunito } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import MicrosoftClarity from "./_components/Analytics/Clarity";

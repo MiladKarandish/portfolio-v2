@@ -3,7 +3,7 @@
 import Dropdown from "@/common/components/Dropdown";
 import { useEffect, useState } from "react";
 
-const dynamicImport = (theme: string) => import(`@/app/_themes/${theme}.ts`);
+const dynamicImport = (theme: string) => import(`@/themes/${theme}.ts`);
 
 const themes = [
   { label: "fox 🦊", value: "fox" },

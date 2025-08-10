@@ -1,0 +1,23 @@
+.theme-light {
+  --background: 195, 88, 23;
+  --text: 255, 255, 255;
+}
+
+.theme-dark {
+  --background: 48, 50, 61;
+  --text: 255, 255, 255;
+}
+
+@theme {
+  --color-50: var(--bg-50);
+  --color-100: var(--bg-100);
+  --color-200: var(--bg-200);
+  --color-300: var(--bg-300);
+  --color-400: var(--bg-400);
+  --color-500: var(--bg-500);
+  --color-600: var(--bg-600);
+  --color-700: var(--bg-700);
+  --color-800: var(--bg-800);
+  --color-900: var(--bg-900);
+  --color-950: var(--bg-950);
+}
