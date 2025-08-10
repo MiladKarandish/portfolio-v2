@@ -6,7 +6,7 @@ const useClickOutside = (
 ): [MutableRefObject<any>, boolean, Dispatch<SetStateAction<boolean>>] => {
   // State & Ref
   const [state, setState] = useState<boolean>(defaultState);
-  const ref = useRef<any>();
+  const ref = useRef<any>(null);
 
   const handleClickOutside = useCallback(
     (e: MouseEvent) => {
