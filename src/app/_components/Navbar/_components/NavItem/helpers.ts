@@ -1,3 +1,5 @@
+"use client";
+
 import { MotionValue } from "framer-motion";
 
 export const mapRange = (inputLower: number, inputUpper: number, outputLower: number, outputUpper: number) => {

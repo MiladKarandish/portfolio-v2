@@ -1,3 +1,5 @@
+"use client";
+
 import { AnimatePresence } from "framer-motion";
 import NavItem from "./Navbar/_components/NavItem/NavItem";
 
