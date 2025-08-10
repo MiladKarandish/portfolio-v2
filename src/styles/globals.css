@@ -1,5 +1,5 @@
-@import url("./themes.css") layer(base);
-@import url("./custom.css") layer(base);
+@import url("./themes.css");
+@import url("./custom.css");
 
 @config "../../tailwind.config.js";
 @import "tailwindcss";
