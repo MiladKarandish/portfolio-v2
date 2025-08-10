@@ -47,7 +47,7 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }
             animate={{ opacity: 1, y: 0, scaleY: 1 }}
             exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute w-full mt-2 rounded-lg shadow-lg overflow-hidden z-50"
+            className="absolute w-full mt-2 bg-600/97 rounded-lg shadow-lg overflow-hidden z-50"
             role="listbox"
           >
             {options.map((option, index) => (

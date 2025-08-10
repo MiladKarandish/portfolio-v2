@@ -3,6 +3,8 @@ import { projects } from "@/data/projects";
 const ProjectsPage = () => {
   return (
     <main>
+      <h1 className={`mb-4 text-4xl`}>Projects</h1>
+
       <ul className={`space-y-4`}>
         {projects.map((project) => (
           <li key={project.demo} className={`bg-800 rounded-lg p-4`}>
