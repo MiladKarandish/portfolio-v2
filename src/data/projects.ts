@@ -3,6 +3,8 @@ export interface IProjectLink {
   href: string;
 }
 
+import { showTamdid } from "./visibility";
+
 export interface IProject {
   id: string;
   title: string;
@@ -20,7 +22,7 @@ export interface IProject {
   featured: boolean;
 }
 
-export const projects: IProject[] = [
+const allProjects: IProject[] = [
   {
     id: "tamdid",
     title: "Tamdid",
@@ -106,7 +108,9 @@ export const projects: IProject[] = [
     ],
     techs: ["React", "TypeScript", "SCSS", "React-Leaflet", "WebSockets", "REST"],
     links: [{ label: "separta.ir", href: "https://separta.ir/ikac" }],
-    featured: false,
+    /* Promoted to the home page whenever Tamdid is hidden — the grid wants
+       exactly three cards and Tamdid is normally one of them. */
+    featured: !showTamdid,
   },
   {
     id: "support-panel",
@@ -143,5 +147,9 @@ export const projects: IProject[] = [
     featured: false,
   },
 ];
+
+export const projects: IProject[] = allProjects.filter(
+  (project) => project.id !== "tamdid" || showTamdid
+);
 
 export const featuredProjects = projects.filter((project) => project.featured);

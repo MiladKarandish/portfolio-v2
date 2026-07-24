@@ -1,6 +1,7 @@
 import { FaGithub, FaLinkedinIn, FaPhoneAlt } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
+import { showTamdid } from "./visibility";
 
 /**
  * Identity primitives — the one place a name, address or handle is written down.
@@ -39,7 +40,9 @@ export const intro = {
   headline: "I build production software that has to be right the first time.",
   /** Two short paragraphs; the site's only long-form prose. */
   body: [
-    "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I co-founded and single-handedly built a consumer fintech app from an empty database to a released Android package.",
+    showTamdid
+      ? "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I co-founded and single-handedly built a consumer fintech app from an empty database to a released Android package."
+      : "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I moved it off a legacy codebase without taking it down once.",
     "I like the parts other people avoid: transaction boundaries, double-spend windows, what happens when the payment provider times out halfway through. I write TypeScript everywhere and I own things end to end — schema, server, interface, pipeline, release.",
   ],
 };
@@ -47,7 +50,11 @@ export const intro = {
 export const stats = [
   { value: "6 yrs", label: "Shipping production software" },
   { value: "10K+", label: "Daily active users on the flagship product" },
-  { value: "1", label: "Fintech product built solo, end to end" },
+  /* The solo-venture stat is the one that identifies it. Replaced with the
+     migration, which is the next-strongest number I can stand behind. */
+  showTamdid
+    ? { value: "1", label: "Fintech product built solo, end to end" }
+    : { value: "~60%", label: "Faster initial load after the live migration" },
   { value: "4", label: "Delivery surfaces: web, PWA, Android, kiosk" },
 ];
 
@@ -55,7 +62,9 @@ export const stats = [
 export const focusAreas = [
   {
     title: "End-to-end ownership",
-    body: "Schema, server, interface, CI and release process. I have taken a product from an empty PostgreSQL database to a signed Android package on my own, and I prefer working where that whole line is visible.",
+    body: showTamdid
+      ? "Schema, server, interface, CI and release process. I have taken a product from an empty PostgreSQL database to a signed Android package on my own, and I prefer working where that whole line is visible."
+      : "Schema, server, interface, CI and release process. I have designed a database, written the service on top of it, built the interface and maintained the pipeline that ships it, and I prefer working where that whole line is visible.",
   },
   {
     title: "Correctness-critical systems",

@@ -22,6 +22,8 @@
  *     reads as desperation to exactly the people being asked to sponsor a visa.
  */
 
+import { showTamdid } from "./visibility";
+
 export interface IHonestSection {
   id: string;
   title: string;
@@ -40,7 +42,9 @@ export const honestSections: IHonestSection[] = [
     id: "ai",
     title: "I use AI agents, heavily and deliberately",
     body: [
-      "I work with AI agents every day, and I used them heavily on Tamdid. I'd rather say so outright than let you assume otherwise.",
+      showTamdid
+        ? "I work with AI agents every day, and I used them heavily on Tamdid. I'd rather say so outright than let you assume otherwise."
+        : "I work with AI agents every day, and I've used them heavily on work that is in production right now. I'd rather say so outright than let you assume otherwise.",
       "It isn't a machine writing the product while I watch. I build the base myself — the data model, the boundaries, the conventions the rest of the code has to obey — then use agents to move quickly on top of it. Given a codebase with a clear shape they extend it well. Given an empty repository and a loose goal they produce something that looks finished and isn't.",
       "The direction is mine, and so are the decisions I'd have to defend: the architecture, the invariants, the trade-offs. Agents give me ideas too, and I'll say so. But an agent will cheerfully write a balance update outside its transaction boundary and hand you something that reads perfectly well in review — knowing where to look is the part that doesn't transfer.",
       "I'd also argue that not using them is the expensive choice now. I work at a startup; there is no version of it with a hundred engineers, and speed and correctness matter far more than whether I typed each line personally. What doesn't change either way is that I read what ships, I can explain it, and I'm accountable for it in production.",
@@ -53,7 +57,11 @@ export const honestSections: IHonestSection[] = [
       "I don't think I'm the smartest engineer in the room, and I tend to assume I'm not. That isn't modesty for the benefit of this page — it's how I actually experience it.",
       "In practice it looks like this: I check things twice. I don't ship code I can't explain. I'd rather ask a question that makes me look slow than guess and be wrong in production. On financial systems that instinct has been worth more than confidence would have been.",
       "The cost is real, and you should know about it before an interview rather than during one: I undersell myself. I'll describe what I built more cautiously than someone who built less. So if you want to know whether I can do something, the shipped work is a better source than how sure I sound about it.",
-      "The one thing I'll claim without hedging is that I work hard. I built an entire fintech product — schema, payment engine, PWA, signed Android release — in evenings and weekends around a full-time job, over twelve months. I don't offer that as a personality trait. It's just the plainest evidence I have.",
+      /* The hidden variant has to carry the same weight from the Ragham work
+         alone, since the venture was the original evidence. */
+      showTamdid
+        ? "The one thing I'll claim without hedging is that I work hard. I built an entire fintech product — schema, payment engine, PWA, signed Android release — in evenings and weekends around a full-time job, over twelve months. I don't offer that as a personality trait. It's just the plainest evidence I have."
+        : "The one thing I'll claim without hedging is that I work hard. I moved a product serving 10,000 people a day onto a new framework module by module, with no downtime and no pause on features, while also building the reporting service and the internal tooling around it. I don't offer that as a personality trait. It's just the plainest evidence I have.",
     ],
   },
   {

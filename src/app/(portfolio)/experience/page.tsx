@@ -3,11 +3,13 @@ import PageHeader from "@/app/_components/PageHeader";
 import Reveal from "@/app/_components/Reveal";
 import { experiences } from "@/data/experiences";
 import { skillGroups } from "@/data/skills";
+import { showTamdid } from "@/data/visibility";
 
 export const metadata: Metadata = {
   title: "Experience",
-  description:
-    "Six years of production software: a co-owned fintech product, an accounting SaaS with 10,000+ daily users, and airport logistics systems.",
+  description: showTamdid
+    ? "Six years of production software: a co-owned fintech product, an accounting SaaS with 10,000+ daily users, and airport logistics systems."
+    : "Six years of production software: an accounting SaaS with 10,000+ daily users, a PDF reporting service, and airport logistics systems.",
 };
 
 const ExperiencePage = () => {
@@ -16,7 +18,11 @@ const ExperiencePage = () => {
       <PageHeader
         eyebrow="Work history"
         title="Experience"
-        lead="Reverse chronological. The two current entries overlap on purpose — one is a full-time job, the other is a product I own."
+        lead={
+          showTamdid
+            ? "Reverse chronological. The two current entries overlap on purpose — one is a full-time job, the other is a product I own."
+            : "Reverse chronological. Where the work is private, what follows is what each system does and what was hard about it."
+        }
       />
 
       <ol className={`space-y-4`}>

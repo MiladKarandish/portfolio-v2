@@ -5,6 +5,7 @@ import { Nunito } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import MicrosoftClarity from "./_components/Analytics/Clarity";
 import { person } from "@/data/profile";
+import { showTamdid } from "@/data/visibility";
 import * as themes from "@/themes";
 
 const nunito = Nunito({
@@ -51,8 +52,9 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: person.name,
     title: `${person.name} — ${person.role}`,
-    description:
-      "Six years building production software where correctness matters. Fintech, accounting and logistics systems in TypeScript.",
+    description: showTamdid
+      ? "Six years building production software where correctness matters. Fintech, accounting and logistics systems in TypeScript."
+      : "Six years building production software where correctness matters. Accounting, reporting and logistics systems in TypeScript.",
   },
   twitter: {
     card: "summary_large_image",

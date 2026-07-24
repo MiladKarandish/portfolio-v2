@@ -1,4 +1,5 @@
 import { person } from "./profile";
+import { showTamdid } from "./visibility";
 
 /**
  * Resume content. Identity primitives (name, email, handles) come from
@@ -37,8 +38,12 @@ export const profile = {
   name: person.name,
   title: person.role,
   tagline: person.tagline,
-  summary:
-    "Full-stack engineer with 6 years building production software for finance and logistics. Co-founder and sole engineer of a fintech product shipped end-to-end — PostgreSQL data model, transactional payment flows, Next.js application, delivery to web, PWA and Android. Concurrently frontend lead on an accounting SaaS serving 10,000+ daily active users, which I migrated off a legacy Nuxt.js codebase. Strongest in TypeScript across the stack and in correctness-critical financial systems.",
+  /* The hidden variant leads on Ragham instead, and keeps the same claims that
+     do not depend on the venture: the years, the domain, the migration, the
+     backend and infrastructure range. See ./visibility.ts. */
+  summary: showTamdid
+    ? "Full-stack engineer with 6 years building production software for finance and logistics. Co-founder and sole engineer of a fintech product shipped end-to-end — PostgreSQL data model, transactional payment flows, Next.js application, delivery to web, PWA and Android. Concurrently frontend lead on an accounting SaaS serving 10,000+ daily active users, which I migrated off a legacy Nuxt.js codebase. Strongest in TypeScript across the stack and in correctness-critical financial systems."
+    : "Full-stack engineer with 6 years building production software for finance and logistics. Frontend lead on an accounting SaaS serving 10,000+ daily active users, which I migrated off a legacy Nuxt.js codebase to Next.js and TypeScript with no downtime. Designed and built the PDF reporting microservice behind its financial documents, and contributed to the Fastify/MySQL API. Strongest in TypeScript across the stack and in correctness-critical financial systems.",
   /** Stated plainly and early — screeners look for it, and hiding it wastes everyone's time. */
   relocation:
     "Open to relocation · Requires visa sponsorship (EU Blue Card / Skilled Worker / equivalent)",
@@ -100,7 +105,7 @@ export const resumeSkills: IResumeSkillGroup[] = [
   },
 ];
 
-export const resumeRoles: IResumeRole[] = [
+const allRoles: IResumeRole[] = [
   {
     title: "Co-Founder & Lead Engineer",
     company: "Tamdid",
@@ -170,6 +175,12 @@ export const resumeRoles: IResumeRole[] = [
     stack: "JavaScript, React, HTML, CSS",
   },
 ];
+
+/* Everything downstream reads this, including `experiences.ts` and the CV, so
+   dropping the role here removes it from every surface at once. */
+export const resumeRoles: IResumeRole[] = allRoles.filter(
+  (role) => role.company !== "Tamdid" || showTamdid
+);
 
 /**
  * There is deliberately NO education section.

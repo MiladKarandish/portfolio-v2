@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import PageHeader from "@/app/_components/PageHeader";
 import Reveal from "@/app/_components/Reveal";
 import { projects } from "@/data/projects";
+import { showTamdid } from "@/data/visibility";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description:
-    "A fintech product built solo, an accounting SaaS serving 10,000+ daily users, a PDF report engine, and the ground-transport platform for Tehran's international airport.",
+  description: showTamdid
+    ? "A fintech product built solo, an accounting SaaS serving 10,000+ daily users, a PDF report engine, and the ground-transport platform for Tehran's international airport."
+    : "An accounting SaaS serving 10,000+ daily users, a PDF report engine, and the ground-transport platform for Tehran's international airport.",
 };
 
 const ProjectsPage = () => {

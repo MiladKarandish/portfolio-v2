@@ -43,6 +43,7 @@ separate copies of the work history, and only one of them got updated.
 | The chip list on the home page | `data/skills.ts` → `headlineSkills` | Hand-ordered on purpose, not alphabetical |
 | Add a project | `data/projects.ts` | `featured: true` also puts it on the home page |
 | The `/honest` page | `data/honest.ts` | **Read that file's header comment first** |
+| Show or hide the Tamdid venture | `data/visibility.ts` → `showTamdid` | One boolean, then rebuild. See below |
 | Colours | `themes/index.tsx` | Add one object; the picker and the anti-flash script pick it up |
 | Résumé is spilling onto a third page | `styles/custom.css`, the `THE ONE KNOB` comment | Currently `10.6pt`, roughly one bullet of headroom |
 | Email, phone, portfolio, LinkedIn or GitHub on the CV | `data/profile.tsx` → `person` | Two rows of three in the header — keep it at three per row |
@@ -87,6 +88,50 @@ into a cover letter.
 
 Before editing, read the header comment in that file. It records three
 constraints with reasons, and they are not stylistic preferences.
+
+### Show or hide the Tamdid venture
+
+`data/visibility.ts`, one boolean:
+
+```ts
+export const showTamdid = false;   // hidden
+export const showTamdid = true;    // shown
+```
+
+Rebuild and it is done. Currently **hidden**.
+
+It hides more than the name, on purpose. The venture was also the subject of
+sentences that never named it — "co-founder and sole engineer of a fintech
+product", "1 fintech product built solo", "I built an entire fintech product
+in evenings and weekends". Anyone with a reason to recognise it would
+recognise it from those, so removing only the project card and the CV entry
+would protect nothing while still costing the CV its best material.
+
+`false` therefore removes it from: the projects list and the home-page cards
+(Separta is promoted to keep three), the CV work history, `/experience`, the
+CV summary, the home page intro, the stats row, the "end-to-end ownership"
+card, two passages on `/honest`, and the page descriptions and OG metadata.
+
+Both versions of every affected sentence sit side by side in the data files,
+so turning it back on restores the original wording rather than something
+rewritten later from memory. `grep -rn showTamdid src/` finds all of them.
+
+**The one maintenance cost:** if you edit a sentence that has a counterpart,
+check whether the counterpart needs the same edit.
+
+To verify a change, build and grep the rendered pages rather than trusting the
+source:
+
+```bash
+npm run build && npx next start -p 3131
+for p in / /experience /projects /honest /resume; do
+  echo "$p -> $(curl -s localhost:3131$p | grep -o -iE 'tamdid|fintech|co-found' | sort -u | tr '\n' ' ')"
+done
+```
+
+Note that with Tamdid hidden the résumé is about one and a half pages, so page
+two ends early. That is content volume, not a layout bug — don't reach for the
+font-size knob to fill it.
 
 ### Add a new page
 
