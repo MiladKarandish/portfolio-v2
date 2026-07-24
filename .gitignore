@@ -34,3 +34,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# env — .env was previously committed with a live API key; keep it out from now on
+.env
+
+# Résumé PDFs exported from /resume to check the print layout. They are build
+# output, and this repository is public — don't commit generated copies of a
+# document carrying a phone number.
+*.pdf
