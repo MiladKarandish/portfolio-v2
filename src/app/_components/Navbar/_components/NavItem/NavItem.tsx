@@ -13,7 +13,11 @@ interface Props {
   };
 }
 
-const MotionLink = motion(Link);
+/* `motion.create(...)`, not `motion(...)` — the call form is deprecated in
+   framer-motion 12 and logs a warning on every render in dev. Must stay at
+   module scope: creating it inside the component makes a new component type on
+   every render, which remounts the link and kills the layout animation. */
+const MotionLink = motion.create(Link);
 
 const NavItem = ({ route: { name, path } }: Props) => {
   const pathname = usePathname();
@@ -36,8 +40,11 @@ const NavItem = ({ route: { name, path } }: Props) => {
       style={{ x, y, transition: "all 1s var(--elastic-out)" }}
     >
       <MotionLink
-        className={cn("relative rounded-md py-2 px-1 xs:px-4 transition-all duration-500 ease-out")}
+        className={cn(
+          "relative block whitespace-nowrap rounded-full py-2 px-2 xs:px-3 transition-all duration-500 ease-out"
+        )}
         href={path}
+        aria-current={pathname === path ? "page" : undefined}
       >
         <motion.span
           style={{ x: textX, y: textY, transition: "all 1s var(--elastic-out)" }}
