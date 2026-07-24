@@ -117,7 +117,23 @@ so turning it back on restores the original wording rather than something
 rewritten later from memory. `grep -rn showTamdid src/` finds all of them.
 
 **The one maintenance cost:** if you edit a sentence that has a counterpart,
-check whether the counterpart needs the same edit.
+check whether the counterpart needs the same edit. Nothing enforces this, and
+it is the only way the two versions can drift apart.
+
+Turning it back on was verified to reproduce the pre-switch site exactly — the
+visible text of every page, and the résumé PDF, byte-for-byte. To re-check
+that after editing, build the old commit in a worktree and diff the rendered
+text rather than the source:
+
+```bash
+git worktree add /tmp/before <commit-before-your-edits>
+ln -s "$PWD/node_modules" /tmp/before/node_modules
+# build and `next start` each on its own port, then for each page:
+#   curl -s localhost:PORT/path | strip tags | diff
+```
+
+Ignore `<lastmod>` in `sitemap.xml`: it is `new Date()` at build time and
+differs between any two builds.
 
 To verify a change, build and grep the rendered pages rather than trusting the
 source:
