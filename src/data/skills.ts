@@ -1,17 +1,25 @@
-export const skills = [
-  "HTML",
-  "CSS",
-  "JavaScript",
+import { resumeSkills } from "./resume";
+
+/** The grouped view, straight from the CV — one source, two renderings. */
+export const skillGroups = resumeSkills.map((group) => ({
+  label: group.label,
+  items: group.items.split(", "),
+}));
+
+/** A short flat list for the landing page. Order is deliberate, not alphabetical. */
+export const headlineSkills = [
   "TypeScript",
   "React",
   "Next.js",
-  "Vue.js",
-  "Nuxt.js",
-  "RESTful API",
+  "Node.js",
+  "Fastify",
+  "PostgreSQL",
+  "Drizzle ORM",
+  "MySQL",
   "Tailwind CSS",
-  "Axios",
-  "Sass",
-  "Websocket",
-  "Git",
-  "UX/UI, SEO and best practices",
+  "SCSS",
+  "Docker",
+  "GitHub Actions",
+  "WebSockets",
+  "PWA",
 ];

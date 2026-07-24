@@ -1,115 +1,61 @@
-export interface IExperiences {
-  title: string;
-  at: {
-    name: string;
-    type: string;
-    title?: string;
-    description: string;
-    href: string;
-  };
-  date: string;
-  hilights: {
-    what: string;
-    how: string;
-    why: string;
-  }[];
+import { IResumeRole, resumeRoles } from "./resume";
+
+/**
+ * The work history is written once, in `resume.ts`. This file adds the bits the
+ * site needs and the CV does not — a company blurb, an engagement type, a
+ * "current" flag — and joins them by company name.
+ *
+ * Adding a role to the CV and forgetting to add it here is the failure this
+ * shape exists to prevent: an unmatched company still renders, just without the
+ * extra colour.
+ */
+
+export interface IExperience extends IResumeRole {
+  /** Employment shape — "Full-time", "Co-owned product", … */
+  type: string;
+  /** One or two sentences about the company itself, for a reader abroad. */
+  about?: string;
+  current: boolean;
 }
 
-export const experiences: IExperiences[] = [
-  {
-    title: "Front End Developer",
-    at: {
-      name: "Ragham",
-      title: "Accounting Application",
-      type: "Startup",
-      description:
-        "Ragham is a startup specializing in accounting software for Android and Web. The app helps small businesses manage debts, credits, and financial records efficiently, serving +10K daily active users.",
-      href: "https://www.linkedin.com/company/ragham",
-    },
-    date: "Dec 2023, Present",
-    hilights: [
-      {
-        what: "Maintained and fixed issues",
-        how: "in a Vue.js/Nuxt.js legacy application",
-        why: "to ensure functionality for +10K daily active users, resolving critical issues impacting performance.",
-      },
-      {
-        what: "Migrated to a new application version",
-        how: "with Next.js, TypeScript, and Tailwind CSS,",
-        why: "replacing an outdated Nuxt.js codebase to improve performance, scalability, and maintainability.",
-      },
-      {
-        what: "Optimized data loading speeds",
-        how: "by implementing pagination, leveraging React’s lazy loading and state management,",
-        why: "reducing initial load time by 60% and improving rendering efficiency for large datasets.",
-      },
-      {
-        what: "Enhanced app performance and reduced server load",
-        how: "by implementing request optimization techniques (debouncing, aborting) and React virtualization,",
-        why: "eliminating UI lag, reducing server load by 30%, and improving large dataset interaction smoothness.",
-      },
-    ],
+interface ICompanyMeta {
+  type: string;
+  about?: string;
+  current?: boolean;
+}
+
+const companyMeta: Record<string, ICompanyMeta> = {
+  Tamdid: {
+    type: "Co-owned product",
+    about:
+      "A two-person venture. My co-founder runs the business; I am the entire engineering team — every line, every deploy, every incident.",
+    current: true,
   },
-  {
-    title: "Front End Developer",
-    at: {
-      name: "Pishgamanasia",
-      title: "Integrated Software Solutions",
-      type: "Established Enterprise",
-      description:
-        "Pishgamanasia is a prominent software development company specializing in logistics and fleet management solutions. The company offers a variety of web-based applications, including a public-facing transportation service similar to Uber, with features tailored to different user groups.",
-      href: "http://www.pishgamanasia.com",
-    },
-    date: "Oct 2022, Nov 2023 . 1 yr 2 mos",
-    hilights: [
-      {
-        what: "Developed and maintained real-time, map-based logistics applications",
-        how: "using React.js, TypeScript, React-Leaflet, and WebSocket integration",
-        why: "to deliver accurate real-time data visualization and enhance user experience for diverse user groups.",
-      },
-      {
-        what: "Refined application responsiveness",
-        how: "by designing with SCSS and employing responsive design principles for compatibility across various devices, including specialized ticketing systems",
-        why: "to ensure consistent performance and user-friendly experiences on different display sizes.",
-      },
-      {
-        what: "Enhanced API interactions and minimized re-renders",
-        how: "through collaboration with backend teams, optimizing REST API structures, and leveraging React.js optimization techniques",
-        why: "to boost app efficiency and ensure seamless user interaction during heavy data processing.",
-      },
-      {
-        what: "Modernized legacy applications",
-        how: "by maintaining and upgrading older web apps built with HTML, CSS, and jQuery, incorporating React.js and SCSS for better maintainability and performance",
-        why: "to keep the applications functional and up-to-date with modern web standards.",
-      },
-    ],
+  Ragham: {
+    type: "Full-time",
+    about:
+      "A startup building accounting software for small businesses on web and Android. The product handles debts, credits, invoicing and bookkeeping for more than 10,000 people a day.",
+    current: true,
   },
-  {
-    title: "Front End Developer",
-    at: {
-      name: "Fortune Web Works",
-      type: "Freelance Partnership",
-      description:
-        "Freelance partnership marking the entry point into web development, collaborating closely with a partner overseeing project acquisition and management. Gained foundational expertise in modern web technologies through hands-on client project work.",
-      href: "https://fortune-new.vercel.app",
-    },
-    date: "May 2020, Oct 2022 . 2 yr 6 mos",
-    hilights: [
-      {
-        what: "Established foundational web development skills",
-        how: "by working with HTML, CSS, JavaScript, and basic frameworks",
-        why: "to establish a strong base in front-end development.",
-      },
-      {
-        what: "Collaborated on diverse projects",
-        how: "in a freelance partnership focused on best practices",
-        why: "to gain hands-on experience and adapt to varied client needs.",
-      },
-      {
-        what: "Expanded knowledge and skills",
-        how: "through continuous learning and practical application",
-        why: "to become proficient in modern web technologies.",
-      },
-    ],
+  "Pishgaman Asia": {
+    type: "Full-time",
+    about:
+      "An established software company in logistics and fleet management. Its flagship platform, Separta, is the exclusive ground-transport service for Imam Khomeini International Airport in Tehran — an Uber-shaped product with a single, very demanding customer.",
   },
-];
+  "Fortune Web Works": {
+    type: "Freelance partnership",
+    about:
+      "Where I started. A two-person freelance outfit: my partner found the clients, I built everything they asked for.",
+  },
+};
+
+export const experiences: IExperience[] = resumeRoles.map((role) => {
+  const meta = companyMeta[role.company] ?? { type: "" };
+
+  return {
+    ...role,
+    type: meta.type,
+    about: meta.about,
+    current: meta.current ?? false,
+  };
+});
