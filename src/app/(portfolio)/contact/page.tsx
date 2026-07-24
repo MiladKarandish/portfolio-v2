@@ -1,85 +1,84 @@
-import { contactLinks } from "@/data/contacts";
+import type { Metadata } from "next";
+import PageHeader from "@/app/_components/PageHeader";
+import Reveal from "@/app/_components/Reveal";
+import ContactForm from "./_components/ContactForm";
+import { availability, contactLinks, person } from "@/data/profile";
 
-function getAccentBgClass(id: string) {
-  switch (id) {
-    case "Github":
-      return "bg-neutral-900";
-    case "Email":
-      return "bg-orange-500";
-    case "Phone":
-      return "bg-emerald-500";
-    case "LinkedIn":
-      return "bg-sky-600";
-    case "Telegram":
-      return "bg-cyan-500";
-    default:
-      return "bg-gray-500";
-  }
-}
+export const metadata: Metadata = {
+  title: "Contact",
+  description: `Get in touch with ${person.name} — full-stack engineer, open to relocation and requiring visa sponsorship.`,
+};
+
+/** Brand colour behind each icon, so the list scans by shape as well as label. */
+const accentByName: Record<string, string> = {
+  Email: "bg-orange-500",
+  LinkedIn: "bg-sky-600",
+  Github: "bg-neutral-900",
+  Phone: "bg-emerald-600",
+  Location: "bg-violet-600",
+};
 
 const ContactPage = () => {
   return (
-    <main>
-      <h1 className={`mb-4 text-4xl`}>Contact Me</h1>
+    <main id="main" className={`space-y-10`}>
+      <PageHeader
+        eyebrow="Say hello"
+        title="Contact"
+        lead={availability.long}
+      />
 
-      {/* Outer glass card */}
-      <section className="max-w-4xl w-full rounded-2xl bg-white/8 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden">
-        <div className="md:flex">
-          {/* Left column: avatar + subtle pattern */}
-          <div className="md:w-1/3 flex items-center justify-center p-10 bg-gradient-to-b ">
-            <div className="w-40 h-40 rounded-full bg-200/30 flex items-center justify-center shadow-inner">
-              {/* simple svg avatar; replace with an <img /> if you have one */}
-              <svg viewBox="0 0 128 128" className="w-28 h-28" aria-hidden="true">
-                <defs>
-                  <linearGradient id="g1" x1="0" x2="1">
-                    <stop offset="0" stopColor="var(--text-100)" />
-                    <stop offset="1" stopColor="var(--bg-500)" />
-                  </linearGradient>
-                </defs>
-                <circle cx="64" cy="40" r="24" fill="url(#g1)" />
-                <path d="M28 100c8-20 44-20 72 0v6H28v-6z" fill="var(--text-100)" opacity="0.9" />
-                <rect x="40" y="34" width="48" height="6" rx="3" fill="var(--text-100)" />
-                <rect x="36" y="46" width="56" height="8" rx="4" fill="var(--text-100)" />
-              </svg>
-            </div>
-          </div>
+      <div className={`grid gap-4 lg:grid-cols-[1.1fr_1fr] lg:gap-6`}>
+        <Reveal className={`surface p-5 xs:p-6`}>
+          <h2 className={`text-xl font-bold`}>Send me a message</h2>
+          <p className={`mt-1 mb-5 text-sm opacity-75`}>
+            It goes straight to my inbox, and I reply to everything that is not a mailing list.
+          </p>
 
-          {/* Right column: title + list */}
-          <div className="md:w-2/3 p-10">
-            <div className="space-y-4">
-              {contactLinks.map(({ name, icon, title, href, aria }) => (
+          <ContactForm />
+        </Reveal>
+
+        <Reveal delay={0.08} className={`surface p-5 xs:p-6`}>
+          <h2 className={`text-xl font-bold`}>Or find me here</h2>
+          <p className={`mt-1 mb-5 text-sm opacity-75`}>
+            Email is fastest. I am in {person.location}, UTC+3:30.
+          </p>
+
+          <ul className={`space-y-2.5`}>
+            {contactLinks.map(({ name, icon, title, href, aria }) => (
+              <li key={name}>
                 <a
-                  key={name}
                   href={href}
-                  target="_blank"
+                  target={href.startsWith("http") ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   aria-label={aria}
-                  className={`group flex items-center gap-6 rounded-xl p-4 md:p-5 shadow-sm
-                    transition transform hover:translate-y-[-3px] hover:shadow-xl
-                    bg-white/8 border border-white/6`}
+                  className={`surface-muted surface-interactive group flex items-center gap-4 p-3`}
                 >
-                  <div
-                    className={`flex items-center justify-center min-w-[56px] h-14 rounded-lg
-                      ${getAccentBgClass(name)} text-white text-xl`}
+                  <span
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-lg text-white ${
+                      accentByName[name] ?? "bg-gray-600"
+                    }`}
                     aria-hidden="true"
                   >
                     {icon}
-                  </div>
+                  </span>
 
-                  <div className="flex-1">
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-lg md:text-xl font-semibold">{name}</span>
-                    </div>
-                    <div className="text-sm md:text-base mt-1">{title}</div>
-                  </div>
+                  <span className={`min-w-0 flex-1`}>
+                    <span className={`block font-semibold`}>{name}</span>
+                    <span className={`block truncate text-sm opacity-75`}>{title}</span>
+                  </span>
 
-                  <div className="opacity-0 group-hover:opacity-100 transition ml-2 text-sm">↗</div>
+                  <span
+                    aria-hidden="true"
+                    className={`opacity-0 transition-opacity group-hover:opacity-100`}
+                  >
+                    ↗
+                  </span>
                 </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </div>
     </main>
   );
 };

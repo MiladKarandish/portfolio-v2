@@ -51,7 +51,10 @@ const Theme = () => {
         options={themeOptions}
         value={theme}
         onSelect={(value) => setTheme(value)}
-        placeholder="Select an option"
+        /* Shown for the one frame before the stored theme is read; "Select an
+           option" was both vague and the first text on the page. */
+        placeholder="Theme"
+        label="Colour theme"
       />
     </div>
   );

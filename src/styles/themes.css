@@ -1,3 +1,24 @@
+/* Default palette — the "fox" theme, written out literally.
+   `src/themes/Theme.tsx` overrides these on :root at runtime, and the inline
+   script in the root layout applies the stored choice before first paint.
+   Without defaults here the server-rendered HTML has no colours at all, which
+   is a flash of unstyled black on every cold load. */
+:root {
+  /* No --bg-50: the theme objects define 100–950 only, so a 50 set here would
+     survive a theme switch and go out of tune with everything around it. */
+  --bg-100: rgba(248, 233, 223);
+  --bg-200: rgba(241, 212, 194);
+  --bg-300: rgba(234, 192, 165);
+  --bg-400: rgba(227, 172, 138);
+  --bg-500: rgba(221, 154, 112);
+  --bg-600: rgba(214, 136, 88);
+  --bg-700: rgba(214, 136, 88);
+  --bg-800: rgba(207, 119, 65);
+  --bg-900: rgba(200, 103, 43);
+  --bg-950: rgba(193, 88, 23);
+  --text-100: rgba(255, 255, 255);
+}
+
 .theme-light {
   --background: 195, 88, 23;
   --text: 255, 255, 255;

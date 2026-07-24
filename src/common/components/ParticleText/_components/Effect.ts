@@ -28,6 +28,8 @@ class Effect {
     x: undefined | number;
     y: undefined | number;
   };
+  /** Detaches the document-level pointer listeners. Assigned in the constructor. */
+  destroy: () => void = () => {};
 
   constructor({ canvas, context, width, height, fontSize = 50, fontWeight = 700, gap = 1 }: ParticleEffectOptions) {
     this.canvas = canvas;
@@ -55,7 +57,6 @@ class Effect {
       const rect = this.canvas.getBoundingClientRect();
       this.mouse.x = e.clientX - rect.left;
       this.mouse.y = e.clientY - rect.top;
-      e.preventDefault();
     };
 
     const handlePointerUp = () => {
@@ -63,10 +64,20 @@ class Effect {
       this.mouse.y = undefined;
     };
 
-    document.addEventListener("pointermove", handlePointerMove);
-    document.addEventListener("pointerdown", handlePointerMove);
+    document.addEventListener("pointermove", handlePointerMove, { passive: true });
+    document.addEventListener("pointerdown", handlePointerMove, { passive: true });
     document.addEventListener("pointerup", handlePointerUp);
     document.addEventListener("pointerleave", handlePointerUp);
+
+    // A new Effect is constructed on every resize; without this the document
+    // listeners from the old one stay attached and accumulate for the life of
+    // the page.
+    this.destroy = () => {
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerdown", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
+      document.removeEventListener("pointerleave", handlePointerUp);
+    };
   }
 
   wrapText(text: string) {

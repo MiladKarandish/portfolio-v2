@@ -179,85 +179,451 @@
   }
 }
 
-/* Resume */
-.resume-container {
-  font-size: 1.05rem;
-  line-height: normal;
+/* ==========================================================================
+   UI primitives
+   Written as plain CSS against the theme variables rather than as Tailwind
+   utilities, so every surface reacts to a theme switch without a rebuild and
+   the JSX stays readable.
+   ========================================================================== */
 
-  & :where(.experience, .projects, .skills, .summary) {
-    h2 {
-      margin-bottom: 0.8rem;
-      border-bottom: 4px solid black;
-      color: rgb(54, 54, 54);
-      font-size: 1.6em;
-      font-weight: 700;
-    }
+.surface {
+  background: color-mix(in srgb, var(--bg-800) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-100) 10%, transparent);
+  border-radius: 1rem;
+}
 
-    h3 {
-      font-size: 1.4em;
-      line-height: normal;
-    }
-  }
+.surface-muted {
+  background: color-mix(in srgb, var(--bg-800) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-100) 8%, transparent);
+  border-radius: 1rem;
+}
 
-  .summary p {
-    font-size: 1.4em;
-  }
+/* Lift on hover, but only for pointers that can hover and users who want motion. */
+.surface-interactive {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
 
-  .skills {
-    li {
-      font-size: 1.3em;
-      line-height: normal;
-    }
-  }
-
-  .experience {
-    .at-title {
-      font-size: 1.2em;
-    }
-
-    .at-description {
-      margin-bottom: 0.5rem;
-      font-size: 1.1em;
-      line-height: normal;
-    }
-
-    li {
-      font-size: 1.1em;
-      line-height: normal;
-    }
-  }
-
-  .projects {
-    li {
-      font-size: 1.1em;
-      line-height: normal;
-    }
+@media (hover: hover) {
+  .surface-interactive:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--text-100) 28%, transparent);
+    box-shadow: 0 14px 30px -18px rgb(0 0 0 / 0.65);
   }
 }
 
-/* .resume-container :where(.summary, .skills, .experience, .projects) {
-  font-size: 1.5em;
-  line-height: 2rem;
-  font-weight: 500;
-} */
-
-/* .resume-container h1 {
-  font-size: 2.1em;
-  line-height: 2.25rem;
-  color: #383737;
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--text-100) 16%, transparent);
+  background: color-mix(in srgb, var(--text-100) 7%, transparent);
+  font-size: 0.8em;
+  line-height: 1.6;
+  white-space: nowrap;
 }
 
-.resume-container h2 {
-  margin-bottom: 1em;
-  border-bottom: 4px solid black;
-  color: rgb(54, 54, 54);
-  font-size: 1.2em;
-  font-weight: bold;
-  line-height: 3rem;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.6em 1.3em;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
 
-.resume-container h3 {
-  font-size: 1em;
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--text-100);
+  color: var(--bg-950);
+}
+
+.btn-ghost {
+  border-color: color-mix(in srgb, var(--text-100) 30%, transparent);
+  background: color-mix(in srgb, var(--text-100) 6%, transparent);
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .btn:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost:not(:disabled):hover {
+    background: color-mix(in srgb, var(--text-100) 14%, transparent);
+    border-color: color-mix(in srgb, var(--text-100) 45%, transparent);
+  }
+}
+
+/* One visible focus style everywhere, including for the mouse-driven paths. */
+.btn:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--text-100);
+  outline-offset: 2px;
+  border-radius: 0.35rem;
+}
+
+/* An underline that draws itself in, used for inline links in prose. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  transition: background-size 0.25s ease;
+}
+
+@media (hover: hover) {
+  .link-underline:hover {
+    background-size: 100% 2px;
+  }
+}
+
+.field {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--text-100) 18%, transparent);
+  background: color-mix(in srgb, var(--bg-950) 35%, transparent);
+  color: inherit;
+  font: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.field::placeholder {
+  color: color-mix(in srgb, var(--text-100) 45%, transparent);
+}
+
+.field:focus {
+  border-color: color-mix(in srgb, var(--text-100) 45%, transparent);
+}
+
+.field[aria-invalid="true"] {
+  border-color: #fca5a5;
+}
+
+/* Section rhythm — one rule instead of a margin on every page. */
+.stack > * + * {
+  margin-top: var(--stack-gap, 1rem);
+}
+
+/* Keyboard users get to skip the nav; everyone else never sees this. */
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  translate: -50% -200%;
+  z-index: 100;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  background: var(--text-100);
+  color: var(--bg-950);
+  font-weight: 600;
+  transition: translate 0.2s ease;
+}
+
+.skip-link:focus {
+  translate: -50% 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Resume — A4 print sheet
+   Single column, plain text, no icons or columns, so applicant tracking
+   systems parse it. Sized in pt against A4 rather than rem against a viewport.
+   ========================================================================== */
+
+@page {
+  size: A4;
+  margin: 12mm 14mm;
+}
+
+.resume-sheet {
+  --ink: #101010;
+  --muted: #444;
+  --rule: #101010;
+
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 12mm 14mm;
+  background: #fff;
+  color: var(--ink);
+  font-family: Arial, Helvetica, "Segoe UI", sans-serif;
+  font-size: 9.6pt;
+  line-height: 1.42;
+}
+
+.resume-sheet * {
+  box-sizing: border-box;
+}
+
+.resume-sheet a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- Header ---------- */
+
+.resume-header {
+  margin-bottom: 10pt;
+  padding-bottom: 7pt;
+  border-bottom: 1.5pt solid var(--rule);
+}
+
+.resume-header h1 {
+  margin: 0;
+  font-size: 21pt;
   font-weight: 700;
-  line-height: 3rem;
-} */
+  letter-spacing: 0.4pt;
+  line-height: 1.1;
+}
+
+.resume-title {
+  margin: 2.5pt 0 0;
+  font-size: 10.5pt;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.resume-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  /* Each row holds three fields and must never wrap — a field alone on a row of
+     its own is the failure mode, and it came back twice after unrelated edits.
+     Spacing between two fields is this gap PLUS the separator's margin below,
+     so both numbers matter. Three per row leaves comfortable room at 9pt;
+     re-check the header if a field gets longer or a fourth is added. */
+  gap: 0 6pt;
+  margin: 5pt 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 9pt;
+  color: var(--muted);
+}
+
+/* Second header row. Tight to the first so the two read as one block rather
+   than as two separate things. */
+.resume-links {
+  margin-top: 2pt;
+}
+
+/* A separator that is a real character, so copy-paste and ATS extraction
+   keep the fields apart instead of running them together. */
+.resume-contacts li + li::before {
+  content: "·";
+  margin-right: 6pt;
+}
+
+.resume-relocation {
+  margin: 5pt 0 0;
+  font-size: 9pt;
+  font-weight: 700;
+}
+
+/* ---------- Sections ---------- */
+
+.resume-section {
+  margin-bottom: 9pt;
+  /* Never orphan a heading at the foot of a page. */
+  break-inside: auto;
+}
+
+.resume-section-last {
+  margin-bottom: 0;
+}
+
+.resume-section > h2 {
+  margin: 0 0 5pt;
+  padding-bottom: 1.5pt;
+  border-bottom: 0.75pt solid var(--rule);
+  font-size: 10.5pt;
+  font-weight: 700;
+  letter-spacing: 0.8pt;
+  text-transform: uppercase;
+  break-after: avoid;
+}
+
+.resume-summary {
+  margin: 0;
+  text-align: justify;
+}
+
+/* ---------- Skills ---------- */
+
+.resume-skills {
+  margin: 0;
+}
+
+.resume-skill-row {
+  display: flex;
+  gap: 6pt;
+  margin-bottom: 2pt;
+}
+
+.resume-skill-row dt {
+  /* Wide enough for "Infrastructure", the longest label — below this it
+     overflows and knocks that one row's text out of alignment with the rest. */
+  flex: 0 0 76pt;
+  font-weight: 700;
+}
+
+.resume-skill-row dd {
+  margin: 0;
+}
+
+/* ---------- Experience ---------- */
+
+.resume-role {
+  margin-bottom: 8pt;
+  /* Long roles are allowed to span the page break.
+     `break-inside: avoid` sounds tidier and is what produced a quarter-empty
+     page one: the seven-bullet role was taller than the space left, so it moved
+     to page two whole and left a hole behind it. The rules below keep the split
+     from landing anywhere embarrassing, which is the real requirement. */
+  break-inside: auto;
+  orphans: 2;
+  widows: 2;
+}
+
+.resume-role:last-child {
+  margin-bottom: 0;
+}
+
+/* A job title, its dates and its context line must never be the last thing on a
+   page with the bullets overleaf. */
+.resume-role-head,
+.resume-context {
+  break-after: avoid;
+}
+
+.resume-role-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10pt;
+}
+
+.resume-role-head h3 {
+  margin: 0;
+  font-size: 10.5pt;
+  font-weight: 700;
+}
+
+.resume-sep {
+  font-weight: 400;
+}
+
+.resume-meta {
+  flex: none;
+  margin: 0;
+  font-size: 9pt;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.resume-context {
+  margin: 1pt 0 3pt;
+  font-size: 9pt;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.resume-bullets {
+  margin: 0;
+  padding-left: 12pt;
+  list-style: disc;
+}
+
+.resume-bullets li {
+  margin-bottom: 2pt;
+  padding-left: 1pt;
+  text-align: justify;
+  /* A bullet is two or three lines. Splitting one across pages reads far worse
+     than moving the whole bullet over. */
+  break-inside: avoid;
+}
+
+.resume-stack {
+  /* Never stranded alone at the top of a page, away from its role. */
+  break-before: avoid;
+  margin: 3pt 0 0;
+  font-size: 8.8pt;
+  color: var(--muted);
+}
+
+.resume-stack span {
+  font-weight: 700;
+}
+
+/* ---------- Languages ---------- */
+
+.resume-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14pt;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Print ---------- */
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  /* Screen-only chrome around the sheet — toolbar, back link. */
+  .no-print {
+    display: none !important;
+  }
+
+  .resume-sheet {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    /* @page owns the margins when printing; doubling them shrinks the page. */
+    padding: 0;
+    /* THE ONE KNOB: content is sized to fill exactly two pages.
+       This was 9.4pt, which left a quarter of page one and a third of page two
+       blank. The blank page one was a page-break bug (see .resume-role); with
+       that fixed the leftover room was spent on legibility instead, since 9.4pt
+       is below the 10–11pt a CV is normally set in.
+       There is now roughly one bullet of headroom. Add a whole role and it will
+       spill to a third page — when that happens, step down 10.4 → 10.2 → 10pt
+       before cutting anything. Below ~9pt it reads as cramped; at that point
+       remove a bullet instead. Re-check with the recipe in docs/EDITING.md. */
+    font-size: 10.6pt;
+  }
+
+  .resume-sheet a {
+    text-decoration: none;
+  }
+}

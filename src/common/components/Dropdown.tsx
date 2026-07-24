@@ -10,10 +10,13 @@ interface DropdownProps {
   value: string | null;
   onSelect: (value: string) => void;
   placeholder?: string;
+  /** Accessible name for the trigger, since the visible text is the current value. */
+  label?: string;
 }
 
-const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }: DropdownProps) => {
-  const [ref, isOpen, setIsOpen] = useClickOutside();
+const Dropdown = ({ options, value, onSelect, placeholder = "Select an option", label }: DropdownProps) => {
+  // The ref goes on the container — see the note in useClickOutside.
+  const [ref, isOpen, setIsOpen] = useClickOutside<HTMLDivElement>();
 
   const handleSelect = (selectedValue: string) => {
     onSelect(selectedValue);
@@ -23,20 +26,21 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }
   const selectedLabel = options.find((opt) => opt.value === value)?.label || placeholder;
 
   return (
-    <div className="relative w-full">
+    <div ref={ref} className="relative w-full">
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={clsx(
-          "w-full flex items-center justify-between px-4 py-3 rounded-full transition-colors",
-          "bg-500 hover:bg-600 text-text-100",
-          "focus:outline-none focus:ring-2 focus:ring-700"
+          "w-full flex items-center justify-between gap-1 px-3 py-2 rounded-full text-sm transition-colors",
+          "bg-500 hover:bg-600"
         )}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-label={label}
       >
         <span className="truncate">{selectedLabel}</span>
-        <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <FiChevronDown className="h-5 w-5" />
+        <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }} aria-hidden="true">
+          <FiChevronDown className="h-4 w-4" />
         </motion.span>
       </button>
 
@@ -47,7 +51,7 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }
             animate={{ opacity: 1, y: 0, scaleY: 1 }}
             exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute w-full mt-2 bg-600/97 rounded-lg shadow-lg overflow-hidden z-50"
+            className="absolute right-0 w-full min-w-max mt-2 bg-600 rounded-xl shadow-lg overflow-hidden z-50"
             role="listbox"
           >
             {options.map((option, index) => (
@@ -55,17 +59,14 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option" }
                 key={option.value}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                ref={ref}
+                transition={{ delay: index * 0.04 }}
               >
                 <button
+                  type="button"
                   onClick={() => handleSelect(option.value)}
-                  className={clsx(
-                    "w-full px-4 py-3 text-left transition-colors",
-                    "hover:bg-400 text-text-100",
-                    "focus:bg-400 focus:outline-none",
-                    { "bg-400": option.value === value }
-                  )}
+                  className={clsx("w-full px-4 py-2.5 text-left text-sm transition-colors", "hover:bg-400", {
+                    "bg-400": option.value === value,
+                  })}
                   role="option"
                   aria-selected={option.value === value}
                 >

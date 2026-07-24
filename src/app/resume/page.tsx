@@ -1,120 +1,121 @@
-import { contactLinks } from "@/data/contacts";
-import { experiences } from "@/data/experiences";
-import { projects } from "@/data/projects";
-import { skills } from "@/data/skills";
+import type { Metadata } from "next";
+import {
+  languages,
+  profile,
+  resumeContacts,
+  resumeLinks,
+  resumeRoles,
+  resumeSkills,
+} from "@/data/resume";
+import ResumeToolbar from "./_components/ResumeToolbar";
 
+export const metadata: Metadata = {
+  title: "Résumé",
+  description: `${profile.name} — ${profile.title}. ${profile.tagline}.`,
+};
+
+/**
+ * Print target is A4. Save as PDF with margins "Default" and background
+ * graphics off — the layout is plain single-column text so it parses cleanly
+ * in applicant tracking systems.
+ */
 const Resume = () => {
   return (
-    <div
-      className={`resume-container max-w-full max-h-full flex flex-col gap-7 p-2 bg-white text-black overflow-auto font-medium`}
-    >
-      {/* Header */}
-      <header className={`w-full flex flex-col justify-center items-start gap-2`}>
-        <h1 className={`text-4xl font-bold`}>Milad Karandish</h1>
-        <p className={`text-2xl text-gray-700`}>Front-End Developer</p>
+    <div className="w-full">
+      <ResumeToolbar />
 
-        {/* Contact Information */}
-        <ul className={`flex flex-wrap gap-x-4 text-2xl`}>
-          {contactLinks.map((contact) => (
-            <li key={contact.title}>
-              <a href={contact.href} className={`flex justify-start items-center gap-2`}>
-                {contact.icon} {contact.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </header>
+      <div className="resume-sheet">
+        {/* ---------- Header ---------- */}
+        <header className="resume-header">
+          <h1>{profile.name}</h1>
+          <p className="resume-title">
+            {profile.title} <span aria-hidden="true">—</span> {profile.tagline}
+          </p>
 
-      {/* Summary */}
-      <section className={`summary`}>
-        <h2>Summary</h2>
-        <p>
-          Front-End Developer specializing in performance-critical web applications, with 4+ years of expertise in
-          modernizing legacy systems and delivering scalable solutions for startups and enterprises.
-        </p>
-      </section>
+          {/* Two rows of three, not one wrapping row of six — see the note on
+              `resumeContacts`. Reach me, then see the work. */}
+          <ul className="resume-contacts">
+            {resumeContacts.map((contact) => (
+              <li key={contact.label}>
+                {contact.href ? <a href={contact.href}>{contact.label}</a> : contact.label}
+              </li>
+            ))}
+          </ul>
 
-      {/* Skills */}
-      <section className={`skills`}>
-        <h2>Skills</h2>
-        <ul className={`flex flex-wrap justify-start items-center gap-2`}>
-          {skills.map((skill, i) => (
-            <li key={skill} className={`flex gap-2`}>
-              <span>{skill}</span>
-              {i !== skills.length - 1 && <span>|</span>}
-            </li>
-          ))}
-        </ul>
-      </section>
+          <ul className="resume-contacts resume-links">
+            {resumeLinks.map((link) => (
+              <li key={link.label}>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
 
-      {/* Experience */}
-      <section className={`experience`}>
-        <h2>Work Experience</h2>
+          <p className="resume-relocation">{profile.relocation}</p>
+        </header>
 
-        <ul className={`space-y-4`}>
-          {experiences.map((experience) => (
-            <li key={experience.at.href}>
-              <div className={`flex justify-between items-center`}>
-                <h3 className={`mb-1`}>{experience.title}</h3>
-                <p className={``}>{experience.date}</p>
+        {/* ---------- Summary ---------- */}
+        <section className="resume-section">
+          <h2>Summary</h2>
+          <p className="resume-summary">{profile.summary}</p>
+        </section>
+
+        {/* ---------- Skills ---------- */}
+        <section className="resume-section">
+          <h2>Technical Skills</h2>
+          <dl className="resume-skills">
+            {resumeSkills.map((group) => (
+              <div key={group.label} className="resume-skill-row">
+                <dt>{group.label}</dt>
+                <dd>{group.items}</dd>
               </div>
-              <p className={`at-title mb-1`}>
-                <a href={experience.at.href} className={`underline underline-offset-4`}>
-                  {experience.at.name}
-                </a>
-                ({experience.at.type}){experience.at.title ? ": " + experience.at.title : ""}
+            ))}
+          </dl>
+        </section>
+
+        {/* ---------- Experience ---------- */}
+        <section className="resume-section">
+          <h2>Work Experience</h2>
+
+          {resumeRoles.map((role) => (
+            <article key={role.company} className="resume-role">
+              <div className="resume-role-head">
+                <h3>
+                  {role.title} <span className="resume-sep">·</span>{" "}
+                  {role.companyHref ? <a href={role.companyHref}>{role.company}</a> : role.company}
+                </h3>
+                <p className="resume-meta">
+                  {role.location} <span aria-hidden="true">|</span> {role.date}
+                </p>
+              </div>
+
+              <p className="resume-context">{role.context}</p>
+
+              <ul className="resume-bullets">
+                {role.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
+
+              <p className="resume-stack">
+                <span>Stack:</span> {role.stack}
               </p>
-              <p className={`at-description`}>{experience.at?.description}</p>
-
-              <ul className={`list-disc list-inside`}>
-                {experience.hilights.map((hilight) => (
-                  <li key={hilight.what} className={`mb-[2px]`}>
-                    <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
-                  </li>
-                ))}
-              </ul>
-            </li>
+            </article>
           ))}
-        </ul>
-      </section>
+        </section>
 
-      {/* Projects */}
-      <section className={`projects`}>
-        <h2>Projects</h2>
-
-        <ul className={`space-y-4`}>
-          {projects.map((project) => (
-            <li key={project.demo}>
-              <div className={`flex justify-start items-center`}>
-                <h3 className={`mb-1 me-8`}>{project.title}</h3>
-                <a href={project.github} target="_blank" className={`underline underline-offset-4`}>
-                  Github
-                </a>
-                <a href={project.demo} target="_blank" className={`ms-4  underline underline-offset-4`}>
-                  Demo
-                </a>
-              </div>
-
-              <ul className={`flex flex-wrap justify-start items-center gap-2`}>
-                {project.techs.map((skill, i) => (
-                  <li key={i * 2} className={`flex gap-2`}>
-                    <span className={`font-semibold`}>{skill}</span>
-                    {i !== project.techs.length - 1 && <span>|</span>}
-                  </li>
-                ))}
-              </ul>
-
-              <ul className={`list-disc list-inside`}>
-                {project.hilights.map((hilight) => (
-                  <li key={hilight.what} className={`mb-[2px]`}>
-                    <span className={`font-bold`}>{hilight.what}</span> {hilight.how} {hilight.why}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </section>
+        {/* ---------- Languages ----------
+            No education section by design — see the note in src/data/resume.ts. */}
+        <section className="resume-section resume-section-last">
+          <h2>Languages</h2>
+          <ul className="resume-languages">
+            {languages.map((language) => (
+              <li key={language.name}>
+                <strong>{language.name}</strong> — {language.level}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </div>
   );
 };
