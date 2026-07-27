@@ -42,7 +42,7 @@ export const intro = {
   body: [
     showTamdid
       ? "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I co-founded and single-handedly built a consumer fintech app from an empty database to a released Android package."
-      : "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I moved it off a legacy codebase without taking it down once.",
+      : "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I rebuilt it on a new framework without taking the old one down once.",
     "I like the parts other people avoid: transaction boundaries, double-spend windows, what happens when the payment provider times out halfway through. I write TypeScript everywhere and I own things end to end — schema, server, interface, pipeline, release.",
   ],
 };
@@ -51,10 +51,10 @@ export const stats = [
   { value: "6 yrs", label: "Shipping production software" },
   { value: "10K+", label: "Daily active users on the flagship product" },
   /* The solo-venture stat is the one that identifies it. Replaced with the
-     migration, which is the next-strongest number I can stand behind. */
+     rebuild, which is the next-strongest number I can stand behind. */
   showTamdid
     ? { value: "1", label: "Fintech product built solo, end to end" }
-    : { value: "~60%", label: "Faster initial load after the live migration" },
+    : { value: "~60%", label: "Faster initial load after the rebuild" },
   { value: "4", label: "Delivery surfaces: web, PWA, Android, kiosk" },
 ];
 
@@ -72,7 +72,7 @@ export const focusAreas = [
   },
   {
     title: "Performance at real scale",
-    body: "Migrating a live product between frameworks without downtime, cutting load time on datasets that keep growing, and finding the actual cause of a production outage instead of restarting the service.",
+    body: "Moving a live product onto a new framework without downtime, cutting load time on datasets that keep growing, and finding the actual cause of a production outage instead of restarting the service.",
   },
 ];
 

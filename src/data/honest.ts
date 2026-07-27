@@ -61,7 +61,7 @@ export const honestSections: IHonestSection[] = [
          alone, since the venture was the original evidence. */
       showTamdid
         ? "The one thing I'll claim without hedging is that I work hard. I built an entire fintech product — schema, payment engine, PWA, signed Android release — in evenings and weekends around a full-time job, over twelve months. I don't offer that as a personality trait. It's just the plainest evidence I have."
-        : "The one thing I'll claim without hedging is that I work hard. I moved a product serving 10,000 people a day onto a new framework module by module, with no downtime and no pause on features, while also building the reporting service and the internal tooling around it. I don't offer that as a personality trait. It's just the plainest evidence I have.",
+        : "The one thing I'll claim without hedging is that I work hard. I rebuilt a product serving 10,000 people a day on a new framework — feature by feature, running beside the old app until it could replace it, with no downtime and no pause on features — while also building the reporting service and the internal tooling around it. I don't offer that as a personality trait. It's just the plainest evidence I have.",
     ],
   },
   {

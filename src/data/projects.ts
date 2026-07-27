@@ -54,10 +54,17 @@ const allProjects: IProject[] = [
     org: "Ragham",
     period: "2023 – present",
     availability: "Private source",
+    /* Say "rebuilt", not "migrated in place" — the two are not the same claim and
+       the repos say which one happened. The Next.js app is its own repository,
+       first commit April 2024, and it reached users on a beta domain beside the
+       still-live Vue 2 / Nuxt 2 SPA until a redirect handed it the main domain in
+       December 2025. Nothing was ported module by module inside the old codebase,
+       so wording that implies a strangler-fig migration overstates it — and the
+       dated parallel-rollout version is the stronger claim anyway. */
     description:
-      "Ragham's flagship product: invoicing, inventory, cheque tracking, bank accounts and multi-ledger bookkeeping. I lead the frontend — roughly 47,000 lines and 2,000 commits — and migrated the whole thing off a legacy Nuxt.js codebase while it was serving its full user base.",
+      "Ragham's flagship product: invoicing, inventory, cheque tracking, bank accounts and multi-ledger bookkeeping. I lead the frontend — roughly 47,000 lines and 2,000 commits, nearly all of them mine — and rebuilt the whole product on Next.js and TypeScript to replace the Vue 2 / Nuxt 2 single-page app it had run on since 2021.",
     highlights: [
-      "Migrated a live product from Nuxt.js to Next.js and TypeScript with no downtime and no feature freeze, module by module.",
+      "Rebuilt a live product on Next.js and TypeScript, replacing a Vue 2 / Nuxt 2 SPA written in plain JavaScript — shipped feature by feature on a beta domain beside the old app, then cut over by redirect with no downtime and no feature freeze on either.",
       "Cut initial load time by about 60% through pagination, lazy loading and list virtualisation on datasets that grow without bound.",
       "Reduced server load by about 30% by debouncing and aborting requests the user had already navigated away from.",
       "Shipped PWA install, Firebase Cloud Messaging web push and custom service workers, plus the Docker builds and GitHub Actions pipelines behind them.",
@@ -137,7 +144,7 @@ const allProjects: IProject[] = [
     role: "Personal project",
     period: "2022",
     description:
-      "No libraries — draggable selectors, pixel coordinate maths and scaling ratios worked out by hand. Small, but it is the reason I understand what image libraries are doing on my behalf.",
+      "No libraries — draggable selectors, aspect-ratio locking, pixel-coordinate maths and scaling ratios, all worked out by hand. Small, but it is the reason I understand what image libraries are doing on my behalf.",
     highlights: [],
     techs: ["JavaScript", "HTML Canvas", "CSS"],
     links: [

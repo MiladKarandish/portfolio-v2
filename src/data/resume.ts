@@ -39,11 +39,11 @@ export const profile = {
   title: person.role,
   tagline: person.tagline,
   /* The hidden variant leads on Ragham instead, and keeps the same claims that
-     do not depend on the venture: the years, the domain, the migration, the
+     do not depend on the venture: the years, the domain, the rebuild, the
      backend and infrastructure range. See ./visibility.ts. */
   summary: showTamdid
-    ? "Full-stack engineer with 6 years building production software for finance and logistics. Co-founder and sole engineer of a fintech product shipped end-to-end — PostgreSQL data model, transactional payment flows, Next.js application, delivery to web, PWA and Android. Concurrently frontend lead on an accounting SaaS serving 10,000+ daily active users, which I migrated off a legacy Nuxt.js codebase. Strongest in TypeScript across the stack and in correctness-critical financial systems."
-    : "Full-stack engineer with 6 years building production software for finance and logistics. Frontend lead on an accounting SaaS serving 10,000+ daily active users, which I migrated off a legacy Nuxt.js codebase to Next.js and TypeScript with no downtime. Designed and built the PDF reporting microservice behind its financial documents, and contributed to the Fastify/MySQL API. Strongest in TypeScript across the stack and in correctness-critical financial systems.",
+    ? "Full-stack engineer with 6 years building production software for finance and logistics. Co-founder and sole engineer of a fintech product shipped end-to-end — PostgreSQL data model, transactional payment flows, Next.js application, delivery to web, PWA and Android. Concurrently frontend lead on an accounting SaaS serving 10,000+ daily active users, which I rebuilt on Next.js and TypeScript to replace a legacy Vue 2 / Nuxt 2 SPA. Strongest in TypeScript across the stack and in correctness-critical financial systems."
+    : "Full-stack engineer with 6 years building production software for finance and logistics. Frontend lead on an accounting SaaS serving 10,000+ daily active users, which I rebuilt on Next.js and TypeScript to replace a legacy Vue 2 / Nuxt 2 SPA and cut over with no downtime. Designed and built the PDF reporting microservice behind its financial documents, and contributed to the Fastify/MySQL API. Strongest in TypeScript across the stack and in correctness-critical financial systems.",
   /** Stated plainly and early — screeners look for it, and hiding it wastes everyone's time. */
   relocation:
     "Open to relocation · Requires visa sponsorship (EU Blue Card / Skilled Worker / equivalent)",
@@ -79,9 +79,16 @@ export const resumeSkills: IResumeSkillGroup[] = [
     items: "TypeScript, JavaScript (ES6+), SQL, HTML5, CSS3 / SCSS",
   },
   {
+    /* Vue sits last and carries "working knowledge" on purpose. The only Vue in
+       the history is the legacy Nuxt 2 app at Ragham — maintained for a couple of
+       months and read end to end to replace it — which is real but is not the
+       React/Next.js depth the rest of this row claims. It stays on the list
+       because the keywords are worth matching and the experience is genuine; it
+       does not stand unqualified next to Next.js. Nuxt 3 / Vue 3 and the
+       Composition API were never part of it, so the version numbers stay too. */
     label: "Frontend",
     items:
-      "React, Next.js (App Router, Server Components, Server Actions), Vue.js / Nuxt.js, TanStack Query, Tailwind CSS, PWA & Service Workers, WebSockets, React-Leaflet",
+      "React, Next.js (App Router, Server Components, Server Actions), TanStack Query, Tailwind CSS, PWA & Service Workers, WebSockets, React-Leaflet, Vue 2 / Nuxt 2 (working knowledge)",
   },
   {
     label: "Backend",
@@ -135,7 +142,7 @@ const allRoles: IResumeRole[] = [
     date: "Dec 2023 – Present",
     bullets: [
       "Lead the frontend of the flagship application (~47,000 lines, ~2,000 commits) covering invoicing, inventory, cheque tracking, bank accounts and multi-ledger bookkeeping.",
-      "Migrated the product from a legacy Nuxt.js codebase to Next.js and TypeScript while it served 10,000+ daily users — cutting initial load time ~60% via pagination, lazy loading and list virtualisation, and server load ~30% via request debouncing and abort handling.",
+      "Rebuilt the product on Next.js and TypeScript to replace a legacy Vue 2 / Nuxt 2 SPA — shipped feature by feature beside the live app, then cut over by redirect with no downtime — cutting initial load time ~60% via pagination, lazy loading and list virtualisation, and server load ~30% via request debouncing and abort handling.",
       "Designed, built and maintain the company's PDF reporting microservice (Fastify, TypeBox, server-rendered React, headless Chrome) generating the RTL financial documents customers send clients; designed a versioned template registry so a full redesign rolled out one report at a time with single-flag rollback.",
       "Resolved a production outage in that service caused by shared headless-browser connections exceeding their maximum lifetime; re-architected to per-job connections with a measured timeout hierarchy, ending a failure mode that previously required restarting the service.",
       "Built the internal support panel (React, Vite) — account lookup, subscription and SMS-credit operations, bulk notifications, data restore and impersonation — removing recurring escalations from the engineering queue.",
