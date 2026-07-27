@@ -1,15 +1,35 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
-import { Nunito } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import MicrosoftClarity from "./_components/Analytics/Clarity";
 import { person } from "@/data/profile";
 import { showTamdid } from "@/data/visibility";
 import * as themes from "@/themes";
 
-const nunito = Nunito({
-  subsets: ["latin"],
+/**
+ * Nunito is self-hosted, not pulled from `next/font/google`.
+ *
+ * `next/font/google` downloads the font at build time, so every build — and
+ * every `next dev` boot without a warm `.next/cache/fonts` — needs to reach
+ * fonts.googleapis.com. From here that link is unreliable, and when it fails the
+ * build does not degrade to a fallback font, it dies:
+ *
+ *     `next/font` error: Failed to fetch `Nunito` from Google Fonts.
+ *
+ * The file below is byte-for-byte what Google served for the config this
+ * replaced — Nunito v32, latin subset, variable weight 200–1000, normal style.
+ * Rendering is unchanged; the network dependency is gone. Same approach as Geist
+ * underneath.
+ *
+ * To update it, re-fetch the latin `src` URL from
+ * `https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&display=swap`
+ * with a browser User-Agent — without one, Google serves .ttf instead of .woff2.
+ */
+const nunito = localFont({
+  src: "../assets/fonts/NunitoVF-latin.woff2",
+  weight: "200 1000",
+  style: "normal",
   display: "swap",
 });
 
