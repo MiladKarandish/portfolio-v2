@@ -44,7 +44,35 @@
     padding-block: 1rem;
     padding-left: calc((100vw - 100%) + 1rem);
     padding-right: 1rem;
-    background: var(--bg-950);
+    /* Deep water, painted in CSS.
+
+       This is what a visitor sees when the WebGL surface is not there: no
+       WebGL2, no float render targets, or `prefers-reduced-motion`. It is also
+       what sits under the canvas on every load until the first frame is drawn,
+       so the two have to agree — the canvas fades in over the top of this and
+       the handover should not be visible.
+
+       It renders below the canvas whatever the canvas's z-index, because a
+       background set on BODY is propagated to the root element and painted as
+       the canvas background. */
+    background-color: var(--bg-950);
+    background-image: radial-gradient(
+        120% 85% at 22% 16%,
+        color-mix(in srgb, var(--bg-800) 45%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        95% 70% at 82% 76%,
+        color-mix(in srgb, var(--bg-900) 38%, transparent) 0%,
+        transparent 58%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bg-950) 62%, #000) 0%,
+        color-mix(in srgb, var(--bg-950) 88%, #000) 45%,
+        color-mix(in srgb, var(--bg-950) 52%, #000) 100%
+      );
+    background-attachment: fixed;
     color: var(--text-100);
     /* clamp() needs three arguments — with two the declaration is invalid and
        the browser silently falls back to 16px. */

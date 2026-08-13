@@ -1,6 +1,7 @@
 import { cn } from "@/utils/className";
 import Header from "@/app/_components/Header";
 import Footer from "@/app/_components/Footer";
+import WaterBackground from "@/common/components/WaterBackground";
 
 export default function PortfolioLayout({
   children,
@@ -8,20 +9,28 @@ export default function PortfolioLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div
-      className={cn(
-        "w-[92dvw] max-w-6xl min-h-[96dvh] flex flex-col px-3 py-5 xs:p-7 xs:px-9 rounded-3xl bg-700 antialiased"
-      )}
-    >
-      <a href="#main" className="skip-link">
-        Skip to content
-      </a>
+    <>
+      {/* A sibling of the card, not a child of it: the card is a stacking
+          context, and anything fixed inside it would be clipped to its box.
+          Mounted here rather than in the root layout so it stays off /resume,
+          which is a print sheet. */}
+      <WaterBackground />
 
-      <Header />
+      <div
+        className={cn(
+          "page-card w-[92dvw] max-w-6xl min-h-[96dvh] flex flex-col px-3 py-5 xs:p-7 xs:px-9 rounded-3xl antialiased"
+        )}
+      >
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
 
-      <div className={`flex-1 pt-8`}>{children}</div>
+        <Header />
 
-      <Footer />
-    </div>
+        <div className={`flex-1 pt-8`}>{children}</div>
+
+        <Footer />
+      </div>
+    </>
   );
 }

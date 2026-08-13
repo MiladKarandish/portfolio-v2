@@ -45,6 +45,8 @@ separate copies of the work history, and only one of them got updated.
 | The `/honest` page | `data/honest.ts` | **Read that file's header comment first** |
 | Show or hide the Tamdid venture | `data/visibility.ts` → `showTamdid` | One boolean, then rebuild. See below |
 | Colours | `themes/index.tsx` | Add one object; the picker and the anti-flash script pick it up |
+| Water background: calmer, livelier, or off | `common/components/WaterBackground/` | See below. The amplitudes are all in `index.tsx` |
+| How much water shows through the page card | `styles/custom.css`, `--card-opacity` | `1` restores the old opaque card |
 | Résumé is spilling onto a third page | `styles/custom.css`, the `THE ONE KNOB` comment | Currently `10.6pt`, roughly one bullet of headroom |
 | Email, phone, portfolio, LinkedIn or GitHub on the CV | `data/profile.tsx` → `person` | Two rows of three in the header — keep it at three per row |
 
@@ -149,6 +151,68 @@ Note that with Tamdid hidden the résumé is about one and a half pages, so page
 two ends early. That is content volume, not a layout bug — don't reach for the
 font-size knob to fill it.
 
+### Tune the water background
+
+The background is a real height-field water simulation on the GPU
+(`common/components/WaterBackground/`). Three files:
+
+| File | What it is |
+| --- | --- |
+| `index.tsx` | **Policy.** When a drop happens and how strong. Everything you would want to tune is a named constant at the top |
+| `_components/WaterSurface.ts` | The renderer. Loop, resources, and the `DEFAULTS` block of look/perf settings |
+| `_components/shaders.ts` | The GLSL. Four small programs, each commented with what it is for |
+
+**The pointer only disturbs the water outside the page card.** The margins are
+live; the content area is still. This is on purpose and it is instead of a
+"disable effects" button: anyone who finds the motion distracting is trying to
+read, and their cursor is already over the thing they are reading, so the escape
+is somewhere they will find without being told. It also stops the effect
+competing with text while someone is using the page.
+
+Waves already in flight still travel under the card — that is the simulation,
+and stopping it at the edge would look like a bug. What stops is the *carving*.
+The gate is `CONTENT_SELECTOR` in `index.tsx`, matched with `closest()` so the
+card's rounded corners are handled exactly.
+
+There are two ways the water gets disturbed, and they are deliberately
+different:
+
+- **Moving the pointer** carves a *stroke* — one continuous capsule from where
+  the pointer was to where it is, pressed **downward**, because something moving
+  through water displaces it. `TRAIL_DEPTH`, `TRAIL_RADIUS`.
+- **Clicking** makes a *drop*, a peak, because that is something falling in.
+  `CLICK_STRENGTH`, `CLICK_RADIUS`. Same for the ambient pulse.
+
+The stroke replaced an earlier version that stamped a row of separate drops
+along the path. Don't go back to that: every drop is a point source radiating
+its own rings, so a moving cursor produced a train of overlapping bullseyes.
+That is what "noisy" looks like here, and no amount of tuning the amplitude
+fixes it — it is the wrong primitive.
+
+⚠️ The amplitudes are more sensitive than they look. Refraction, the specular
+glint and the caustics all scale off the *slope* of the surface, so doubling a
+strength does considerably more than double to the picture. The first version
+was about 3.5x higher and read as neon tubing. Move them ~25% at a time.
+
+⚠️ A smooth stroke needs **more** amplitude than sharp rings to feel equally
+present — it has no hard features to catch the eye. Matching the old trail's
+surface slope exactly still looked like nothing was happening.
+
+**To turn ambient drops off** (the pulse every 9–19 seconds, so the water only
+ever moves when the visitor does), delete the `scheduleAmbient()` call.
+
+**To turn the whole thing off**, remove `<WaterBackground />` from
+`app/(portfolio)/layout.tsx` and set `--card-opacity: 1` in `styles/custom.css`.
+The CSS gradient on `body` in `globals.css` is a complete standalone background
+— it is already what a visitor sees without WebGL.
+
+**It is deliberately not on `/resume`**, which is a print sheet.
+
+**Who never sees it:** anyone with `prefers-reduced-motion: reduce`, and any
+browser without WebGL2 or float render targets. Both get the CSS gradient. If
+you change that gradient, change the water palette to match — the canvas fades
+in over the top of it and the handover should not be visible.
+
 ### Add a new page
 
 1. `src/app/(portfolio)/<name>/page.tsx` — export `metadata` and start with
@@ -209,6 +273,14 @@ page will flash the wrong colours on load.
 
 **Printing the résumé:** A4, margins "Default", **background graphics off**. The
 `@page` rule owns the margins; the browser's own margin setting fights it.
+
+**Don't run `npm run build` while `npm run dev` is running.** They share
+`.next/`, and the production build overwrites the dev server's manifests
+underneath it. The dev server does not notice and does not recover: every route
+starts returning `Internal Server Error`, which looks exactly like you broke a
+page. Stop dev first, or accept that you will have to restart it. If it happens,
+`pkill -f "next dev"`, `rm -rf .next`, and start dev again — in that order,
+because deleting `.next` under a running dev server is its own crash.
 
 **`.env` is gitignored now, but it was committed once.** The Resend key that was
 in it should be treated as public until rotated.
