@@ -51,7 +51,7 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option", 
             animate={{ opacity: 1, y: 0, scaleY: 1 }}
             exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute right-0 w-full min-w-max mt-2 bg-600 rounded-xl shadow-lg overflow-hidden z-50"
+            className="absolute right-0 w-full min-w-max mt-2 bg-600 rounded-xl shadow-xl overflow-y-auto max-h-72 z-50 border border-400/30 backdrop-blur-md"
             role="listbox"
           >
             {options.map((option, index) => (
@@ -59,7 +59,7 @@ const Dropdown = ({ options, value, onSelect, placeholder = "Select an option", 
                 key={option.value}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.04 }}
+                transition={{ delay: Math.min(index * 0.02, 0.2) }}
               >
                 <button
                   type="button"
