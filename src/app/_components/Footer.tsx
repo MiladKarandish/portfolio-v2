@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HoopToy from "@/common/components/HoopToy";
 import { availability, person } from "@/data/profile";
 
 const Footer = () => {
@@ -24,6 +25,10 @@ const Footer = () => {
           </Link>
         </nav>
       </div>
+
+      {/* Renders nothing at all on touch or for reduced-motion visitors, so
+          there is no empty box to reserve room for. */}
+      <HoopToy />
     </footer>
   );
 };

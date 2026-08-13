@@ -648,6 +648,50 @@ textarea:focus-visible,
   list-style: none;
 }
 
+/* ---------- Footer hoop ---------- */
+
+/* A small toy parked in the bottom-right of the footer.
+
+   It sits in the normal flow rather than absolutely positioned: the footer is
+   the last thing on every page, so a block here costs nothing above it, and a
+   floating one would need a z-index argument with the page card it lives in.
+
+   THE ONE KNOB: `--hoop-width`. The arena's layout is derived from the canvas
+   box at runtime, so the whole thing scales by changing this; below about
+   200px the rim gets close enough to the ball that every shot goes in. */
+.hoop-toy {
+  --hoop-width: 240px;
+
+  width: var(--hoop-width);
+  margin-top: 1rem;
+  margin-left: auto;
+}
+
+.hoop-toy-canvas {
+  display: block;
+  width: 100%;
+  height: 132px;
+  /* Only the ball takes a press — the component hands every other pointerdown
+     straight back — but the cursor should not suggest text selection while
+     crossing the rest of the box. */
+  cursor: default;
+  touch-action: manipulation;
+}
+
+.hoop-toy-score {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6em;
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  opacity: 0.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.hoop-toy-streak {
+  opacity: 0.85;
+}
+
 /* ---------- Print ---------- */
 
 @media print {

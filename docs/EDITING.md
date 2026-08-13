@@ -47,6 +47,7 @@ separate copies of the work history, and only one of them got updated.
 | Colours | `themes/index.tsx` | Add one object; the picker and the anti-flash script pick it up |
 | Water background: calmer, livelier, or off | `common/components/WaterBackground/` | See below. The amplitudes are all in `index.tsx` |
 | How much water shows through the page card | `styles/custom.css`, `--card-opacity` | `1` restores the old opaque card |
+| The basketball toy in the footer | `common/components/HoopToy/` | See below. Size is `--hoop-width` in `styles/custom.css` |
 | Résumé is spilling onto a third page | `styles/custom.css`, the `THE ONE KNOB` comment | Currently `10.6pt`, roughly one bullet of headroom |
 | Email, phone, portfolio, LinkedIn or GitHub on the CV | `data/profile.tsx` → `person` | Two rows of three in the header — keep it at three per row |
 
@@ -212,6 +213,43 @@ The CSS gradient on `body` in `globals.css` is a complete standalone background
 browser without WebGL2 or float render targets. Both get the CSS gradient. If
 you change that gradient, change the water palette to match — the canvas fades
 in over the top of it and the handover should not be visible.
+
+### Tune the footer hoop
+
+A slingshot, a ball and a rim in the bottom-right of the footer
+(`common/components/HoopToy/`). `index.tsx` decides whether it runs and what
+colour it is; `_components/Hoop.ts` is the whole simulation and renderer.
+
+**It is silent until touched.** Parked, it draws no frames at all — the
+animation frame is cancelled, not throttled. A visitor who never touches it pays
+for one canvas and two idle listeners.
+
+**It cannot steal a click.** A pointerdown is only captured if it lands within
+`GRAB_RADIUS` of the ball; everything else falls through to the footer links.
+If you move the toy, keep that property.
+
+⚠️ **`LAUNCH_K` is derived, not chosen.** On the default 240px arena the
+cheapest shot that reaches the rim centre is 526 px/s at 55°, and the fastest
+shot available is `MAX_PULL * LAUNCH_K`. The first value shipped was 11, giving
+a maximum of 528 — so the only possible score was a pixel-perfect pull at one
+exact angle, and the toy could not be won. At 15 the maximum is 720, a make sits
+near three-quarters pull, and there is room either side to be wrong.
+**If you change `--hoop-width`, re-derive it** rather than eyeballing it.
+
+⚠️ **The ball launches from its parking spot, never from where it was dragged
+to.** The parking spot is on the floor, so the natural pull — down and back —
+points out of the arena; releasing from there puts the ball under the floor and
+the floor collision inverts the shot on the first step. That bug killed every
+single shot. `PULL_VISUAL` is how far the ball leans into the pull instead.
+
+The aim preview runs the *same* integrator at the *same* `STEP` as the
+simulation. Euler integration at a coarser step lands somewhere else, and a
+preview that disagrees with the shot is worse than no preview at all.
+
+**Who never sees it:** anyone with `prefers-reduced-motion: reduce`, and any
+coarse pointer. It is skipped on touch because the only way to give it a drag
+gesture there is to take one away from the page scroll — making it work on touch
+is real work, not a flag flip.
 
 ### Add a new page
 
