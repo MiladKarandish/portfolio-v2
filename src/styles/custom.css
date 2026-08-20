@@ -648,6 +648,73 @@ textarea:focus-visible,
   list-style: none;
 }
 
+/* ---------- Skipping stones ---------- */
+
+/* The stone crossing the water, drawn over the whole viewport.
+
+   Same `z-index: -1` as the water and mounted right after it, so it paints
+   above the surface and below the page card. That ordering is the effect: a
+   stone that skips past the margin and on across the card goes *behind* it,
+   and the card is translucent, so it reads as something moving under frosted
+   glass rather than as a dot sliding over the text.
+
+   `pointer-events: none` is not negotiable — it covers the entire page. The
+   gesture is read from `window`, not from this element. */
+.stone-skip {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.stone-skip canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The count, left where the throw started rather than where the stone ended:
+   the stone may well have gone under the card or off the window, and a number
+   that appears somewhere the eye is not looking is a number nobody reads. */
+.stone-skip-count {
+  position: fixed;
+  z-index: 40;
+  transform: translate(-50%, -180%);
+  pointer-events: none;
+  font-size: 0.7rem;
+  opacity: 0.55;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  animation: stone-count-in 220ms ease both;
+}
+
+.stone-skip-count span {
+  opacity: 0.65;
+}
+
+@keyframes stone-count-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -140%);
+  }
+  to {
+    opacity: 0.55;
+    transform: translate(-50%, -180%);
+  }
+}
+
+/* Held only for the length of a flick. Dragging across the background would
+   otherwise start selecting the page's text the moment the pointer crossed
+   onto the card, and the throw would end with half the footer highlighted.
+
+   A class rather than `preventDefault` on the press: a press that turns out
+   not to be a throw has to stay a completely ordinary press. */
+.stone-flick,
+.stone-flick body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* ---------- Footer toys ---------- */
 
 /* The shelf the two canvas toys stand on: a cobweb at the left-hand end, a

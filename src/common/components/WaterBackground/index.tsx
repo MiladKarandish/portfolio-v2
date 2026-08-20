@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import WaterSurface, { type WaterPalette } from "./_components/WaterSurface";
+import { isOverContent } from "./openWater";
 import { onRipple } from "./ripples";
 
 /**
@@ -122,20 +123,13 @@ const randomBetween = (min: number, max: number) => min + Math.random() * (max -
  * The pointer only disturbs the water outside the page card — the margins are
  * live, the content is still.
  *
- * This is deliberately instead of a "disable effects" button. Anyone who finds
- * the motion distracting is, by definition, trying to read; keeping their
- * cursor over the thing they are reading is not a setting they have to find,
- * and it is where the cursor already is. It also means the effect never
- * competes with text for attention while someone is actually using the page.
+ * This is deliberately instead of a "disable effects" button. It also means
+ * the effect never competes with text for attention while someone is actually
+ * using the page.
  *
- * Hit-testing by element rather than by rectangle so the card's rounded corners
- * are handled exactly, and with no layout read on every pointer event. The
- * canvas is `pointer-events: none`, so it is never the target here.
+ * The test itself is in `openWater.ts`, because the stone skipping across the
+ * margin has to draw the boundary in exactly the same place.
  */
-const CONTENT_SELECTOR = ".page-card";
-
-const isOverContent = (target: EventTarget | null) =>
-  target instanceof Element && target.closest(CONTENT_SELECTOR) !== null;
 
 const WaterBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

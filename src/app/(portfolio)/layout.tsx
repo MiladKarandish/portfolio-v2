@@ -2,6 +2,7 @@ import { cn } from "@/utils/className";
 import Header from "@/app/_components/Header";
 import Footer from "@/app/_components/Footer";
 import WaterBackground from "@/common/components/WaterBackground";
+import StoneToy from "@/common/components/StoneToy";
 
 export default function PortfolioLayout({
   children,
@@ -15,6 +16,11 @@ export default function PortfolioLayout({
           Mounted here rather than in the root layout so it stays off /resume,
           which is a print sheet. */}
       <WaterBackground />
+
+      {/* After the water, so it paints over it — and, like the water, behind
+          the card. A stone thrown across the margin carries on under the page
+          rather than over it. */}
+      <StoneToy />
 
       <div
         className={cn(

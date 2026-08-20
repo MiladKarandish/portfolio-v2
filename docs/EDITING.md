@@ -49,6 +49,7 @@ separate copies of the work history, and only one of them got updated.
 | How much water shows through the page card | `styles/custom.css`, `--card-opacity` | `1` restores the old opaque card |
 | The basketball toy in the footer | `common/components/HoopToy/` | See below. Size is `--hoop-width` in `styles/custom.css` |
 | The cobweb toy in the footer | `common/components/CobwebToy/` | See below. Size is `--cobweb-size` in `styles/custom.css` |
+| Skipping stones on the water | `common/components/StoneToy/` | See below. There is nothing on the page until somebody throws one |
 | Résumé is spilling onto a third page | `styles/custom.css`, the `THE ONE KNOB` comment | Currently `10.6pt`, roughly one bullet of headroom |
 | Email, phone, portfolio, LinkedIn or GitHub on the CV | `data/profile.tsx` → `person` | Two rows of three in the header — keep it at three per row |
 
@@ -222,6 +223,74 @@ The CSS gradient on `body` in `globals.css` is a complete standalone background
 browser without WebGL2 or float render targets. Both get the CSS gradient. If
 you change that gradient, change the water palette to match — the canvas fades
 in over the top of it and the handover should not be visible.
+
+### Tune the skipping stones
+
+Flick the open water beside the card and a stone goes out across it, touching
+down at intervals and sinking when it runs out of pace
+(`common/components/StoneToy/`). Two files:
+
+| File | What it is |
+| --- | --- |
+| `index.tsx` | **Policy.** Whether it runs, what colour it is, what counts as a throw, where the best run lives |
+| `_components/Stone.ts` | The stone: simulation and renderer, on a viewport-sized canvas |
+
+Each touch is a real dent in the WebGL surface, through `ripples.ts` — the same
+channel the basketball's splash and the cobweb's pluck use. There is **nothing
+on the page between throws**: no element to see, and the animation frame is
+cancelled outright rather than throttled.
+
+⚠️ **The geometry is the pond reading, not the falling one.** The page is two
+things at once and always has been: the basketball *falls* off the footer, so
+the screen is a vertical plane, while the water spreads ripples in circles, so
+the same screen is a pond seen from above. A stone needs the pond, so there is
+no gravity here and no arc — it travels in a straight line and loses pace, and
+what makes it a skip rather than a slide is that it only touches every so
+often. Adding gravity as well puts every stone in the bottom-left of the window.
+
+⚠️ **`MIN_SPEED` is shared with the gesture on purpose, and is about text
+selection.** Dragging out of the margin and onto the text is how somebody
+selects a paragraph, and that is slow and deliberate; a throw is a flick. The
+component suppresses the selection *only while the pointer is actually moving
+faster than a throw*, and hands it straight back when it is not. Testing
+distance instead of speed — the obvious version — breaks selection for
+everybody in exchange for a gesture nobody made. Nothing here ever calls
+`preventDefault`: a press that turns out not to be a throw has to stay a
+completely ordinary press.
+
+It is drawn at the water's own `z-index: -1` and **mounted immediately after
+it**, so it paints above the surface and below the page card. That ordering is
+the effect — a stone that skips past the margin carries on *behind* the card,
+which is translucent, and reads as something moving under frosted glass.
+
+The count is anchored where the throw started, not where the stone ended: the
+stone has usually gone under the card or off the window by then, and a number
+that appears where nobody is looking is a number nobody reads.
+
+#### The knobs
+
+| Knob | What it does |
+| --- | --- |
+| `MIN_SPEED` | The flick/drag boundary. See the warning above before touching it |
+| `MAX_SPEED` | Caps a wrist-flick, which can carry ten times what an arm can |
+| `SKIP_LOSS` / `AIR_DRAG` | Pace lost per touch and per second. Together these set how many skips a throw is worth |
+| `SINK_SPEED` | When the stone gives up |
+| `HOP_TIME` | Seconds between touches. Constant, so the gaps *on screen* shorten as it slows — that is the rhythm the eye counts |
+| `TOUCH_*` / `SINK_*` | How big a dent each touch and the final sink make |
+
+For reference, at the shipped numbers: an ordinary flick is about 8 skips over
+480px, a hard one 10 over 920px, and the hardest possible 11. A gentle push is
+refused outright.
+
+**Who never sees it:** anyone with `prefers-reduced-motion: reduce`, any coarse
+pointer — the margin is a couple of dozen pixels wide on a phone and there is
+nothing to aim at — and anyone whose GPU will not give the water float render
+targets, because a stone skipping across a static gradient dents nothing and
+reads as a bug.
+
+⚠️ **It needs a margin to be thrown from.** That margin is 384px a side at
+1920px wide, but only 144px at 1440 and 64px at 1280. It is a wide-desktop
+bonus, not a feature everyone gets.
 
 ### Tune the footer cobweb
 
