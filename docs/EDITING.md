@@ -48,6 +48,7 @@ separate copies of the work history, and only one of them got updated.
 | Water background: calmer, livelier, or off | `common/components/WaterBackground/` | See below. The amplitudes are all in `index.tsx` |
 | How much water shows through the page card | `styles/custom.css`, `--card-opacity` | `1` restores the old opaque card |
 | The basketball toy in the footer | `common/components/HoopToy/` | See below. Size is `--hoop-width` in `styles/custom.css` |
+| The cobweb toy in the footer | `common/components/CobwebToy/` | See below. Size is `--cobweb-size` in `styles/custom.css` |
 | Résumé is spilling onto a third page | `styles/custom.css`, the `THE ONE KNOB` comment | Currently `10.6pt`, roughly one bullet of headroom |
 | Email, phone, portfolio, LinkedIn or GitHub on the CV | `data/profile.tsx` → `person` | Two rows of three in the header — keep it at three per row |
 
@@ -221,6 +222,70 @@ The CSS gradient on `body` in `globals.css` is a complete standalone background
 browser without WebGL2 or float render targets. Both get the CSS gradient. If
 you change that gradient, change the water palette to match — the canvas fades
 in over the top of it and the handover should not be visible.
+
+### Tune the footer cobweb
+
+A quarter of an orb web strung across the bottom-left corner of the page, with a
+spider walking about on it (`common/components/CobwebToy/`). It is the second
+toy in the footer; the hoop is at the other end of the same row. Three files:
+
+| File | What it is |
+| --- | --- |
+| `index.tsx` | **Policy.** Whether it runs, what colour it is, when it is allowed to be awake |
+| `_components/Cobweb.ts` | The web, the spider and the renderer, inside a square canvas |
+| `_components/verlet.ts` | The physics: particles, distance and angle constraints, one integration step |
+
+Modelled on [this pen](https://codepen.io/Maxel88/pen/WNwVYjv), which uses
+`verlet-js`. `verlet.ts` is a rewrite of the handful of primitives it needed
+rather than the library.
+
+**It is not silent, and cannot be.** The hoop draws nothing until you touch it;
+a spider that only moves while you drag it is not a spider. The restraint is
+somewhere else instead: **the loop only runs while the canvas is on screen and
+the tab is in front**, via an `IntersectionObserver` and `visibilitychange`. The
+footer is the last thing on every page, so most of a visit costs nothing.
+If you move this toy somewhere that is visible on load, that trade changes.
+
+**It cannot steal a click.** A pointerdown is only captured if it lands within
+`GRAB_RADIUS` of a strand that can actually move; everything else falls through.
+
+#### Three things that were not obvious
+
+⚠️ **`angleAt` must be the cross/dot form, not a difference of two `atan2`s.**
+They look equivalent. The difference form is unbounded — a stored angle and a
+measured one can disagree by a full turn — and it carries the *opposite sign*,
+which turns `Angle` from a constraint that restores a joint into one that drives
+it away. The spider tears itself into a scribble within a second, and it reads
+as "the legs need tuning" rather than as a sign error.
+
+⚠️ **A leg reaches for a *place*, then takes the nearest strand to it** — not
+for a strand directly. Eleven spokes converging on one corner put most of the
+web's particles in a small area near the hub, so a spider choosing evenly among
+strands is always being offered the corner: it walks into it in a few seconds
+and stays there for good. Sampling a point and snapping to it makes the gait
+independent of how the web is drawn.
+
+⚠️ **The step window scales the leg's *design* reach, not its current length.**
+Measure the leg as it stands and the two feed each other — a folded leg reaches
+short, which folds it further — and the spider becomes a knot.
+
+#### The knobs
+
+| Knob | What it does |
+| --- | --- |
+| `--cobweb-size` in `custom.css` | The whole toy. The web is a quarter circle, so the box is square and everything else derives from it at runtime |
+| `SPOKES` / `RINGS` | How finely the web is drawn, and so how many footholds the spider gets to choose between |
+| `SPIDER_SCALE` | Spider size. Larger than about 0.4 and it spans half the web and reads as a knot in it |
+| `SPIDER_GRAVITY` | Not about falling — eight grips hold it either way. It sets how much of the web the walk covers |
+| `SILK_WEIGHT` | The web's inverse mass. It cancels between strands and only matters where a foot meets one, so it is really "how hard may the spider tug the web" |
+| `BRUSH_RADIUS` | The cursor as a solid disc. Merely passing over parts the silk; this is how wide |
+
+Below about 110px the spider has fewer strands within reach than it has legs and
+the gait goes stiff. Keep the box no taller than the hoop's 132px canvas unless
+you mean to: the two share a row and the taller one sets the footer's height.
+
+**Who never sees it:** the same people who never see the hoop — anyone with
+`prefers-reduced-motion: reduce`, and any coarse pointer.
 
 ### Tune the footer hoop
 

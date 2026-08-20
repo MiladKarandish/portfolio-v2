@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CobwebToy from "@/common/components/CobwebToy";
 import HoopToy from "@/common/components/HoopToy";
 import { availability, person } from "@/data/profile";
 
@@ -26,9 +27,13 @@ const Footer = () => {
         </nav>
       </div>
 
-      {/* Renders nothing at all on touch or for reduced-motion visitors, so
-          there is no empty box to reserve room for. */}
-      <HoopToy />
+      {/* Both render nothing at all on touch or for reduced-motion visitors, so
+          there is no empty box to reserve room for — and the row survives
+          either of them being absent. */}
+      <div className={`footer-toys`}>
+        <CobwebToy />
+        <HoopToy />
+      </div>
     </footer>
   );
 };

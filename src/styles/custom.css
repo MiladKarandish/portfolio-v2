@@ -648,13 +648,29 @@ textarea:focus-visible,
   list-style: none;
 }
 
-/* ---------- Footer hoop ---------- */
+/* ---------- Footer toys ---------- */
 
-/* A small toy parked in the bottom-right of the footer.
+/* The shelf the two canvas toys stand on: a cobweb at the left-hand end, a
+   basketball hoop at the right.
 
-   It sits in the normal flow rather than absolutely positioned: the footer is
+   They sit in the normal flow rather than absolutely positioned: the footer is
    the last thing on every page, so a block here costs nothing above it, and a
    floating one would need a z-index argument with the page card it lives in.
+
+   `flex-start` rather than `flex-end` so the two canvases keep their tops in
+   line whatever hangs below them — the hoop grows a line of score text the
+   first time somebody makes a shot, and the web should not jump when it does.
+
+   Either child can render nothing at all (reduced motion, touch), and the row
+   still holds: the hoop's own `margin-left: auto` is what puts it on the right,
+   not the presence of a sibling. */
+.footer-toys {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+/* A small toy parked in the bottom-right of the footer.
 
    THE ONE KNOB: `--hoop-width`. The arena's layout is derived from the canvas
    box at runtime, so the whole thing scales by changing this; below about
@@ -663,7 +679,6 @@ textarea:focus-visible,
   --hoop-width: 240px;
 
   width: var(--hoop-width);
-  margin-top: 1rem;
   margin-left: auto;
   /* Pulled out through the card's own padding so the court's open right-hand
      edge lands exactly on the edge of the page.
@@ -738,6 +753,49 @@ textarea:focus-visible,
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* ---------- Footer cobweb ---------- */
+
+/* The other toy: a quarter of an orb web strung across the bottom-left corner
+   of the page, with a spider on it.
+
+   THE ONE KNOB: `--cobweb-size`. The web is a quarter circle, so the box is
+   square and the radius is derived from it at runtime; changing this number
+   changes the web, the spider on it and the length of its stride together.
+   Much below 110px the spider has fewer strands to choose a foothold from than
+   it has legs, and the gait goes stiff.
+
+   Not larger than the hoop's 132px canvas without meaning it: these two sit in
+   one row, and the taller of them sets the footer's height. */
+.cobweb-toy {
+  --cobweb-size: 132px;
+
+  width: var(--cobweb-size);
+  /* Pulled out through the card's own padding so the hub of the web lands on
+     the edge of the page, the way the hoop's court ends on the other edge. A
+     web that stopped short of the corner would read as a picture of a web
+     rather than as one strung across the corner.
+
+     Mirrors `px-3 xs:px-9` on `.page-card`; it has to move if that does. */
+  margin-left: -0.75rem;
+}
+
+@media (min-width: 625px) {
+  .cobweb-toy {
+    margin-left: -2.25rem;
+  }
+}
+
+.cobweb-toy-canvas {
+  display: block;
+  width: 100%;
+  height: var(--cobweb-size);
+  /* Only a press that lands near a strand is taken — the component hands every
+     other pointerdown straight back — but the cursor should not suggest text
+     selection while crossing the rest of the box. */
+  cursor: default;
+  touch-action: manipulation;
 }
 
 /* ---------- Print ---------- */
