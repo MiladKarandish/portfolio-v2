@@ -25,6 +25,7 @@
  *     of view or the tab is in the background. The component drives that.
  */
 
+import { ripple } from "@/common/components/WaterBackground/ripples";
 import { alpha } from "@/utils/colour";
 import { Angle, Distance, Particle, integrate, type Constraint } from "./verlet";
 
@@ -98,6 +99,51 @@ const GRAB_RADIUS = 15;
  * rather than a hole.
  */
 const BRUSH_RADIUS = 11;
+
+/* ── Feeling the rest of the page ───────────────────────────────────────────
+   The web is tied to a card that is floating on water, so anything heavy
+   enough hitting that water rocks the card and the web hanging in its corner
+   shivers. In practice the only thing that does is the basketball at the far
+   end of the footer going over the edge of the court.
+
+   Nothing here knows that. Disturbances arrive on the same `ripples.ts`
+   broadcast the water itself listens to, so neither toy has ever heard of the
+   other and either can be deleted without touching the other. */
+
+/**
+ * How far a disturbance carries. It has to cover the width of the page — the
+ * splash lands off the right-hand edge and the web is on the left, which is
+ * about 1150px apart on a full-width card — so this is deliberately larger
+ * than the distance it needs to survive, and the falloff below is gentle. A
+ * vibration travelling through a rigid card is not sound travelling through
+ * air; the card moves more or less as one thing.
+ */
+const SHAKE_REACH = 2400;
+
+/**
+ * Ignore anything weaker than this. The splash pours three disturbances into
+ * the water and then a dozen more as its droplets land; at this threshold only
+ * the first two arrive, which reads as a thud and its echo rather than as a
+ * rattle.
+ */
+const SHAKE_FLOOR = 0.15;
+
+/** Peak kick, in pixels per step, for a disturbance of strength 1 alongside. */
+const SHAKE_KICK = 14;
+
+/** How long the spider holds still after feeling something, in seconds. */
+const STARTLE_TIME = 1.1;
+
+/**
+ * How hard a strand has to be let go of to send anything back the other way,
+ * in pixels per step, and how big a dent it makes at full force. Releasing
+ * mid-sweep is a deliberate act; simply crossing the web is not, and the water
+ * would be permanently choppy if it were.
+ */
+const PLUCK_FLOOR = 2.5;
+const PLUCK_FULL = 14;
+const PLUCK_RADIUS = 0.018;
+const PLUCK_STRENGTH = 0.22;
 
 /* ── The spider ─────────────────────────────────────────────────────────── */
 
@@ -186,6 +232,8 @@ export default class Cobweb {
   /** Cycles the legs 0,3,6,1,4,7,2,5 — opposite corners, like the real gait. */
   private legCursor = 0;
   private crawlClock = 0;
+  /** Seconds left of holding still after feeling something. */
+  private startled = 0;
 
   private pointerId: number | null = null;
   private dragged: Particle | null = null;
@@ -276,7 +324,13 @@ export default class Cobweb {
 
   release(id: number): void {
     if (this.pointerId !== id) return;
-    if (this.dragged) this.dragged.w = this.draggedWeight;
+
+    const released = this.dragged;
+    if (released) {
+      this.pluck(released);
+      released.w = this.draggedWeight;
+    }
+
     this.pointerId = null;
     this.dragged = null;
   }
@@ -290,6 +344,61 @@ export default class Cobweb {
   /** Whether a press here would be taken, for the cursor style. */
   isOverWeb(x: number, y: number): boolean {
     return this.nearestFree(x, y, GRAB_RADIUS) !== null;
+  }
+
+  /**
+   * Something landed somewhere on the page. `x`/`y` are viewport pixels and
+   * `strength` is the same number the water is handed — negative for a thing
+   * falling in, positive for what the surface does next.
+   *
+   * The web shivers, and the spider stops dead. A spider that feels its web
+   * move and carries on strolling is the one thing a real one never does; the
+   * pause is short, and it is most of what sells the web as something the
+   * spider is actually standing on.
+   */
+  shake(x: number, y: number, strength: number): void {
+    const force = Math.abs(strength);
+    if (force < SHAKE_FLOOR) return;
+
+    const rect = this.canvas.getBoundingClientRect();
+    const localX = x - rect.left;
+    const localY = y - rect.top;
+
+    // Our own pluck, come back round. `ripples.ts` is a broadcast and does not
+    // tell a listener who published, so the one disturbance that can start
+    // inside this box is the one this file sent. Nothing else on the page
+    // drops anything into the corner of the footer.
+    if (localX >= 0 && localX <= this.width && localY >= 0 && localY <= this.height) return;
+
+    // Measured from the hub, which is where the web is tied to the page and so
+    // where a disturbance travelling through the page arrives.
+    const dx = localX - 0;
+    const dy = localY - this.height;
+    const distance = Math.hypot(dx, dy);
+    if (distance >= SHAKE_REACH || distance === 0) return;
+
+    const kick = SHAKE_KICK * force * (1 - distance / SHAKE_REACH);
+    // Away from whatever it was. The anchors are pinned and cannot move, so
+    // this lands entirely in the free strands and the web swings on them.
+    const awayX = -dx / distance;
+    const awayY = -dy / distance;
+
+    for (const p of this.webParticles) {
+      if (p.w === 0) continue;
+
+      // A shared phase, so the strands do not all set off together and read as
+      // the whole web being shoved sideways. Off position rather than random,
+      // so a disturbance shakes the web the same way twice.
+      const phase = 0.55 + 0.9 * Math.abs(Math.sin(p.x * 0.7 + p.y * 0.5));
+
+      // Written to the previous position, not the current one: in verlet that
+      // is what an impulse is. Moving `x` instead would teleport the web and
+      // leave it with no memory of having been hit.
+      p.px -= awayX * kick * phase;
+      p.py -= awayY * kick * phase;
+    }
+
+    this.startled = STARTLE_TIME;
   }
 
   wake(): void {
@@ -491,13 +600,27 @@ export default class Cobweb {
   };
 
   private step(): void {
-    this.crawlClock += STEP;
-    if (this.crawlClock >= CRAWL_INTERVAL) {
-      this.crawlClock -= CRAWL_INTERVAL;
-      if (Math.random() < CRAWL_CHANCE) {
-        // Three at a time round eight legs visits every leg once per cycle and
-        // never two neighbours in a row.
-        this.crawl((this.legCursor++ * 3) % 8);
+    // A startled spider does not re-grip. Its feet stay where they are and the
+    // body rides whatever the web is doing, which is what makes holding still
+    // visible at all — a spider that simply stopped walking would be hard to
+    // tell from one walking slowly.
+    //
+    // The clock is held at zero rather than left to run, so the pause ends
+    // with a first step like any other. Letting it accumulate would bank a
+    // second of offers and spend them all on the frame the spider recovers.
+    if (this.startled > 0) {
+      this.startled -= STEP;
+      this.crawlClock = 0;
+    } else {
+      this.crawlClock += STEP;
+
+      if (this.crawlClock >= CRAWL_INTERVAL) {
+        this.crawlClock -= CRAWL_INTERVAL;
+        if (Math.random() < CRAWL_CHANCE) {
+          // Three at a time round eight legs visits every leg once per cycle
+          // and never two neighbours in a row.
+          this.crawl((this.legCursor++ * 3) % 8);
+        }
       }
     }
 
@@ -516,8 +639,13 @@ export default class Cobweb {
       const d = this.dragged;
       d.px = d.x;
       d.py = d.y;
-      d.x = this.cursorX;
-      d.y = this.cursorY;
+      // Clamped to the box here rather than in `bound`, which skips pinned
+      // particles and this one is pinned for as long as it is held. Without it
+      // a drag that leaves the canvas takes the strand with it, and since the
+      // canvas clips, the strand simply vanishes off the edge while you are
+      // still holding it.
+      d.x = clamp(this.cursorX, 0, this.width - 1);
+      d.y = clamp(this.cursorY, 0, this.height - 1);
     }
 
     const coef = 1 / ITERATIONS;
@@ -571,6 +699,30 @@ export default class Cobweb {
       p.x = this.cursorX + (dx / d) * BRUSH_RADIUS;
       p.y = this.cursorY + (dy / d) * BRUSH_RADIUS;
     }
+  }
+
+  /**
+   * A strand let go of hard enough sends a dent into the water under this
+   * corner of the page, and startles the spider standing on it.
+   *
+   * The same broadcast, in the other direction. It is the reason the drag has
+   * a payoff beyond the web springing back: the page itself answers.
+   */
+  private pluck(p: Particle): void {
+    const speed = Math.hypot(p.x - p.px, p.y - p.py);
+    if (speed < PLUCK_FLOOR) return;
+
+    const force = Math.min((speed - PLUCK_FLOOR) / (PLUCK_FULL - PLUCK_FLOOR), 1);
+    const rect = this.canvas.getBoundingClientRect();
+
+    ripple({
+      x: rect.left + p.x,
+      y: rect.top + p.y,
+      radius: PLUCK_RADIUS,
+      strength: -PLUCK_STRENGTH * force,
+    });
+
+    this.startled = STARTLE_TIME;
   }
 
   /** Nothing leaves the box — least of all the spider. */
@@ -769,6 +921,10 @@ export default class Cobweb {
     dot(ctx, this.thorax, 4.4 * k);
     dot(ctx, this.head, 3.4 * k);
   }
+}
+
+function clamp(value: number, low: number, high: number): number {
+  return value < low ? low : value > high ? high : value;
 }
 
 /** A point `distance` from `from`, in the direction `(dx, dy)`. */

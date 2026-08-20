@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { onRipple } from "@/common/components/WaterBackground/ripples";
 import Cobweb, { type CobwebPalette } from "./_components/Cobweb";
 
 /**
@@ -25,6 +26,11 @@ import Cobweb, { type CobwebPalette } from "./_components/Cobweb";
  *   • It is not there at all for anyone who asked for less motion, and not
  *     there on touch, where it has no cursor to react to and no gesture to
  *     take that the page scroll does not want more.
+ *
+ * It also feels the rest of the page, through the same `ripples.ts` broadcast
+ * the water listens to. Subscribed here rather than in the simulation for the
+ * same reason `WaterBackground` subscribes in its component: what the toy
+ * listens to is policy, and the maths should not have opinions about it.
  */
 
 const FALLBACK: CobwebPalette = { ink: "rgb(255, 255, 255)", body: "rgb(234, 192, 165)" };
@@ -108,6 +114,12 @@ const CobwebToy = () => {
       settle();
     };
 
+    // Anything heavy enough landing in the water rocks the card this web is
+    // strung across, and the web shivers. Today the only thing that does is
+    // the basketball at the other end of the footer going over the edge of
+    // its court — but nothing here knows that, and nothing has to.
+    const unsubscribe = onRipple(({ x, y, strength }) => web.shake(x, y, strength));
+
     /** Pointer position in the canvas's own coordinates. */
     const toLocal = (event: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -168,6 +180,7 @@ const CobwebToy = () => {
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
+      unsubscribe();
       view.disconnect();
       observer.disconnect();
       themeObserver.disconnect();

@@ -279,10 +279,49 @@ short, which folds it further — and the spider becomes a knot.
 | `SPIDER_GRAVITY` | Not about falling — eight grips hold it either way. It sets how much of the web the walk covers |
 | `SILK_WEIGHT` | The web's inverse mass. It cancels between strands and only matters where a foot meets one, so it is really "how hard may the spider tug the web" |
 | `BRUSH_RADIUS` | The cursor as a solid disc. Merely passing over parts the silk; this is how wide |
+| `SHAKE_REACH` / `SHAKE_KICK` | How far a disturbance elsewhere on the page carries, and how hard it lands |
+| `SHAKE_FLOOR` | The weakest disturbance worth feeling. Raise it and the splash's droplets stop registering; lower it and they start |
+| `STARTLE_TIME` | How long the spider holds still after feeling something |
 
 Below about 110px the spider has fewer strands within reach than it has legs and
 the gait goes stiff. Keep the box no taller than the hoop's 132px canvas unless
 you mean to: the two share a row and the taller one sets the footer's height.
+
+#### It feels the basketball, without knowing about it
+
+The two toys are connected, but not to each other. Both talk to `ripples.ts`,
+the same broadcast the water listens to:
+
+* **In.** A ball going over the edge of the court pours three disturbances into
+  the water. The cobweb subscribes to the same channel, and anything over
+  `SHAKE_FLOOR` at the far end of the footer rocks the card enough that the web
+  shivers — about 6px on a full-width card, 9px on a narrow one — and the spider
+  **stops dead** for `STARTLE_TIME`. A spider that feels its web move and carries
+  on strolling is the one thing a real one never does.
+* **Out.** Letting go of a strand mid-sweep publishes a ripple back, so a hard
+  pluck dents the water under that corner of the page.
+
+⚠️ **Neither toy imports the other, and it must stay that way.** Either can be
+deleted without touching the other, and the cobweb works with no water mounted
+at all — with nothing subscribed, `ripple()` is a loop over an empty set.
+
+The floor is what keeps this from being a rattle: the splash pours three big
+disturbances *and* one per droplet as they land, and at `SHAKE_FLOOR` only the
+first two arrive. It reads as a thud and its echo.
+
+A ripple that starts inside the web's own box is **ignored** — it can only be
+this file's own pluck coming back round, because `ripples.ts` is a broadcast and
+does not tell a listener who published.
+
+#### Why the ball cannot land in the web
+
+It is the obvious idea and it does not work, so it is written down here to save
+the next person the trip. The fastest shot the slingshot can produce is
+`MAX_PULL * LAUNCH_K` = 720 px/s, which at `GRAVITY` = 1100 gives a maximum
+range on the flat of **471px**. The gap between the two canvases on a
+full-width card is **780px**. The ball cannot get halfway, and closing that gap
+means raising `LAUNCH_K` — which is derived from the hoop's own geometry, not
+chosen, so raising it unbalances the game the toy is actually for.
 
 **Who never sees it:** the same people who never see the hoop — anyone with
 `prefers-reduced-motion: reduce`, and any coarse pointer.
