@@ -665,6 +665,28 @@ textarea:focus-visible,
   width: var(--hoop-width);
   margin-top: 1rem;
   margin-left: auto;
+  /* Pulled out through the card's own padding so the court's open right-hand
+     edge lands exactly on the edge of the page.
+
+     This is load-bearing, not alignment. A ball that goes over that edge falls
+     into the water behind the page, and if the court stops short of the card
+     the ball has to cross a strip of padding first — falling the whole way,
+     with only about sixty pixels of window beneath the footer to fall through.
+     Ending the court at the shoreline is what lets the ball leave it and be in
+     water on the same frame.
+
+     Mirrors `px-3 xs:px-9` on `.page-card`; it has to move if that does. */
+  margin-right: -0.75rem;
+}
+
+@media (min-width: 625px) {
+  .hoop-toy {
+    margin-right: -2.25rem;
+  }
+
+  .hoop-toy-score {
+    margin-right: 2.25rem;
+  }
 }
 
 .hoop-toy-canvas {
@@ -678,11 +700,15 @@ textarea:focus-visible,
   touch-action: manipulation;
 }
 
+/* The canvas runs out to the edge of the page; the text should not. Puts the
+   streak back in line with the footer links above it, undoing the negative
+   margin on the wrapper for this one child. */
 .hoop-toy-score {
   display: flex;
   justify-content: flex-end;
   gap: 0.6em;
   margin-top: 0.2rem;
+  margin-right: 0.75rem;
   font-size: 0.7rem;
   opacity: 0.5;
   font-variant-numeric: tabular-nums;
@@ -690,6 +716,28 @@ textarea:focus-visible,
 
 .hoop-toy-streak {
   opacity: 0.85;
+}
+
+/* The ball that left the court, drawn across the whole viewport so it can
+   carry on past the edge of the footer and land in the water.
+
+   Fixed and a sibling of the card rather than a child of it, for the same
+   reason the water itself is: the card is a stacking context and would clip it
+   back to its own box. `pointer-events: none` is not negotiable — this covers
+   the entire page, and it is on screen for about a second and a half.
+
+   Below the skip link, above everything a visitor can read. */
+.hoop-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.hoop-splash canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* ---------- Print ---------- */

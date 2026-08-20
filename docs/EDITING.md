@@ -199,6 +199,14 @@ was about 3.5x higher and read as neon tubing. Move them ~25% at a time.
 present — it has no hard features to catch the eye. Matching the old trail's
 surface slope exactly still looked like nothing was happening.
 
+**Anything on the page can disturb the water** through `ripples.ts`, a two
+function pub/sub next to the component. Call `ripple({ x, y, radius, strength })`
+in viewport pixels and the surface picks it up; with no water mounted it is a
+loop over an empty set. That indirection is the point — the water is absent for
+reduced-motion visitors and for anyone without float render targets, so a caller
+that held a reference to the surface would be holding a reference to nothing
+most of the time. The footer basketball is the only caller today.
+
 **To turn ambient drops off** (the pulse every 9–19 seconds, so the water only
 ever moves when the visitor does), delete the `scheduleAmbient()` call.
 
@@ -217,8 +225,14 @@ in over the top of it and the handover should not be visible.
 ### Tune the footer hoop
 
 A slingshot, a ball and a rim in the bottom-right of the footer
-(`common/components/HoopToy/`). `index.tsx` decides whether it runs and what
-colour it is; `_components/Hoop.ts` is the whole simulation and renderer.
+(`common/components/HoopToy/`). Four files:
+
+| File | What it is |
+| --- | --- |
+| `index.tsx` | **Policy.** Whether it runs, what colour it is, where the best streak lives |
+| `_components/Hoop.ts` | The court: simulation and renderer, inside a 240px canvas |
+| `_components/Splash.ts` | The ball after it leaves the court, on a viewport-sized canvas |
+| `_components/ball.ts` | What both agree on — size, gravity, drag, and how a ball is painted |
 
 **It is silent until touched.** Parked, it draws no frames at all — the
 animation frame is cancelled, not throttled. A visitor who never touches it pays
@@ -245,6 +259,40 @@ single shot. `PULL_VISUAL` is how far the ball leans into the pull instead.
 The aim preview runs the *same* integrator at the *same* `STEP` as the
 simulation. Euler integration at a coarser step lands somewhere else, and a
 preview that disagrees with the shot is worse than no preview at all.
+
+#### The ball can go in the water
+
+The court's **right-hand edge is open**. A ball that gets past the hoop with pace
+on it goes over the edge, arcs off the side of the page and lands in the water
+the whole site is sitting on — a real displacement in the WebGL surface, not a
+drawing of one. `Hoop` hands it to `Splash` at the boundary and waits; `Splash`
+runs it out, disturbs the water through `ripples.ts`, sinks it, and calls
+`respawn()` for a fresh ball. It is about one shot in seven, and it sits on both
+sides of the shots that go in: a little too flat or a little too strong.
+
+⚠️ **The negative `margin-right` on `.hoop-toy` is load-bearing.** It pulls the
+court out through the card's own padding so its open edge lands exactly on the
+edge of the page. Without it the ball has to cross a strip of padding before
+there is any water under it, falling the whole way — and there are only about
+sixty pixels of window below the footer once the page is scrolled to the bottom,
+so the splash happens below the fold and is never seen. It mirrors `px-3 xs:px-9`
+on `.page-card` and has to move if that does.
+
+⚠️ **`ESCAPE_SPEED` is about staying on screen, not difficulty.** Horizontal
+speed decides how far the ball falls before it is clear of the page. At 130px/s
+that is about thirty pixels; at 50px/s it is two hundred and the ball drops out
+of the window. A ball with pace goes over the edge, a ball merely dribbling into
+it stops there. The first version asked for 300px/s — a hard flat shot fired
+under the rim and nothing else — and the best thing the toy does went unseen.
+
+**A make that rolls off afterwards keeps its make.** Taking the streak away for
+it would turn the funniest outcome into the most annoying one.
+
+Everything the splash draws in the water is **clipped to outside the card**, so
+ripples slide behind the page instead of spreading across the footer. The ball
+*in the air* is not clipped — it is a thrown object crossing in front of the
+page. Sizes are tuned against the ball, not the page: an early pass drew a 180px
+ring for an 18px ball and read as a shockwave with opinions about the layout.
 
 **Who never sees it:** anyone with `prefers-reduced-motion: reduce`, and any
 coarse pointer. It is skipped on touch because the only way to give it a drag

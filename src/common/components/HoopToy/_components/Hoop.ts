@@ -17,41 +17,56 @@
  *   • It never takes a gesture it was not offered. A pointerdown only counts
  *     if it lands on the ball; anything else passes straight through to the
  *     footer links underneath.
+ *
+ * One thing it does not own: a ball hit hard enough to clear the right wall
+ * leaves the arena altogether and lands in the page's water. From the moment it
+ * crosses that edge it belongs to `Splash`; all this file does is report the
+ * position and velocity it left with, and wait to be given a new ball.
  */
 
-export interface HoopPalette {
-  /** Line work — the page's own text colour. */
-  ink: string;
-  /** The ball, and the rim it is aimed at. */
-  ball: string;
-}
+import { AIR_DRAG, BALL_R, GRAVITY, MAX_FRAME, STEP, alpha, paintBall, type HoopPalette } from "./ball";
+
+export type { HoopPalette };
 
 export interface HoopCallbacks {
   /** A make. `streak` is the new run of consecutive makes, so always >= 1. */
   onScore(streak: number): void;
   /** The ball came to rest without going in. */
   onMiss(): void;
+  /**
+   * The ball went over the open edge, in arena coordinates and pixels per
+   * second. Nothing will be drawn here until `respawn` is called.
+   */
+  onEscape(x: number, y: number, vx: number, vy: number, spin: number): void;
 }
-
-/* ── Physics ────────────────────────────────────────────────────────────────
-   Units are CSS pixels and seconds, integrated at a fixed step so that a
-   120Hz monitor and a browser that just dropped four frames agree about where
-   the ball went. */
-
-const GRAVITY = 1100;
-const STEP = 1 / 120;
-/** Longest catch-up a single frame may simulate. Past this we drop the time
-    rather than spiral, which is what happens after a tab has been backgrounded. */
-const MAX_FRAME = 0.25;
 
 const BOUNCE_FLOOR = 0.5;
 const BOUNCE_WALL = 0.5;
 const BOUNCE_RIM = 0.45;
 const BOUNCE_BOARD = 0.4;
 
-/** Per-step drag, and the harder scrub applied while the ball is rolling. */
-const AIR_DRAG = 0.999;
+/** The harder scrub applied while the ball is rolling, on top of the air drag. */
 const ROLL_DRAG = 0.86;
+
+/**
+ * The right-hand side of the court is open, and anything that gets past the hoop
+ * with pace on it goes over the edge and into the water the page sits on.
+ *
+ * The number is not about difficulty, it is about staying on screen. The court
+ * ends level with the edge of the page, so a ball going over it is over water
+ * immediately — but it still has to get far enough out for the splash to clear
+ * the page, and its horizontal speed decides how far it falls on the way. At
+ * 130px/s that is about thirty pixels. At 50px/s it is two hundred, and there
+ * is only about sixty pixels of window under the footer to fall through.
+ *
+ * So a ball with pace goes over the edge, and a ball merely dribbling into it
+ * stops there. The first version of this asked for 300px/s, which is a hard
+ * flat shot fired under the rim and nothing else — the best thing the toy does
+ * went essentially unseen. At 130 it is roughly one shot in seven, and it sits
+ * on both sides of the shots that go in: a little too flat or a little too
+ * strong and the ball is in the lake.
+ */
+const ESCAPE_SPEED = 130;
 
 /** Below both of these, on the floor, the ball counts as parked. */
 const REST_SPEED_X = 8;
@@ -97,11 +112,9 @@ const GRAB_RADIUS = 20;
 const PULL_VISUAL = 0.35;
 
 /* ── Layout ─────────────────────────────────────────────────────────────────
-   Derived from the canvas box on every resize. The arena is small enough that
-   the ball is kept inside it by bouncing off all four walls — there is nowhere
-   for it to escape to, and chasing a lost ball is not the game. */
-
-const BALL_R = 9;
+   Derived from the canvas box on every resize. The ball is kept inside by
+   bouncing off all four walls, with one exception: the right wall, which a
+   fast enough ball goes straight over. See `ESCAPE_SPEED`. */
 
 interface Layout {
   w: number;
@@ -138,18 +151,6 @@ function computeLayout(w: number, h: number): Layout {
   };
 }
 
-/**
- * Turn `rgb(255, 255, 255)` — what `getComputedStyle` hands back for the theme
- * variables — into the same colour at a given alpha. Anything unparseable falls
- * through as-is, which degrades to a fully opaque line rather than nothing.
- */
-function alpha(colour: string, a: number): string {
-  const parts = colour.match(/[\d.]+/g);
-  if (!parts || parts.length < 3) return colour;
-
-  return `rgba(${parts[0]}, ${parts[1]}, ${parts[2]}, ${a})`;
-}
-
 export default class Hoop {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
@@ -165,6 +166,12 @@ export default class Hoop {
   private vy = 0;
   /** Previous centre, kept for the swept crossing test through the rim. */
   private prevY = 0;
+  /**
+   * Seam rotation. Not physical — a real ball's spin depends on how it left the
+   * hand and what it has hit since — but tying it to horizontal speed is enough
+   * for the eye, and a ball whose seams do not move reads as a sticker.
+   */
+  private spin = 0;
 
   /** Pointer state. Non-null only between a grab and its release. */
   private drag: { id: number; x: number; y: number } | null = null;
@@ -175,6 +182,8 @@ export default class Hoop {
   private scoredThisShot = false;
   /** Whether the ball is in flight, i.e. a miss is still possible. */
   private live = false;
+  /** Whether the ball is in the water rather than on the court. */
+  private away = false;
 
   private restTimer = 0;
   /** Net swish, 1 immediately after a make and decaying to 0. */
@@ -216,8 +225,9 @@ export default class Hoop {
     this.layout = computeLayout(w, h);
 
     // A resize while the ball is parked should move it to the new parking
-    // spot; one mid-flight should leave the shot alone.
-    if (!this.live && !this.drag) this.park();
+    // spot; one mid-flight should leave the shot alone, and one while the ball
+    // is in the water must not quietly hand a second ball to the court.
+    if (!this.live && !this.drag && !this.away) this.park();
 
     this.draw();
   }
@@ -235,7 +245,7 @@ export default class Hoop {
    * annoyance the toy is supposed to avoid.
    */
   grab(id: number, x: number, y: number): boolean {
-    if (this.live || this.drag) return false;
+    if (this.live || this.drag || this.away) return false;
     if (Math.hypot(x - this.x, y - this.y) > GRAB_RADIUS) return false;
 
     this.drag = { id, x, y };
@@ -285,7 +295,7 @@ export default class Hoop {
 
   /** Whether a pointer at this position is over the ball — drives the cursor. */
   isOverBall(x: number, y: number): boolean {
-    return !this.live && Math.hypot(x - this.x, y - this.y) <= GRAB_RADIUS;
+    return !this.live && !this.away && Math.hypot(x - this.x, y - this.y) <= GRAB_RADIUS;
   }
 
   setHovering(hovering: boolean): void {
@@ -294,6 +304,14 @@ export default class Hoop {
     // Only a repaint, never a wake: the hover ring is a static highlight and
     // there is nothing to animate while the ball is parked.
     if (!this.frame) this.draw();
+  }
+
+  /** Put a fresh ball on the tee after one has been lost to the water. */
+  respawn(): void {
+    if (!this.away) return;
+    this.away = false;
+    this.park();
+    this.draw();
   }
 
   /** Cancel everything. The instance is not reusable afterwards. */
@@ -368,6 +386,7 @@ export default class Hoop {
     this.prevY = this.y;
     this.vx = 0;
     this.vy = 0;
+    this.spin = 0;
     this.live = false;
     this.restTimer = 0;
   }
@@ -381,7 +400,7 @@ export default class Hoop {
       return;
     }
 
-    if (!this.live) return;
+    if (!this.live || this.away) return;
 
     this.prevY = this.y;
 
@@ -390,11 +409,17 @@ export default class Hoop {
     this.vy *= AIR_DRAG;
     this.x += this.vx * STEP;
     this.y += this.vy * STEP;
+    this.spin += (this.vx / (BALL_R * 3)) * STEP;
 
     this.collideBoard();
     this.collideRim();
     this.checkScore();
     this.collideWalls();
+
+    // The ball may have left during that last call, in which case there is
+    // nothing here left to come to rest.
+    if (this.away) return;
+
     this.settle();
   }
 
@@ -464,6 +489,12 @@ export default class Hoop {
       this.x = BALL_R;
       this.vx = -this.vx * BOUNCE_WALL;
     } else if (this.x > w - BALL_R) {
+      if (this.vx > ESCAPE_SPEED) {
+        // Nothing over there. Hand it to the page and let it fall.
+        this.escape();
+        return;
+      }
+
       this.x = w - BALL_R;
       this.vx = -this.vx * BOUNCE_WALL;
     }
@@ -478,6 +509,33 @@ export default class Hoop {
       this.vy = -this.vy * BOUNCE_FLOOR;
       this.vx *= ROLL_DRAG;
     }
+  }
+
+  /**
+   * Hand the ball to the page and go quiet.
+   *
+   * A shot that has already gone through the rim keeps its make. Landing and
+   * trickling off the open edge afterwards is the best thing that can happen to
+   * a made basket, and taking the streak away for it would turn the toy's
+   * funniest outcome into its most annoying one.
+   *
+   * A shot that has not scored is a miss, reported now rather than when the
+   * splash ends — waiting would leave the scoreboard claiming a live streak
+   * while the ball visibly sinks.
+   */
+  private escape(): void {
+    this.away = true;
+    this.live = false;
+    this.restTimer = 0;
+
+    const { x, y, vx, vy, spin } = this;
+
+    if (!this.scoredThisShot) {
+      this.streak = 0;
+      this.callbacks.onMiss();
+    }
+
+    this.callbacks.onEscape(x, y, vx, vy, spin);
   }
 
   /** Park the ball once it has been quiet on the floor for long enough. */
@@ -543,7 +601,7 @@ export default class Hoop {
     ctx.stroke();
 
     if (this.drag) this.drawAim();
-    this.drawBall();
+    if (!this.away) this.drawBall();
   }
 
   /**
@@ -636,33 +694,18 @@ export default class Hoop {
 
   private drawBall(): void {
     const { ctx } = this;
-    const { ball, ink } = this.palette;
 
     // Hover ring: the only hint that the ball is grabbable at all.
     if (this.hovering && !this.live) {
-      ctx.strokeStyle = alpha(ball, 0.3);
+      ctx.strokeStyle = alpha(this.palette.ball, 0.3);
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(this.x, this.y, BALL_R + 4, 0, Math.PI * 2);
       ctx.stroke();
     }
 
-    ctx.fillStyle = alpha(ball, 0.95);
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, BALL_R, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Two seams, enough to read as a basketball at 18 pixels across.
-    ctx.strokeStyle = alpha(ink, 0.35);
-    ctx.lineWidth = 1;
-
-    ctx.beginPath();
-    ctx.moveTo(this.x - BALL_R, this.y);
-    ctx.lineTo(this.x + BALL_R, this.y);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.ellipse(this.x, this.y, BALL_R * 0.45, BALL_R, 0, 0, Math.PI * 2);
-    ctx.stroke();
+    // The same painter the water uses, so the ball does not change the instant
+    // it stops being the arena's.
+    paintBall(ctx, this.x, this.y, this.palette, this.spin);
   }
 }

@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Hoop, { type HoopPalette } from "./_components/Hoop";
+import { createPortal } from "react-dom";
+import Hoop from "./_components/Hoop";
+import Splash, { type Launch, type Shore } from "./_components/Splash";
+import { type HoopPalette } from "./_components/ball";
 
 /**
  * A basketball hoop in the corner of the footer.
@@ -16,7 +19,9 @@ import Hoop, { type HoopPalette } from "./_components/Hoop";
  *   • It is silent until touched. No idle animation, no bouncing to attract
  *     attention, no frames drawn at all while the ball is parked.
  *   • It cannot steal a click. A pointerdown is only captured if it lands on
- *     the ball; every other press falls through to the footer links.
+ *     the ball; every other press falls through to the footer links. The
+ *     splash overlay covers the whole viewport and is inert for the same
+ *     reason.
  *   • It is not there at all for anyone who asked for less motion, and not
  *     there on touch, where the only way to give it a drag gesture would be to
  *     take one away from the page scroll.
@@ -24,6 +29,15 @@ import Hoop, { type HoopPalette } from "./_components/Hoop";
 
 /** Where the best streak is remembered. */
 const STORAGE_KEY = "hoop-best";
+
+/**
+ * The page card, and so the shoreline: past its edge there is nothing under a
+ * falling ball but the water background.
+ *
+ * Read at the moment the ball leaves rather than held, because the footer is
+ * the bottom of a page whose height changes as things above it load.
+ */
+const CARD_SELECTOR = ".page-card";
 
 const FALLBACK: HoopPalette = { ink: "rgb(255, 255, 255)", ball: "rgb(234, 192, 165)" };
 
@@ -46,10 +60,19 @@ function readPalette(): HoopPalette {
 
 const HoopToy = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const splashCanvasRef = useRef<HTMLCanvasElement>(null);
+  const hoopRef = useRef<Hoop | null>(null);
+  const splashRef = useRef<Splash | null>(null);
 
   const [enabled, setEnabled] = useState(false);
   const [streak, setStreak] = useState(0);
   const [best, setBest] = useState(0);
+  /**
+   * The ball, in viewport coordinates, from the moment it clears the arena
+   * until the water has finished with it. Non-null is also what mounts the
+   * overlay: nothing exists on the page while the ball is on the court.
+   */
+  const [lost, setLost] = useState<(Launch & { shore: Shore }) | null>(null);
 
   /**
    * `best` is read here rather than in the game so that a storage that throws —
@@ -98,18 +121,54 @@ const HoopToy = () => {
 
   const onMiss = useCallback(() => setStreak(0), []);
 
+  /**
+   * The arena reports the ball in its own coordinates; the overlay is fixed, so
+   * everything it does is in viewport coordinates. The canvas box is the
+   * conversion, and it is read now rather than cached because the footer moves
+   * with the page.
+   */
+  const onEscape = useCallback((x: number, y: number, vx: number, vy: number, spin: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const arena = canvas.getBoundingClientRect();
+    const card = document.querySelector(CARD_SELECTOR);
+    // With no card to measure — a layout this component was not written for —
+    // the arena's own box stands in, and the ball lands a little closer than it
+    // should rather than not at all.
+    const shore = (card ?? canvas).getBoundingClientRect();
+    const radius = card ? parseFloat(getComputedStyle(card).borderTopLeftRadius) : 0;
+
+    setLost({
+      x: arena.left + x,
+      y: arena.top + y,
+      vx,
+      vy,
+      spin,
+      shore: {
+        left: shore.left,
+        top: shore.top,
+        right: shore.right,
+        bottom: shore.bottom,
+        radius: Number.isFinite(radius) ? radius : 0,
+      },
+    });
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!enabled || !canvas) return;
 
     let hoop: Hoop;
     try {
-      hoop = new Hoop(canvas, readPalette(), { onScore, onMiss });
+      hoop = new Hoop(canvas, readPalette(), { onScore, onMiss, onEscape });
     } catch {
       // No 2D context. Nothing to show and nothing to fall back to.
       setEnabled(false);
       return;
     }
+
+    hoopRef.current = hoop;
 
     /** Pointer position in the canvas's own coordinates. */
     const toLocal = (event: PointerEvent) => {
@@ -169,7 +228,12 @@ const HoopToy = () => {
 
     // The theme picker writes the palette as inline custom properties on the
     // documentElement, so watching that one attribute is the whole subscription.
-    const themeObserver = new MutationObserver(() => hoop.setPalette(readPalette()));
+    const themeObserver = new MutationObserver(() => {
+      const palette = readPalette();
+      hoop.setPalette(palette);
+      // A ball in mid-air when the theme changes should change with it.
+      splashRef.current?.setPalette(palette);
+    });
     themeObserver.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["style"],
@@ -192,8 +256,43 @@ const HoopToy = () => {
       canvas.removeEventListener("pointerleave", onPointerLeave);
       document.removeEventListener("visibilitychange", onVisibility);
       hoop.destroy();
+      hoopRef.current = null;
     };
-  }, [enabled, onScore, onMiss]);
+  }, [enabled, onScore, onMiss, onEscape]);
+
+  // ── The ball in the water ────────────────────────────────────────────────
+  // Its own effect because its canvas only exists while there is a ball to
+  // draw on it, and its own lifetime: it runs once, to the end, and then hands
+  // a fresh ball back to the court.
+  useEffect(() => {
+    const canvas = splashCanvasRef.current;
+    if (!lost || !canvas) return;
+
+    let splash: Splash;
+    try {
+      splash = new Splash(canvas, readPalette(), lost, lost.shore, () => {
+        hoopRef.current?.respawn();
+        setLost(null);
+      });
+    } catch {
+      // No 2D context for the overlay. Skip the splash and put the ball back,
+      // rather than leaving the court permanently empty.
+      hoopRef.current?.respawn();
+      setLost(null);
+      return;
+    }
+
+    splashRef.current = splash;
+
+    const onResize = () => splash.resize();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      splash.destroy();
+      splashRef.current = null;
+    };
+  }, [lost]);
 
   if (!enabled) return null;
 
@@ -212,6 +311,17 @@ const HoopToy = () => {
           <span>best {best}</span>
         </p>
       )}
+
+      {/* Portalled to the body: the card is a stacking context, and a fixed
+          canvas inside it would be clipped back to the card's own box — the
+          exact edge the ball has to cross. */}
+      {lost &&
+        createPortal(
+          <div className={`hoop-splash`} aria-hidden="true">
+            <canvas ref={splashCanvasRef} />
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

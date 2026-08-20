@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import WaterSurface, { type WaterPalette } from "./_components/WaterSurface";
+import { onRipple } from "./ripples";
 
 /**
  * The page background: a real water surface that the cursor disturbs.
@@ -274,6 +275,11 @@ const WaterBackground = () => {
 
     scheduleAmbient();
 
+    // ── Anything else on the page ────────────────────────────────────────────
+    // The footer basketball drops its ball in here. Announced rather than
+    // called so the toy never has to ask whether the water exists.
+    const unsubscribe = onRipple(({ x, y, radius, strength }) => surface.drop(x, y, radius, strength));
+
     // ── Page state ───────────────────────────────────────────────────────────
     const onScroll = () => surface.setScroll(window.scrollY);
 
@@ -310,6 +316,7 @@ const WaterBackground = () => {
       clearTimeout(arrival);
       clearTimeout(ambient);
       clearTimeout(resizeTimer);
+      unsubscribe();
       themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerdown", onPointerDown);
