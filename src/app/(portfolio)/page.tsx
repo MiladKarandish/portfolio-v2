@@ -1,13 +1,9 @@
 import Link from "next/link";
-import ParticleText from "@/common/components/ParticleText";
 import Reveal from "@/app/_components/Reveal";
 import { availability, focusAreas, intro, person, stats } from "@/data/profile";
 import { headlineSkills } from "@/data/skills";
 import { featuredProjects } from "@/data/projects";
 import { experiences } from "@/data/experiences";
-
-/** Module scope so the prop identity is stable across renders. */
-const particlePhrases = [person.name, person.role, "TypeScript · React · Node"];
 
 const currentRoles = experiences.filter((experience) => experience.current);
 
@@ -15,14 +11,7 @@ export default function HomePage() {
   return (
     <main id="main" className={`space-y-16`}>
       {/* ---------- Hero ---------- */}
-      <section className={`relative`}>
-        {/* Decorative only — hidden from assistive tech, skipped entirely on
-            touch devices and for anyone who asked for reduced motion. */}
-        <ParticleText
-          texts={particlePhrases}
-          className={`pointer-events-none absolute -inset-x-8 -top-10 bottom-0 -z-10 opacity-25`}
-        />
-
+      <section>
         <p className={`chip mb-5`}>
           <span aria-hidden="true">●</span> {availability.short}
         </p>
