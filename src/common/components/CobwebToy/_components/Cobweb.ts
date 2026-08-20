@@ -128,8 +128,15 @@ const SHAKE_REACH = 2400;
  */
 const SHAKE_FLOOR = 0.15;
 
-/** Peak kick, in pixels per step, for a disturbance of strength 1 alongside. */
-const SHAKE_KICK = 14;
+/**
+ * Peak kick, in pixels per step, for a disturbance of strength 1 alongside.
+ *
+ * The first version of this was half as strong and, fairly, went unnoticed:
+ * the splash is at the far end of the footer and the web is in the corner of
+ * your eye while you are watching the ball. A disturbance you have to be told
+ * about is not worth the code, so it either reads or it goes.
+ */
+const SHAKE_KICK = 26;
 
 /** How long the spider holds still after feeling something, in seconds. */
 const STARTLE_TIME = 1.1;
@@ -386,10 +393,12 @@ export default class Cobweb {
     for (const p of this.webParticles) {
       if (p.w === 0) continue;
 
-      // A shared phase, so the strands do not all set off together and read as
-      // the whole web being shoved sideways. Off position rather than random,
-      // so a disturbance shakes the web the same way twice.
-      const phase = 0.55 + 0.9 * Math.abs(Math.sin(p.x * 0.7 + p.y * 0.5));
+      // The near side of the web is hit before the far side, which turns a
+      // uniform shove into something crossing the web. That is the whole
+      // difference between "the web moved" and "something arrived": the eye
+      // reads a travelling wave and does not read a translation at all.
+      const lead = (p.x * awayX + p.y * awayY) / this.width;
+      const phase = 0.55 + 0.9 * Math.abs(Math.sin(lead * 5.5));
 
       // Written to the previous position, not the current one: in verlet that
       // is what an impulse is. Moving `x` instead would teleport the web and
@@ -885,13 +894,18 @@ export default class Cobweb {
 
     // The beads of glue on the capture spiral. At this size they are what
     // stops the web reading as a bare wireframe.
+    //
+    // One path for all of them, and one fill. Ninety separate `fill()` calls
+    // is ninety rasterisations of a one-pixel dot; the `moveTo` before each
+    // `arc` is what keeps them from being strung together into a scribble.
     ctx.fillStyle = alpha(this.palette.ink, 0.3);
+    ctx.beginPath();
     for (const p of this.webParticles) {
       if (p.w === 0) continue;
-      ctx.beginPath();
+      ctx.moveTo(p.x + 0.85, p.y);
       ctx.arc(p.x, p.y, 0.85, 0, Math.PI * 2);
-      ctx.fill();
     }
+    ctx.fill();
   }
 
   private drawSpider(): void {
@@ -902,24 +916,43 @@ export default class Cobweb {
     ctx.lineJoin = "round";
     ctx.strokeStyle = alpha(this.palette.ink, 0.62);
 
-    for (const leg of this.legs) {
-      const [hip, knee, ankle, foot] = leg.chain;
+    // Tapering along the leg: thigh, shin, then a hair to the foot. Drawing
+    // each leg as one polyline instead would be the difference between a
+    // spider and a bent paperclip — but a stroke can only have one width, so
+    // it is three passes over all eight legs rather than three strokes per
+    // leg. The same picture, an eighth of the stroke calls.
+    const segments = [
+      { from: 0, to: 1, width: 2.1 * k },
+      { from: 1, to: 2, width: 1.6 * k },
+      { from: 2, to: 3, width: 1.1 * k },
+    ];
 
-      // Tapering along the leg: thigh, shin, then a hair to the foot. Three
-      // strokes rather than one polyline is the whole difference between a
-      // spider and a bent paperclip.
-      ctx.lineWidth = 2.1 * k;
-      line(ctx, hip, knee);
-      ctx.lineWidth = 1.6 * k;
-      line(ctx, knee, ankle);
-      ctx.lineWidth = 1.1 * k;
-      line(ctx, ankle, foot);
+    for (const segment of segments) {
+      ctx.lineWidth = segment.width;
+      ctx.beginPath();
+
+      for (const leg of this.legs) {
+        const a = leg.chain[segment.from];
+        const b = leg.chain[segment.to];
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+      }
+
+      ctx.stroke();
     }
 
+    // The body, in one path for the same reason as the beads.
     ctx.fillStyle = alpha(this.palette.body, 0.92);
-    dot(ctx, this.abdomen, 8 * k);
-    dot(ctx, this.thorax, 4.4 * k);
-    dot(ctx, this.head, 3.4 * k);
+    ctx.beginPath();
+    for (const [part, radius] of [
+      [this.abdomen, 8 * k],
+      [this.thorax, 4.4 * k],
+      [this.head, 3.4 * k],
+    ] as const) {
+      ctx.moveTo(part.x + radius, part.y);
+      ctx.arc(part.x, part.y, radius, 0, Math.PI * 2);
+    }
+    ctx.fill();
   }
 }
 
@@ -931,17 +964,4 @@ function clamp(value: number, low: number, high: number): number {
 function offset(from: Particle, dx: number, dy: number, distance: number): Particle {
   const length = Math.hypot(dx, dy) || 1;
   return new Particle(from.x + (dx / length) * distance, from.y + (dy / length) * distance);
-}
-
-function line(ctx: CanvasRenderingContext2D, a: Particle, b: Particle): void {
-  ctx.beginPath();
-  ctx.moveTo(a.x, a.y);
-  ctx.lineTo(b.x, b.y);
-  ctx.stroke();
-}
-
-function dot(ctx: CanvasRenderingContext2D, p: Particle, radius: number): void {
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-  ctx.fill();
 }

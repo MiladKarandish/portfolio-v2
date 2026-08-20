@@ -248,15 +248,27 @@ no gravity here and no arc — it travels in a straight line and loses pace, and
 what makes it a skip rather than a slide is that it only touches every so
 often. Adding gravity as well puts every stone in the bottom-left of the window.
 
-⚠️ **`MIN_SPEED` is shared with the gesture on purpose, and is about text
-selection.** Dragging out of the margin and onto the text is how somebody
-selects a paragraph, and that is slow and deliberate; a throw is a flick. The
-component suppresses the selection *only while the pointer is actually moving
-faster than a throw*, and hands it straight back when it is not. Testing
-distance instead of speed — the obvious version — breaks selection for
-everybody in exchange for a gesture nobody made. Nothing here ever calls
-`preventDefault`: a press that turns out not to be a throw has to stay a
-completely ordinary press.
+⚠️ **Text selection is decided in the stylesheet, by surface — not in JS.**
+`body:has(> .stone-skip)` is `user-select: none` and `.page-card` inside it is
+`user-select: text`. The open water is a playing field and does not select;
+the card is a page and does. The two footer canvases are `none` for the same
+reason.
+
+The `:has` is what scopes it: the toy renders nothing for reduced motion, for
+coarse pointers, or without float render targets, and on those visits selection
+is untouched — as it is on `/resume` and the 404, which have no stone. A browser
+with no `:has` support ignores the rule and loses only the tidiness.
+
+An earlier version did this dynamically, suppressing selection while the pointer
+happened to be moving faster than a throw. It worked and it was the wrong shape:
+whether something can be selected should depend on what you are pointing at, not
+on how fast your hand was going. **The consequence, deliberately:** you can no
+longer start a selection out in the margin and drag onto the text to grab a
+paragraph. Start the selection on the text instead.
+
+Nothing here ever calls `preventDefault`, and nothing touches the document's
+classes: a press that turns out not to be a throw has to stay a completely
+ordinary press.
 
 It is drawn at the water's own `z-index: -1` and **mounted immediately after
 it**, so it paints above the surface and below the page card. That ordering is
@@ -271,7 +283,7 @@ that appears where nobody is looking is a number nobody reads.
 
 | Knob | What it does |
 | --- | --- |
-| `MIN_SPEED` | The flick/drag boundary. See the warning above before touching it |
+| `MIN_SPEED` | The slowest flick that counts as a throw at all |
 | `MAX_SPEED` | Caps a wrist-flick, which can carry ten times what an arm can |
 | `SKIP_LOSS` / `AIR_DRAG` | Pace lost per touch and per second. Together these set how many skips a throw is worth |
 | `SINK_SPEED` | When the stone gives up |
@@ -364,9 +376,17 @@ the same broadcast the water listens to:
 * **In.** A ball going over the edge of the court pours three disturbances into
   the water. The cobweb subscribes to the same channel, and anything over
   `SHAKE_FLOOR` at the far end of the footer rocks the card enough that the web
-  shivers — about 6px on a full-width card, 9px on a narrow one — and the spider
-  **stops dead** for `STARTLE_TIME`. A spider that feels its web move and carries
-  on strolling is the one thing a real one never does.
+  shivers — about 14px on a full-width card, 20px on a narrow one, against a web
+  132px across — and the spider **stops dead** for `STARTLE_TIME`. A spider that
+  feels its web move and carries on strolling is the one thing a real one never
+  does.
+
+  The kick is phased by distance along the direction it came from, so the near
+  side of the web moves before the far side. That is what makes it read as
+  something arriving rather than as the web being shoved: the eye picks up a
+  travelling wave and does not register a uniform translation at all. The first
+  version was half this strong and unphased, and went unnoticed — which for a
+  detail like this is the same as not existing.
 * **Out.** Letting go of a strand mid-sweep publishes a ripple back, so a hard
   pluck dents the water under that corner of the page.
 

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isOpenWater } from "@/common/components/WaterBackground/openWater";
 import WaterSurface from "@/common/components/WaterBackground/_components/WaterSurface";
-import Stone, { MIN_SPEED, type StonePalette } from "./_components/Stone";
+import Stone, { type StonePalette } from "./_components/Stone";
 
 /**
  * Skipping stones on the water the page floats on.
@@ -23,10 +23,11 @@ import Stone, { MIN_SPEED, type StonePalette } from "./_components/Stone";
  *   • It only takes a flick that starts on open water. `isOpenWater` is the
  *     same test the water itself uses to decide whether the cursor is playing
  *     or reading, so the boundary is drawn in exactly one place.
- *   • It never calls `preventDefault`. A press that turns out not to be a
- *     throw was a completely ordinary press, and the page has already handled
- *     it. Text selection is suppressed for the length of a flick with a class
- *     rather than by swallowing the event.
+ *   • It never calls `preventDefault`, and it never touches the document. A
+ *     press that turns out not to be a throw was a completely ordinary press,
+ *     and the page has already handled it. Whether text can be selected is
+ *     decided in the stylesheet, by which surface it is: the open water is a
+ *     playing field and is not selectable, the card is a page and is.
  *   • It is not there for anyone who asked for less motion, not there on
  *     touch — where the margin is a couple of dozen pixels wide and there is
  *     nothing to aim at — and not there when the water is not there, because a
@@ -161,43 +162,16 @@ const StoneToy = () => {
       trail = [{ t: event.timeStamp, x: event.clientX, y: event.clientY }];
     };
 
-    /** How fast the pointer is going right now, in pixels per second. */
-    const flickSpeed = () => {
-      if (trail.length < 2) return 0;
-
-      const last = trail[trail.length - 1];
-      const first = trail[0];
-      const seconds = (last.t - first.t) / 1000;
-      if (seconds <= 0) return 0;
-
-      return Math.hypot(last.x - first.x, last.y - first.y) / seconds;
-    };
-
     const onPointerMove = (event: PointerEvent) => {
       if (pointer !== event.pointerId) return;
 
       trail.push({ t: event.timeStamp, x: event.clientX, y: event.clientY });
       while (trail.length > 2 && event.timeStamp - trail[0].t > FLICK_WINDOW) trail.shift();
-
-      // Suppress the text selection only while the pointer is actually moving
-      // fast enough to be a throw, and give it straight back when it is not.
-      //
-      // Dragging out of the margin and onto the text is how a paragraph gets
-      // selected, and that is a slow, deliberate movement. Testing distance
-      // instead of speed — which is the obvious version — breaks that
-      // selection for everybody, in exchange for a gesture nobody made.
-      document.documentElement.classList.toggle("stone-flick", flickSpeed() >= MIN_SPEED);
     };
 
     const onPointerUp = (event: PointerEvent) => {
       if (pointer !== event.pointerId) return;
       pointer = null;
-
-      // The gesture is over, so the selection comes back now — not when the
-      // stone finally sinks two seconds later. Suppressing it for the length
-      // of the flight would mean a throw quietly costing everyone the ability
-      // to select text for as long as they can still see the stone.
-      document.documentElement.classList.remove("stone-flick");
 
       const last = trail[trail.length - 1];
       const first = trail[0];
@@ -244,7 +218,6 @@ const StoneToy = () => {
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("resize", onResize);
-      document.documentElement.classList.remove("stone-flick");
       stone.destroy();
     };
   }, [enabled, onSkip, onDone]);

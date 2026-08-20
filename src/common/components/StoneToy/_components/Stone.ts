@@ -42,17 +42,11 @@ const SINK_SPEED = 190;
 /** Fastest a flick can throw, however hard it is flicked. */
 const MAX_SPEED = 2600;
 /**
- * Slowest throw that is a throw at all.
- *
- * Exported because the gesture and the simulation have to agree about it
- * exactly. Somebody dragging from the margin onto the text is selecting a
- * paragraph, and that is a slow, deliberate movement; a throw is a flick. If
- * the component guessed at a different number than this one, a gesture could
- * be treated as a throw right up until the moment it was refused — by which
- * point the selection it was actually going to make has already been
- * suppressed.
+ * Slowest throw that is a throw at all, rather than a click with a wobble in
+ * it. A press that does not clear this is refused and the caller leaves the
+ * gesture completely alone.
  */
-export const MIN_SPEED = 620;
+const MIN_SPEED = 620;
 
 /** Speed lost to the water on every touch. */
 const SKIP_LOSS = 0.82;
@@ -120,6 +114,8 @@ export default class Stone {
   private frame: number | null = null;
   private lastTime = 0;
   private accumulator = 0;
+  /** Whether the canvas has a backing store yet. See `allocate`. */
+  private allocated = false;
 
   constructor(canvas: HTMLCanvasElement, palette: StonePalette, callbacks: StoneCallbacks) {
     const ctx = canvas.getContext("2d");
@@ -130,6 +126,11 @@ export default class Stone {
     this.palette = palette;
     this.callbacks = callbacks;
 
+    // An unsized canvas element is 300x150 by default, which is a backing
+    // store nobody asked for. `resize` reads the viewport but allocates
+    // nothing until the first throw.
+    canvas.width = 0;
+    canvas.height = 0;
     this.resize();
   }
 
@@ -139,9 +140,34 @@ export default class Stone {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    // Nothing to re-size until there has been something to draw.
+    if (!this.allocated) return;
+
     this.canvas.width = Math.round(this.width * this.dpr);
     this.canvas.height = Math.round(this.height * this.dpr);
     this.draw();
+  }
+
+  /**
+   * Give the canvas its backing store, once, on the first throw.
+   *
+   * This canvas covers the viewport, and a viewport-sized canvas at 2x is not
+   * free: 2560x1440 is 5120x2880 pixels, which is about 59MB held for as long
+   * as the page is open. Most visits never throw a stone, and paying 59MB up
+   * front for a toy nobody used is the sort of thing that makes a portfolio
+   * feel heavy for no reason anyone can see.
+   *
+   * Allocated once and then kept, rather than released between throws: getting
+   * the memory back is worth less than a stutter at the start of every throw
+   * after the first.
+   */
+  private allocate(): void {
+    if (this.allocated) return;
+
+    this.allocated = true;
+    this.canvas.width = Math.round(this.width * this.dpr);
+    this.canvas.height = Math.round(this.height * this.dpr);
   }
 
   setPalette(palette: StonePalette): void {
@@ -182,6 +208,7 @@ export default class Stone {
     // rather than a stone hanging in the air for a tenth of a second.
     this.toTouch = 0;
 
+    this.allocate();
     this.wake();
     return true;
   }
