@@ -37,12 +37,12 @@ export const availability = {
 
 export const intro = {
   /** Landing headline — short enough to read in one glance. */
-  headline: "I build production software that has to be right the first time.",
+  headline: "Full-stack engineer, six years, mostly accounting software.",
   /** Two short paragraphs; the site's only long-form prose. */
   body: [
     showTamdid
-      ? "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I co-founded and single-handedly built a consumer fintech app from an empty database to a released Android package."
-      : "Six years of shipping — most of it on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I rebuilt it on a new framework without taking the old one down once.",
+      ? "Most of that on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I co-founded and single-handedly built a consumer fintech app from an empty database to a released Android package."
+      : "Most of that on systems where a rounding error is somebody's money. I lead the frontend of an accounting product used by more than 10,000 people a day, and I rebuilt it on a new framework without taking the old one down once.",
     "I like the parts other people avoid: transaction boundaries, double-spend windows, what happens when the payment provider times out halfway through. I write TypeScript everywhere and I own things end to end — schema, server, interface, pipeline, release.",
   ],
 };
