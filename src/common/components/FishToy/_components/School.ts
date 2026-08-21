@@ -14,11 +14,19 @@
  * stone, a plucked strand of the cobweb — so all three toys summon fish
  * without one line of any of them knowing this file exists.
  *
- * The water's own cursor work does *not* go through that broadcast: it calls
- * the surface directly, for pointer movement and for a plain click. That is
- * left exactly as it is. Fish that came to every click would be on screen
- * constantly, which is the difference between something living down there and
- * a cursor effect.
+ * A press on the open water counts too, through `visit`. That is not on the
+ * broadcast — the water handles its own cursor work directly and is left
+ * exactly as it is — but it is the one disturbance a visitor finds without
+ * being told, because clicking the margin visibly dents it.
+ *
+ * The first version left presses out, to keep fish rare. It kept them rare by
+ * keeping them invisible: the three things on the broadcast are a ball
+ * reaching the water, a hard pluck of the cobweb, and a flicked stone, and all
+ * three have to be discovered first. What stops fish becoming a cursor effect
+ * is `COOLDOWN`, not the absence of a way to call them.
+ *
+ * Pointer *movement* is still deliberately excluded. That is continuous, and
+ * fish that followed the cursor would be a cursor effect.
  */
 
 import { alpha } from "@/utils/colour";
@@ -180,7 +188,14 @@ export default class School {
    */
   notice(x: number, y: number, strength: number): void {
     if (Math.abs(strength) < NOTICE) return;
+    this.visit(x, y);
+  }
 
+  /**
+   * Come and look at this, whatever it was. A press on the open water, which
+   * has no strength to weigh up — somebody did it on purpose.
+   */
+  visit(x: number, y: number): void {
     this.targetX = x;
     this.targetY = y;
     this.sinceNews = 0;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { isOpenWater } from "@/common/components/WaterBackground/openWater";
 import { onRipple } from "@/common/components/WaterBackground/ripples";
 import WaterSurface from "@/common/components/WaterBackground/_components/WaterSurface";
 import School, { type FishPalette } from "./_components/School";
@@ -12,9 +13,9 @@ import School, { type FishPalette } from "./_components/School";
  * what colour it is, and what it is listening to. The same split as every
  * other toy here.
  *
- * It has no gesture of its own and no element to press. It listens to
- * `ripples.ts` and nothing else, which means all three toys on the page summon
- * fish without any of them referring to this file, or to each other:
+ * It has no element of its own to press. It listens to `ripples.ts`, which
+ * means all three toys on the page summon fish without any of them referring
+ * to this file, or to each other:
  *
  *   • the basketball going over the edge of its court and hitting the water
  *   • every touch of a skipping stone, and the sink at the end of it
@@ -23,10 +24,19 @@ import School, { type FishPalette } from "./_components/School";
  * Add a fourth thing that publishes a ripple and the fish will come to that
  * too, with no change here.
  *
- * There is deliberately no `pointer: coarse` guard, unlike the toys. Nothing
- * publishes ripples on touch today, so there is nothing to come up for and the
- * cost is one idle subscription — but the day the hoop learns to be tapped,
- * this should start working on its own rather than needing to be remembered.
+ * And it takes a press on the open water directly, which is the only one of
+ * those a visitor finds without being told: the margin already dents when you
+ * click it, so clicking it is the thing people actually try. `isOpenWater` is
+ * the same test the water and the stone use, so all three agree about where
+ * the page stops and the water starts. Movement is not included — that is
+ * continuous, and fish that followed the cursor would be a cursor effect.
+ *
+ * There is deliberately no `pointer: coarse` guard, unlike the three toys —
+ * and since a press counts, this is the one thing on the page besides the
+ * water itself that a phone gets. The margin is narrow there, so it is a
+ * fiddly tap rather than a feature, but it works and it costs nothing to let
+ * it. The day the hoop learns to be tapped, this starts paying off properly on
+ * its own rather than needing to be remembered.
  */
 
 const FALLBACK: FishPalette = { shadow: "rgb(20, 60, 120)" };
@@ -75,6 +85,14 @@ const FishToy = () => {
 
     const unsubscribe = onRipple(({ x, y, strength }) => school.notice(x, y, strength));
 
+    // Left button, open water. Nothing is captured and nothing is prevented:
+    // this rides along with a press the water has already handled, and a press
+    // that turns out to be the start of a stone throw stays a stone throw.
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.button !== 0 || !isOpenWater(event.target)) return;
+      school.visit(event.clientX, event.clientY);
+    };
+
     const onResize = () => school.resize();
 
     // The theme picker writes the palette as inline custom properties on the
@@ -85,10 +103,12 @@ const FishToy = () => {
       attributeFilter: ["style"],
     });
 
+    window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("resize", onResize);
 
     return () => {
       unsubscribe();
+      window.removeEventListener("pointerdown", onPointerDown);
       themeObserver.disconnect();
       window.removeEventListener("resize", onResize);
       school.destroy();

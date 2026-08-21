@@ -236,17 +236,35 @@ back down when nothing else happens (`common/components/FishToy/`). Two files:
 | `index.tsx` | **Policy.** Whether it runs, what colour it is, what it listens to |
 | `_components/School.ts` | The fish: simulation and renderer, on a viewport-sized canvas |
 
-**It has no gesture and no element to press.** It listens to `ripples.ts` and
-nothing else, which is the whole design: the basketball hitting the water, every
-touch of a skipping stone, and a hard pluck of the cobweb all summon fish
-without one line of any of those files knowing this one exists. Add a fourth
-thing that publishes a ripple and the fish come to that too, for free.
+**It has no element of its own to press.** It listens to `ripples.ts`, which is
+most of the design: the basketball hitting the water, every touch of a skipping
+stone, and a hard pluck of the cobweb all summon fish without one line of any of
+those files knowing this one exists. Add a fourth thing that publishes a ripple
+and the fish come to that too, for free.
 
-⚠️ **The water's own cursor work deliberately does not go through the
-broadcast.** Pointer movement and a plain click on the water call the surface
-directly, and that must stay that way. Fish that came to every click would be on
-screen permanently, which is the difference between something living down there
-and a cursor effect.
+**It also takes a plain press on the open water,** through `visit`. That one is
+not on the broadcast — the water handles its own cursor work directly and is
+left alone — and it is there for discoverability, which is the whole problem
+this toy had:
+
+> All three things on the broadcast have to be *found* first. The ball reaching
+> the water is about one shot in seven and needs the hoop discovered; the pluck
+> needs the web found and dragged hard; the stone needs a flick gesture in a
+> margin with nothing in it. The first version left presses out to keep fish
+> rare, and it kept them rare by keeping them invisible.
+
+Clicking the margin is the one thing a visitor tries unprompted, because it
+visibly dents. What stops fish becoming a cursor effect is `COOLDOWN`, not the
+absence of a way to call them.
+
+⚠️ **Pointer *movement* still must not summon them,** and the water's own
+movement handling must stay off the broadcast. That is continuous, and fish that
+followed the cursor around would be a cursor effect rather than something living
+under the page.
+
+Because a press counts, this is **the only thing besides the water itself that a
+phone gets** — the margin is narrow there so it is a fiddly tap rather than a
+feature, but it works.
 
 ⚠️ **The cooldown is a timestamp, not a counter.** The obvious version counts
 seconds-since-empty in the step loop — but the loop is *asleep* for exactly the
@@ -275,7 +293,7 @@ both. Reordering those three lines in the layout reorders the water.
 
 | Knob | What it does |
 | --- | --- |
-| `NOTICE` | The weakest disturbance worth surfacing for. Below a single stone touch (0.06–0.13) on purpose |
+| `NOTICE` | The weakest disturbance worth surfacing for. Below a single stone touch (0.06–0.13) on purpose. A press bypasses it — see `visit` |
 | `COOLDOWN` | How long after a school leaves before another may come |
 | `LINGER` | How long they keep swimming after the last disturbance. See the warning above |
 | `SPAWN_NEAR` / `SPAWN_FAR` | How far out in the dark they start |
