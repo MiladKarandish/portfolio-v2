@@ -648,6 +648,31 @@ textarea:focus-visible,
   list-style: none;
 }
 
+/* ---------- Fish ---------- */
+
+/* Whatever is under the water, drawn over the whole viewport.
+
+   The stacking is the whole illusion, and it is DOM order rather than any
+   z-index: water, then fish, then stone, then the card. The fish are under the
+   surface, the stone is on it, and the page is above both — so a fish that
+   swims out of the margin passes beneath the card and a stone skips over the
+   top of one.
+
+   `pointer-events: none`, and there is no gesture here at all: this toy is
+   summoned by `ripples.ts` and has nothing to press. */
+.fish-school {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.fish-school canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* ---------- Skipping stones ---------- */
 
 /* The stone crossing the water, drawn over the whole viewport.

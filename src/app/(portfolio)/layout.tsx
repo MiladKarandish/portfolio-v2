@@ -2,6 +2,7 @@ import { cn } from "@/utils/className";
 import Header from "@/app/_components/Header";
 import Footer from "@/app/_components/Footer";
 import WaterBackground from "@/common/components/WaterBackground";
+import FishToy from "@/common/components/FishToy";
 import StoneToy from "@/common/components/StoneToy";
 
 export default function PortfolioLayout({
@@ -17,9 +18,11 @@ export default function PortfolioLayout({
           which is a print sheet. */}
       <WaterBackground />
 
-      {/* After the water, so it paints over it — and, like the water, behind
-          the card. A stone thrown across the margin carries on under the page
-          rather than over it. */}
+      {/* Order is the illusion here, and it is DOM order, not z-index: the
+          fish are under the surface, the stone is on it, and the card is above
+          both. All three sit behind the card, so anything that leaves the
+          margin passes beneath the page rather than across it. */}
+      <FishToy />
       <StoneToy />
 
       <div

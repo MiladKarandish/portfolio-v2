@@ -50,6 +50,7 @@ separate copies of the work history, and only one of them got updated.
 | The basketball toy in the footer | `common/components/HoopToy/` | See below. Size is `--hoop-width` in `styles/custom.css` |
 | The cobweb toy in the footer | `common/components/CobwebToy/` | See below. Size is `--cobweb-size` in `styles/custom.css` |
 | Skipping stones on the water | `common/components/StoneToy/` | See below. There is nothing on the page until somebody throws one |
+| The fish under the water | `common/components/FishToy/` | See below. Summoned by `ripples.ts`; it has no gesture of its own |
 | Résumé is spilling onto a third page | `styles/custom.css`, the `THE ONE KNOB` comment | Currently `10.6pt`, roughly one bullet of headroom |
 | Email, phone, portfolio, LinkedIn or GitHub on the CV | `data/profile.tsx` → `person` | Two rows of three in the header — keep it at three per row |
 
@@ -223,6 +224,76 @@ The CSS gradient on `body` in `globals.css` is a complete standalone background
 browser without WebGL2 or float render targets. Both get the CSS gradient. If
 you change that gradient, change the water palette to match — the canvas fades
 in over the top of it and the handover should not be visible.
+
+### Tune the fish
+
+Something living under the water. Nothing is on screen until the surface is
+disturbed; then a few shapes rise out of the dark, swim over to look, and sink
+back down when nothing else happens (`common/components/FishToy/`). Two files:
+
+| File | What it is |
+| --- | --- |
+| `index.tsx` | **Policy.** Whether it runs, what colour it is, what it listens to |
+| `_components/School.ts` | The fish: simulation and renderer, on a viewport-sized canvas |
+
+**It has no gesture and no element to press.** It listens to `ripples.ts` and
+nothing else, which is the whole design: the basketball hitting the water, every
+touch of a skipping stone, and a hard pluck of the cobweb all summon fish
+without one line of any of those files knowing this one exists. Add a fourth
+thing that publishes a ripple and the fish come to that too, for free.
+
+⚠️ **The water's own cursor work deliberately does not go through the
+broadcast.** Pointer movement and a plain click on the water call the surface
+directly, and that must stay that way. Fish that came to every click would be on
+screen permanently, which is the difference between something living down there
+and a cursor effect.
+
+⚠️ **The cooldown is a timestamp, not a counter.** The obvious version counts
+seconds-since-empty in the step loop — but the loop is *asleep* for exactly the
+period being measured, so the count freezes the moment the last fish leaves and
+never reaches the cooldown. The first school is then the only one the page ever
+gets, and it fails silently.
+
+⚠️ **`LINGER` has to outlast the swim.** A fish gives up `LINGER` seconds after
+the last disturbance. If the furthest, slowest fish cannot cross `SPAWN_FAR` in
+that time, schools turn round and leave without ever arriving — which looks
+exactly like nothing happened. At the shipped numbers the swim is 0.6–3s against
+a 4.5s `LINGER`.
+
+**They cannot chase a stone,** and are not meant to. A skipping stone crosses
+the water at about 900px/s; nothing that looks like a fish moves at 900px/s.
+What happens instead is that repeated disturbances *re-aim* one school rather
+than summoning several, so a stone with eleven touches sends one group off
+toward wherever it ended, arriving about when the ripples settle.
+
+Layering is **DOM order, not z-index** — water, fish, stone, card, all mounted
+in that order in `(portfolio)/layout.tsx` and all at `z-index: -1` except the
+card. The fish are under the surface, the stone is on it, the page is above
+both. Reordering those three lines in the layout reorders the water.
+
+#### The knobs
+
+| Knob | What it does |
+| --- | --- |
+| `NOTICE` | The weakest disturbance worth surfacing for. Below a single stone touch (0.06–0.13) on purpose |
+| `COOLDOWN` | How long after a school leaves before another may come |
+| `LINGER` | How long they keep swimming after the last disturbance. See the warning above |
+| `SPAWN_NEAR` / `SPAWN_FAR` | How far out in the dark they start |
+| `MIN_SPEED` / `MAX_SPEED` / `TURN_RATE` | How they swim. `TURN_RATE` is low enough that they arc rather than pivot |
+| `ORBIT_RADIUS` | Inside this they stop aiming at the disturbance and start circling it |
+| `MIN_FISH` / `MAX_FISH` | School size, 2–4 |
+| `FISH_ALPHA` | How much they show. The first pass was faint enough that they read as commas |
+
+Costs 0.006ms a frame with a school up, and nothing at all otherwise — the
+animation frame is cancelled, and like the stone the viewport-sized canvas is
+not allocated until the first summon.
+
+**Who never sees it:** anyone with `prefers-reduced-motion: reduce`, and anyone
+whose GPU will not give the water float render targets — without the water there
+is no surface to be under. There is deliberately **no `pointer: coarse` guard**,
+unlike the toys: nothing publishes ripples on touch today so there is nothing to
+come up for, but the day the hoop learns to be tapped this should start working
+on its own rather than needing to be remembered.
 
 ### Tune the skipping stones
 
