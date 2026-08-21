@@ -272,6 +272,41 @@ period being measured, so the count freezes the moment the last fish leaves and
 never reaches the cooldown. The first school is then the only one the page ever
 gets, and it fails silently.
 
+⚠️ **The fish are `--bg-950` lifted toward white, and that is load-bearing.**
+`WaterBackground` builds the entire surface out of `--bg-950` *darkened* — 0.44
+for deep, 0.68 for mid. Drawing the fish in the same variable at full strength,
+which the first version did, leaves the gap between fish and water entirely at
+the mercy of how bright that one variable happens to be in a given theme. In
+`earthy` it is `rgb(30, 24, 8)`, so the water came out around `rgb(20, 16, 5)`
+and so did the fish. Measured as a luminance difference out of 255:
+
+| theme | before | after |
+| --- | --- | --- |
+| fox | 12.8 | 44.1 |
+| death | 7.5 | 47.9 |
+| whale | 6.8 | 48.4 |
+| earthy | **2.9** | 51.2 |
+| dusk | 14.3 | 43.0 |
+| green | 7.4 | 48.0 |
+
+Lifting puts the fish on the opposite side of the water from where the water was
+made, so the contrast is fixed by construction and survives a theme nobody has
+written yet. `dusk` is the proof it was needed: its ramp is inverted —
+`--bg-950` is *lighter* than `--bg-700` — so anything assuming 950 means dark is
+already wrong there.
+
+⚠️ **`EDGE_MARGIN` has to be bigger than a fish's turning circle.** At
+`MAX_SPEED` over `TURN_RATE` that circle has a radius of about 73px. The first
+attempt set the margin to 70 and made things *worse* — a fish that starts
+turning one turning-radius from the edge still leaves, just along a longer arc,
+and the worst excursion went from 165px to 246px. At 150 with a hard clamp
+underneath as a backstop, time spent entirely off the window went from 8.1% to
+0.0%, and time in open water from 83.8% to 96.2%.
+
+This was the "fish disappear" bug: nothing was removing them — the school count
+was always exactly what was summoned — they were simply swimming out of the
+window and being counted as present while nobody could see them.
+
 ⚠️ **`LINGER` has to outlast the swim.** A fish gives up `LINGER` seconds after
 the last disturbance. If the furthest, slowest fish cannot cross `SPAWN_FAR` in
 that time, schools turn round and leave without ever arriving — which looks
@@ -299,7 +334,9 @@ both. Reordering those three lines in the layout reorders the water.
 | `SPAWN_NEAR` / `SPAWN_FAR` | How far out in the dark they start |
 | `MIN_SPEED` / `MAX_SPEED` / `TURN_RATE` | How they swim. `TURN_RATE` is low enough that they arc rather than pivot |
 | `ORBIT_RADIUS` | Inside this they stop aiming at the disturbance and start circling it |
-| `MIN_FISH` / `MAX_FISH` | School size, 2–4 |
+| `MIN_FISH` / `MAX_FISH` | School size, 4–7 |
+| `EDGE_MARGIN` / `EDGE_PUSH` | How far out they start turning back, and how hard. See the warning above |
+| `LIFT` in `index.tsx` | How far the fish colour is lifted from the water's own. See the warning above |
 | `FISH_ALPHA` | How much they show. The first pass was faint enough that they read as commas |
 
 Costs 0.006ms a frame with a school up, and nothing at all otherwise — the

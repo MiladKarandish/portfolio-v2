@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { isOpenWater } from "@/common/components/WaterBackground/openWater";
 import { onRipple } from "@/common/components/WaterBackground/ripples";
 import WaterSurface from "@/common/components/WaterBackground/_components/WaterSurface";
+import { lighten } from "@/utils/colour";
 import School, { type FishPalette } from "./_components/School";
 
 /**
@@ -42,15 +43,33 @@ import School, { type FishPalette } from "./_components/School";
 const FALLBACK: FishPalette = { shadow: "rgb(20, 60, 120)" };
 
 /**
- * `--bg-950` is the darkest tone in every theme. Depth reads as dark, and the
- * fish have to look like they are under the surface rather than drawn on it —
- * the page's ink would make them pale shapes floating on top.
+ * How much of the way to white the fish are lifted from the water's own base
+ * colour. See `readPalette`.
+ */
+const LIFT = 0.55;
+
+/**
+ * The fish are `--bg-950` lifted toward white, and that is not a taste choice —
+ * it is the only way to be sure they can be seen in every theme.
+ *
+ * `WaterBackground` builds the whole surface out of `--bg-950` *darkened*, by
+ * 0.44 for deep water and 0.68 for mid. Drawing the fish in the same variable
+ * at full strength, which is what the first version did, leaves the gap between
+ * fish and water entirely at the mercy of how bright that one variable happens
+ * to be: in `earthy` it is rgb(30, 24, 8), so the water is about rgb(20, 16, 5)
+ * and the fish about rgb(20, 16, 5) too. They vanished.
+ *
+ * Lifting instead of darkening puts the fish on the other side of the water
+ * from where the water was made, so the contrast is fixed by construction and
+ * survives a theme nobody has written yet. `dusk` is the proof it was needed:
+ * its ramp is inverted — `--bg-950` is *lighter* than `--bg-700` — so anything
+ * assuming 950 means dark is already wrong there.
  */
 function readPalette(): FishPalette {
   const style = getComputedStyle(document.documentElement);
-  const shadow = style.getPropertyValue("--bg-950").trim();
+  const base = style.getPropertyValue("--bg-950").trim();
 
-  return { shadow: shadow || FALLBACK.shadow };
+  return { shadow: lighten(base || FALLBACK.shadow, LIFT) };
 }
 
 const FishToy = () => {

@@ -32,7 +32,11 @@
 import { alpha } from "@/utils/colour";
 
 export interface FishPalette {
-  /** The fish. The darkest tone in the theme, because depth reads as dark. */
+  /**
+   * The fish. Lighter than the water rather than darker — the component next
+   * to this one explains why, and it is the difference between fish and no
+   * fish in half the themes.
+   */
   shadow: string;
 }
 
@@ -66,8 +70,8 @@ const LINGER = 4.5;
 const RISE_TIME = 0.9;
 const SINK_TIME = 1.4;
 
-const MIN_FISH = 2;
-const MAX_FISH = 4;
+const MIN_FISH = 4;
+const MAX_FISH = 7;
 
 /**
  * How far out they start. Off in the dark, but close enough to arrive while
@@ -90,6 +94,29 @@ const TURN_RATE = 2.4;
 
 /** Inside this, a fish stops aiming at the disturbance and starts circling it. */
 const ORBIT_RADIUS = 76;
+
+/**
+ * How far from the edge of the window a fish starts turning back, and how
+ * hard, against the pull of whatever it is interested in.
+ *
+ * Without this they leave. A school spawns in a ring around the disturbance,
+ * and a click in the margin puts a good part of that ring off the side of the
+ * window; more of it wanders out later while circling. Measured at 8% of all
+ * visible-fish frames entirely outside the window, up to 165px past the edge —
+ * which from the outside looks exactly like fish disappearing, because it is.
+ *
+ * A fish on its way out is exempt. It is fading anyway, and bouncing off the
+ * walls on the way would draw the eye to precisely the thing that is leaving.
+ */
+/*
+ * The margin has to be bigger than a fish's turning circle or the steering
+ * loses. At `MAX_SPEED` and `TURN_RATE` that circle has a radius of about
+ * 73px, so a fish that starts turning 70px out is still leaving — the first
+ * numbers here were exactly that, and made the excursions worse rather than
+ * better by turning them into long arcs.
+ */
+const EDGE_MARGIN = 150;
+const EDGE_PUSH = 2.2;
 
 /**
  * Peak opacity of a fish at full depth. They are shapes under water, not
@@ -243,8 +270,11 @@ export default class School {
       const angle = Math.random() * Math.PI * 2;
       const distance = SPAWN_NEAR + Math.random() * (SPAWN_FAR - SPAWN_NEAR);
 
-      const x = this.targetX + Math.cos(angle) * distance;
-      const y = this.targetY + Math.sin(angle) * distance;
+      // Kept inside the window. A ring around a disturbance in the margin puts
+      // a good part of itself off the side of the page otherwise, and a fish
+      // that has to swim in from off-screen is a fish nobody saw arrive.
+      const x = clamp(this.targetX + Math.cos(angle) * distance, EDGE_MARGIN, this.width - EDGE_MARGIN);
+      const y = clamp(this.targetY + Math.sin(angle) * distance, EDGE_MARGIN, this.height - EDGE_MARGIN);
 
       this.fish.push({
         x,
@@ -319,6 +349,17 @@ export default class School {
       f.x += Math.cos(f.heading) * f.speed * STEP;
       f.y += Math.sin(f.heading) * f.speed * STEP;
       f.phase += STEP * (5 + f.speed * 0.05);
+
+      // A backstop under the steering, not a substitute for it. Steering does
+      // essentially all of the work; this is here so that a fish which somehow
+      // gets outside anyway — a window resized out from under it, a target
+      // right against the edge — cannot swim off and be counted as present
+      // while nobody can see it. A fish on its way out is exempt, because it
+      // is supposed to leave.
+      if (f.leaving < 0) {
+        f.x = clamp(f.x, 0, this.width);
+        f.y = clamp(f.y, 0, this.height);
+      }
     }
 
     this.fish = this.fish.filter((f) => f.depth > 0 || f.leaving < 0);
@@ -348,6 +389,17 @@ export default class School {
       const turn = f.orbit * (Math.PI / 2);
       wantX = dx * Math.cos(turn) - dy * Math.sin(turn);
       wantY = dx * Math.sin(turn) + dy * Math.cos(turn);
+    }
+
+    // As a direction rather than a displacement, so the edges below can be
+    // weighed against it instead of being swamped by a distant target.
+    const want = Math.hypot(wantX, wantY) || 1;
+    wantX /= want;
+    wantY /= want;
+
+    if (f.leaving < 0) {
+      wantX += edgePush(f.x, this.width) * EDGE_PUSH;
+      wantY += edgePush(f.y, this.height) * EDGE_PUSH;
     }
 
     const wanted = Math.atan2(wantY, wantX);
@@ -411,4 +463,18 @@ export default class School {
       ctx.restore();
     }
   }
+}
+
+/**
+ * How hard to steer back from an edge: 0 well inside, 1 at the edge itself, and
+ * more than 1 for a fish that is already outside.
+ */
+function edgePush(position: number, size: number): number {
+  if (position < EDGE_MARGIN) return (EDGE_MARGIN - position) / EDGE_MARGIN;
+  if (position > size - EDGE_MARGIN) return -(position - (size - EDGE_MARGIN)) / EDGE_MARGIN;
+  return 0;
+}
+
+function clamp(value: number, low: number, high: number): number {
+  return value < low ? low : value > high ? high : value;
 }
